@@ -1,0 +1,60 @@
+// Rouglike EngineX GL.hh
+
+#ifndef ENGINE_SDL_HH
+#define ENGINE_SDL_HH
+
+#include <SDL/SDL.h>
+
+#include <cstdint>
+#include <string>
+#include <vector>
+#include "io.hh"
+
+class Color;
+class DisplayObject;
+
+class SDL : public IO
+{
+  private:
+	
+  public:
+	SDL() : screen_(NULL) {};
+	~SDL();
+
+	virtual void Init();
+
+	void SetRealtime(bool _realtime) { realtime_ = _realtime; };
+	bool LoadTexture(std::string _file);
+	void LoadFont(int _x, int _y, int _xwdith, int _yhieght);
+	
+	bool Input();
+	bool PollInput();
+	bool WaitInput();
+	bool HandleEvent(SDL_Event &event);
+	
+	void Render(const DisplayObject *_displayobject);
+	void AddSpace();
+	void NewLine();
+	void Move(uint8_t _y, uint8_t _x);
+
+	virtual void SetState() {};
+	virtual void EndState() {};
+	virtual void Clear();
+	virtual void Refresh();
+	virtual void SetColor(std::shared_ptr<Color> _color) {};
+	virtual void Print(uint8_t _print, std::shared_ptr<Color> _color);
+	
+	void Map();
+
+
+	
+	uint8_t xwidth_;
+	uint8_t yhieght_;
+
+	SDL_Rect offset_;
+	std::vector<SDL_Rect> character_; 
+	SDL_Surface *screen_;
+	std::vector<SDL_Surface*> texture_;
+};
+
+#endif
