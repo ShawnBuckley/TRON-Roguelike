@@ -1,5 +1,4 @@
-
-// Roguelike EngineX GL.cc
+// TRON-Roguelike GL.cc
 
 #include <iostream>
 #include <fstream>

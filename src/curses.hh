@@ -1,4 +1,4 @@
-// Rouglike EngineX xDisplay.hh
+// TRON-Roguelike xDisplay.hh
 
 #ifndef ENGINE_XCURSES_HH
 #define ENGINE_XCURSES_HH

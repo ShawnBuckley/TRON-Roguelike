@@ -1,4 +1,4 @@
-// TRONLIKE Linux.cc
+// TRON-Roguelike Linux.cc
 
 #include <stdio.h>
 #include <math.h>

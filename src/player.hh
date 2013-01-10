@@ -1,4 +1,4 @@
-// RLengineX Player.hh
+// TRON-Roguelike Player.hh
 
 #ifndef RLENGINEX_PLAYER_HH
 #define RLENGINEX_PLAYER_HH

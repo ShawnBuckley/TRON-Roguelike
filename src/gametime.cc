@@ -1,4 +1,4 @@
-// RLengineX GameTime.hh
+// TRON-Roguelike GameTime.hh
 
 #include <stdio.h>
 

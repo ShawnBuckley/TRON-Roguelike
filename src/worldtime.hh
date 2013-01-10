@@ -1,4 +1,4 @@
-// RLengineX WorldTime.hh
+// TRON-Roguelike WorldTime.hh
 
 #ifndef RLENGINEX_WORLDTIME_HH
 #define RLENGINEX_WORLDTIME_HH

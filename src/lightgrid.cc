@@ -1,4 +1,4 @@
-// TronLike LightGrid.cc
+// TRON-Roguelike LightGrid.cc
 
 #include "color.hh"
 #include "lightgrid.hh"
@@ -23,23 +23,23 @@ void LightGrid::Save(std::stringstream &_save)
 void LightGrid::Gen(uint8_t _z, uint8_t _y, uint8_t _x)
 {
 	kFloor[0] = std::shared_ptr<TileType>(
-		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('+', 197, kDarkBlue)))
+		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('+', 197, kColor[dark_blue])))
 	));
 
 	kFloor[1] = std::shared_ptr<TileType>(
-		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('-', 196, kDarkBlue)))
+		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('-', 196, kColor[dark_blue])))
 	));
 
 	kFloor[2] = std::shared_ptr<TileType>(
-		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('|', 179, kDarkBlue)))
+		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('|', 179, kColor[dark_blue])))
 	));
 
 	kFloor[3] = std::shared_ptr<TileType>(
-		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject(' ', 255, kBlack)))
+		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject(' ', 255, kColor[black])))
 	));
 
 	kWall = std::shared_ptr<TileType>(
-		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('#', 219, kDarkBlue))),
+		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('#', 219, kColor[dark_blue]))),
 		TileTypeFlags(1, 1)
 	));
 

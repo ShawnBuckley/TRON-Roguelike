@@ -1,4 +1,4 @@
-// RLengineX ControlObject.hh
+// TRON-Roguelike ControlObject.hh
 
 #ifndef RLENGINEX_CONTROLOBJECT_HH
 #define RLENGINEX_CONTROLOBJECT_HH

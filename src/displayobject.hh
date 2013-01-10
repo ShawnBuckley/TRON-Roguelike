@@ -1,4 +1,4 @@
-// RLengineX DisplayObject.hh
+// TRON-Roguelike DisplayObject.hh
 
 #ifndef RLENGINEX_DISPLAYOBJECT_HH
 #define RLENGINEX_DISPLAYOBJECT_HH

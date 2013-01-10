@@ -1,4 +1,4 @@
-// RLengineX Object.hh
+// TRON-Roguelike Object.hh
 
 #ifndef RLENGINEX_OBJECT_HH
 #define RLENGINEX_OBJECT_HH

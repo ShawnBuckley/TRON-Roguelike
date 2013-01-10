@@ -1,4 +1,4 @@
-// Roguelike EngineX xColor.hh
+// TRON-Roguelike Color.hh
 
 #ifndef ENGINE_XCOLOR_HH
 #define ENGINE_XCOLOR_HH
@@ -9,6 +9,18 @@
 #include <vector>
 
 #include "object.hh"
+
+enum Colors
+{
+	black = 0,
+	red,
+	green,
+	yellow,
+	blue,
+	magenta,
+	dark_blue,
+	white
+};
 
 struct Color : public Object
 {
@@ -29,13 +41,6 @@ struct Color : public Object
 	uint8_t b_;
 };
 
-extern std::shared_ptr<Color> kBlack;
-extern std::shared_ptr<Color> kRed;
-extern std::shared_ptr<Color> kGreen;
-extern std::shared_ptr<Color> kYellow;
-extern std::shared_ptr<Color> kBlue;
-extern std::shared_ptr<Color> kMagenta;
-extern std::shared_ptr<Color> kDarkBlue;
-extern std::shared_ptr<Color> kWhite;
+extern std::vector<std::shared_ptr<Color>> kColor;
 
 #endif

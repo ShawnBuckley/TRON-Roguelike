@@ -1,4 +1,4 @@
-// TRON RlengineX DisplayObject.cc
+// TRON-Roguelike DisplayObject.cc
 
 #include "displayobject.hh"
 

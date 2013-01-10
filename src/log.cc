@@ -1,4 +1,4 @@
-// log.cc
+// TRON-Roguelike log.cc
 
 #include <fstream>
 

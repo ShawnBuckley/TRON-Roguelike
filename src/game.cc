@@ -1,4 +1,4 @@
-// Rogulike EngineX Game.cc
+// TRON-Roguelike Game.cc
 
 #include <fstream>
 
@@ -14,8 +14,6 @@
 #include "lightgrid.hh"
 #include "worldtime.hh"
 
-std::shared_ptr<AiBike> ai_bike;
-
 Game::Game()
 {
 	io_ = std::unique_ptr<IO>(new SDL);
@@ -25,76 +23,29 @@ Game::Game()
 
 void Game::Start()
 {
+	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,0)));
+	kColor.push_back(std::shared_ptr<Color>(new Color(255,0,0)));
+	kColor.push_back(std::shared_ptr<Color>(new Color(0,255,0)));
+	kColor.push_back(std::shared_ptr<Color>(new Color(255,255,0)));
+	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,255)));
+	kColor.push_back(std::shared_ptr<Color>(new Color(255,0,255)));
+	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,64)));
+	kColor.push_back(std::shared_ptr<Color>(new Color(255,255,255)));
+
 	io_->Init();
 
 	io_->SetFPS(30.0f);
 	SetRealtime(1);
 
 	map_->Gen(1, io_->y_, io_->x_-1);
-//	map_->Gen(1,24,24);
-/*/
-	player_.mapobject_ = std::move(std::shared_ptr<MapObject>(new MapObject));
-	player_.mapobject_->timeobject_ = std::move(std::shared_ptr<TimeObject>(new TimeObject(6000));
-	player_.mapobject_->displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('@', '@', kBlue)));
-	player_.mapobject_->flags_ = MapObjectFlags(1, 1, 1, 1);
-	player_.mapobject_->Rez(Coord2<uint8_t>(map_->x_/2+1, map_->y_/2));
-	player_.mapobject_->timeobject_->TimeLink();
-	player_.mapobject_->timeobject_->mapobject_= player_.mapobject_;
-/*/
-	player_ = std::move(std::shared_ptr<Player>(new Player));
-	player_->mapobject_ = std::move(std::shared_ptr<Bike>(new Bike(kBlue)));
-	player_->mapobject_->timeobject_ = std::move(std::shared_ptr<TimeObject>(new TimeObject(1000)));
-	player_->mapobject_->displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('@', 254, kBlue)));
-	player_->mapobject_->flags_ = MapObjectFlags(1, 1, 1, 1);
+
+//	entity_manager_.AddPlayerMapobject(blue);
+	player_ = entity_manager_.AddPlayerBike(blue);
 	player_->mapobject_->Rez(map_->Tile(Coord2<uint8_t>(map_->x_/2+1, map_->y_/2)), Coord2<int8_t>(+1,+0));
-	player_->mapobject_->timeobject_->TimeLink();
-	player_->mapobject_->timeobject_->mapobject_= player_->mapobject_;
-	player_->mapobject_->timeobject_->controlobject_ = player_;
-//*/
-	ai_bike = std::move(std::shared_ptr<AiBike>(new AiBike));
-	ai_bike->mapobject_ = std::shared_ptr<Bike>(new Bike(kRed));
-	ai_bike->mapobject_->timeobject_ = std::move(std::shared_ptr<TimeObject>(new TimeObject(1000)));
-	ai_bike->mapobject_->displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('B', 254, kRed)));
-	ai_bike->mapobject_->flags_ = MapObjectFlags(1, 1, 1, 1);
+	
+	std::shared_ptr<AiBike> ai_bike = entity_manager_.AddAiBike(red);
 	ai_bike->mapobject_->Rez(map_->Tile(Coord2<uint8_t>(map_->x_/2-1, map_->y_/2)), Coord2<int8_t>(-1,+0));
-	ai_bike->mapobject_->timeobject_->TimeLink();
-	ai_bike->mapobject_->timeobject_->mapobject_= ai_bike->mapobject_;
-	ai_bike->mapobject_->timeobject_->controlobject_ = ai_bike;
-/*	
-//	Init AiBike
-	std::shared_ptr<Bike> bike;
-	std::shared_ptr<AiBike> ai_bike;
-	std::shared_ptr<DisplayObject> ai_bike_displayobject(new DisplayObject('P', 'P', kRed));
-	
-	bike = std::shared_ptr<MapObject>(new Bike(
-		bike,
-		MapObjectFlags(1, 1, 1, 1),
-//		std::move(std::shared_ptr<DisplayObject>(new DisplayObject('P', 'P', kRed))),
-		ai_bike_displayobject,
-		std::move(std::shared_ptr<TimeObject>(new TimeObject(1000))),
-		Coord2<uint8_t>(map_->x_/2-1, map_->y_/2),
-		Coord2<int8_t>(-1,+0)
-	));
 
-	ai_bike = std::shared_ptr<AiBike>(new AiBike(
-		ai_bike,
-		bike
-	));
-		
-	entities_.push_back(std::move(ai_bike));
-
-	std::shared_ptr<MapObject> program;
-	program = (new MapObject(
-		MapObjectFlags(1, 1, 1, 1),
-		std::move(std::shared_ptr<DisplayObject>(new DisplayObject('P', 'P', kGreen))),
-		std::move(std::shared_ptr<TimeObject>(new TimeObject(1000))),
-		Coord2<uint8_t>(map_->x_/2+9, map_->y_/2-1),
-		Coord2<int8_t>(+0,+0)
-	));
-	
-//	entities_.push_back(std::move(program));
-
-//*/
 	Run();
 }
 

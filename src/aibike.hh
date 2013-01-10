@@ -1,4 +1,4 @@
-// TRONLIKE xAiBike.hh
+// TRON-Roguelike AiBike.hh
 
 #ifndef TRONLIKE_XAIBIKE_HH
 #define TRONLIKE_XAIBIKE_HH

@@ -1,4 +1,4 @@
-// RLengineX GameTime.hh
+// TRON-Roguelike GameTime.hh
 
 #ifndef RLENGINEX_GAMETIME_HH
 #define RLENGINEX_GAMETIME_HH

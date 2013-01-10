@@ -1,4 +1,4 @@
-// TRON RLengineX LightWall.cc
+// TRON-Roguelike LightWall.cc
 
 #include "lightwall.hh"
 #include "bike.hh"

@@ -1,4 +1,4 @@
-// Roguelike EngineX MapTile.cc
+// TRON-Roguelike MapTile.cc
 
 #ifndef ENGINE_MAPTILE_HH
 #define ENGINE_MAPTILE_HH

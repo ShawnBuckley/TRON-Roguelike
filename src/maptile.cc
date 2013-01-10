@@ -1,4 +1,4 @@
-// Roguelike EngineX xMapTile.hh
+// TRON-Roguelike MapTile.hh
 
 #include "maptile.hh"
 #include "tiletype.hh"

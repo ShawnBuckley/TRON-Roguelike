@@ -1,4 +1,4 @@
-// Roguelike EngineX Map->cc
+// TRON-Roguelike Map.cc
 
 #include <inttypes.h>
 
@@ -23,7 +23,7 @@ void Map::Save(std::stringstream &_save)
 void Map::Gen(uint8_t _z, uint8_t _y, uint8_t _x)
 {
 	kGround = std::shared_ptr<TileType>(
-		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('.', '.', kWhite)))
+		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('.', '.', kColor[white])))
 	));
 
 	uint8_t x;

@@ -1,4 +1,4 @@
-// Roguelike EngineX Curses.cc
+// TRON-Roguelike Curses.cc
 
 #include <curses.h>
 

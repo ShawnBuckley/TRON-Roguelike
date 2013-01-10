@@ -1,4 +1,4 @@
-// Roguelike EngineX SDL.cc
+// TRON-Roguelike SDL.cc
 
 #include <assert.h>
 #include <SDL/SDL.h>
@@ -166,7 +166,7 @@ void SDL::Render(const DisplayObject *_displayobject)
 	}
 	else
 	{
-		Print('!', kRed);
+		Print('!', kColor[red]);
 	}
 }
 
@@ -229,7 +229,7 @@ void SDL::Map()
 
 	EndState();
 
-	if(game.player_->mapobject_)
+	if(game.player_ != NULL && game.player_->mapobject_ != NULL && game.player_->mapobject_->flags_.rez_)
 	{
 		Move(game.player_->mapobject_->maptile_->location_.y, game.player_->mapobject_->maptile_->location_.x);
 	}

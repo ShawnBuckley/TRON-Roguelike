@@ -1,4 +1,4 @@
-// RLengineX MapObject.hh
+// TRON-Rogulike MapObject.hh
 
 #ifndef RLENGINEX_MAPOBJECT_HH
 #define RLENGINEX_MAPOBJECT_HH
@@ -35,8 +35,14 @@ class MapObject : public Object
 {
   public:
 	MapObject();
-	MapObject(std::shared_ptr<MapObject> _this, MapObjectFlags _mapobject_flags, std::shared_ptr<DisplayObject> _displayobject,
-		std::shared_ptr<TimeObject> _timeobject, std::shared_ptr<MapTile> _maptile, Coord2<int8_t> _vector = Coord2<int8_t>(+0,+0));
+	MapObject(
+		std::shared_ptr<MapObject> _this,
+		MapObjectFlags _mapobject_flags,
+		std::shared_ptr<DisplayObject> _displayobject,
+		std::shared_ptr<TimeObject> _timeobject,
+		std::shared_ptr<MapTile> _maptile,
+		Coord2<int8_t> _vector = Coord2<int8_t>(+0,+0)
+	);
 	~MapObject();
 
  	virtual void Save(std::stringstream &_save);

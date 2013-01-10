@@ -1,4 +1,4 @@
-// RLengineX Object.cc
+// TRON-Roguelike Object.cc
 
 #include "object.hh"
 

@@ -1,4 +1,4 @@
-// Roguelike EngineX Map.hh
+// TRON-Roguelike Map.hh
 
 #ifndef ENGINE_XMAP_HH
 #define ENGINE_XMAP_HH

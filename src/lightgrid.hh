@@ -1,4 +1,4 @@
-// TronLike LightGrid.hh
+// TRON-Roguelike LightGrid.hh
 
 #ifndef TRONLIKE_XLIGHTGRID_HH
 #define TRONLIKE_XLIGHTGRID_HH

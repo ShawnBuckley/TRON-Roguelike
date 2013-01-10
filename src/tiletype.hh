@@ -1,4 +1,4 @@
-// Roguelike EngineX TileType.hh
+// TRON-Roguelike TileType.hh
 
 #ifndef TRONLIKE_TILETYPE_HH
 #define TRONLIKE_TILETYPE_HH

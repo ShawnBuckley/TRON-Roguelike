@@ -1,4 +1,4 @@
-// Rogulike EngineX xBike.hh
+// TRON-Roguelike xBike.hh
 
 #ifndef ENGINE_XBIKE_HH
 #define ENGINE_XBIKE_HH

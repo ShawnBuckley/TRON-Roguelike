@@ -1,4 +1,4 @@
-// RLengineX MapObject.cc
+// TRON-Roguelike MapObject.cc
 
 #include <algorithm>
 
@@ -61,6 +61,9 @@ bool MapObject::Rez(std::shared_ptr<MapTile> _maptile, Coord2<int8_t> _vector)
 		flags_.rez_ = 1;
 		vector_ = _vector;
 		
+		if(timeobject_)
+			timeobject_->TimeLink();
+		
 		return 1;
 	}
 	
@@ -71,6 +74,9 @@ void MapObject::Derez()
 {
 	displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('X','X',displayobject_->color_)));
 	flags_ = MapObjectFlags(0, 0, 0, 1);
+	
+	if(timeobject_)
+		timeobject_->TimeUnlink();
 }
 
 void MapObject::MapLink()

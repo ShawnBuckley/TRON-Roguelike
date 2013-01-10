@@ -1,4 +1,4 @@
-// TRONLIKE Linux.hh
+// TRON-Roguelike Linux.hh
 
 #include <inttypes.h>
 

@@ -1,4 +1,4 @@
-// Tron RLEngineX RNG.hh
+// TRON-Roguelike RNG.hh
 
 #ifndef TRON_RLENGINEX_RNG_HH
 #define TRON_RLENGINEX_RNG_HH

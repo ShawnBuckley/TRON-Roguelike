@@ -1,10 +1,11 @@
-// Rogulike EngineX xGame.hh
+// TRON-Roguelike Game.hh
 
 #ifndef ENGINEX_XGAME_HH
 #define ENGINEX_XGAME_HH
 
 #include <memory>
 
+#include "entitymanager.hh"
 #include "player.hh"
 
 #include "io.hh"
@@ -30,16 +31,16 @@ class Game
 	void End();
 
 	void Pause();
-	
+
 	void Save();
 	void Load();
-	
-	std::shared_ptr<MapObject> BuildMapobject();
-	
+
 	void SetRealtime(bool _realtime);
 
+	EntityManager entity_manager_;
+
 	GameFlags game_flags_;
-  
+
 	std::unique_ptr<IO> io_;
 	std::unique_ptr<Map> map_;
 	std::unique_ptr<WorldTime> worldtime_;

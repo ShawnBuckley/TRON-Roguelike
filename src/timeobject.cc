@@ -1,4 +1,4 @@
-// RLengineX TimeObject.cc
+// TRON-Roguelike TimeObject.cc
 
 #include "timeobject.hh"
 #include "controlobject.hh"
@@ -34,6 +34,8 @@ void TimeObject::Save(std::stringstream &_save)
 
 void TimeObject::TimeLink()
 {
+	printf("Time link %p\n", this);
+
 	TimeObject::list_.push_back(this);
 	
 	linked_ = 1;

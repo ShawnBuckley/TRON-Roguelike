@@ -1,4 +1,4 @@
-// TRONLIKE xLightWall.hh
+// TRON-Roguelike LightWall.hh
 
 #ifndef TRONLIKE_XLIGHTWALL_HH
 #define TRONLIKE_XLIGHTWALL_HH

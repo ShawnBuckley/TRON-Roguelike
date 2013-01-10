@@ -1,4 +1,4 @@
-// TRON RLengineX TileType.hh
+// TRON-Roguelike TileType.hh
 
 #include "tiletype.hh"
 

@@ -1,4 +1,4 @@
-// log.hh
+// TRON-Roguelike log.hh
 
 #ifndef __INCLUDE_LOG_HH__
 #define __INCLUDE_LOG_HH__

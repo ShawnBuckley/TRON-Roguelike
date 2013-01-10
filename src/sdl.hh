@@ -1,4 +1,4 @@
-// Rouglike EngineX GL.hh
+// TRON-Rouglike SDL.hh
 
 #ifndef ENGINE_SDL_HH
 #define ENGINE_SDL_HH

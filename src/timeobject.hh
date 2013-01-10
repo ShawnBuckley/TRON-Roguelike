@@ -1,4 +1,4 @@
-// RLengineX TimeObject.hh
+// TRON-Roguelike TimeObject.hh
 
 #ifndef RLENGINEX_TIMEOBJECT_HH
 #define RLENGINEX_TIMEOBJECT_HH

@@ -1,4 +1,4 @@
-// TronX.hh
+// TRON-Roguelike main.hh
 
 #include "game.hh"
 #include "rng.hh"
