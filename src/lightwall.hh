@@ -1,7 +1,7 @@
 // TRON-Roguelike LightWall.hh
 
-#ifndef TRONLIKE_XLIGHTWALL_HH
-#define TRONLIKE_XLIGHTWALL_HH
+#ifndef TRON_RLENGINEX_LIGHTWALL_HH
+#define TRON_RLENGINEX_LIGHTWALL_HH
 
 #include "mapobject.hh"
 #include "displayobject.hh"
@@ -28,4 +28,4 @@ class LightWall : public MapObject
 	Bike *bike_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_LIGHTWALL_HH

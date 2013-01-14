@@ -4,45 +4,54 @@
 
 #include "map.hh"
 #include "maptile.hh"
-
-Map::Map() : x_(0), y_(0), z_(0), size_(0) {}
+#include "sector.hh"
 
 void Map::Save(std::stringstream &_save)
 {
 	_save << "map" << " "
 		<< "a" << " "
 		<< (unsigned int)id_ << " "
-		<< (unsigned int)x_ << " "
-		<< (unsigned int)y_ << " "
-		<< (unsigned int)z_ << " "
-		<< (unsigned int)size_ << " "
-		<< (unsigned int)kGround->id_ << " "
+		<< (unsigned int)rectangle_.Vertex(0).x() << " "
+		<< (unsigned int)rectangle_.Vertex(0).y() << " "
+		<< (unsigned int)rectangle_.Width() << " "
+		<< (unsigned int)rectangle_.Height() << " "
 		<< std::endl;
 }
 
-void Map::Gen(uint8_t _z, uint8_t _y, uint8_t _x)
+void Map::GenerateSector(std::shared_ptr<Sector> _sector, AxisAligned_Rectangle2<int16_t> _rectangle)
 {
-	kGround = std::shared_ptr<TileType>(
-		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('.', '.', kColor[white])))
-	));
+	_sector->Generate(_sector, _rectangle);
+	sector_.push_back(_sector);
 
-	uint8_t x;
-	uint8_t y;
+	if(_rectangle.Vertex(0).x() < rectangle_.Vertex(0).x())
+		rectangle_.Origin(Vector2<int16_t>((_rectangle.Vertex(0).x()), rectangle_.Vertex(0).y()));
 
-	z_ = _z;
-	y_ = _y;
-	x_ = _x;
-	
-	for(x=0; x<x_; ++x)
+	if(_rectangle.Vertex(0).y() < rectangle_.Vertex(0).y())
+		rectangle_.Origin(Vector2<int16_t>((rectangle_.Vertex(0).x()), _rectangle.Vertex(0).y()));
+
+	if(_rectangle.Width()+_rectangle.Vertex(0).x() > rectangle_.Width())
+		rectangle_.Width(_rectangle.Width()+_rectangle.Vertex(0).x());
+
+	if(_rectangle.Height()+_rectangle.Vertex(0).y() > rectangle_.Height())
+		rectangle_.Height(_rectangle.Height()+_rectangle.Vertex(0).y());
+}
+
+std::shared_ptr<MapTile> Map::Tile(Vector2<int16_t> _coord)
+{
+	if(!CoordValid(_coord))
+		return NULL;
+
+	for(std::vector<std::shared_ptr<Sector> >::iterator sector = sector_.begin();
+		sector != sector_.end(); ++sector)
 	{
-		std::vector<std::shared_ptr<MapTile> > row;
-		row.reserve(y_);
-	
-		for(y=0; y<_y; ++y)
+		if((*sector) != NULL)
 		{
-			row.push_back(std::shared_ptr<MapTile>(new MapTile(Coord2<uint8_t>(x, y), kGround)));
+			if((*sector)->rectangle_.Intersect(_coord))
+			{
+				return (*sector)->tile_[_coord.x() - (*sector)->rectangle_.Vertex(0).x()][_coord.y()-(*sector)->rectangle_.Vertex(0).y()];
+			}
 		}
-		
-		tile_.push_back(row);
 	}
+
+	return NULL;
 }

@@ -2,7 +2,6 @@
 
 #include <cstdio>
 
-#include "coord2.hh"
 #include "main.hh"
 #include "aibike.hh"
 #include "maptile.hh"
@@ -36,10 +35,11 @@ void AiBike::Save(std::stringstream &_save)
 void AiBike::Think()
 {
 //	Skill Check
+//	if(skill_ < 
 
 	if(!mapobject_->flags_.rez_)
 		return;
-		
+
 	if(CheckTunnel())
 		ai_state_ = AI_TUNNEL;
 
@@ -52,9 +52,7 @@ void AiBike::Think()
 
 void AiBike::Default()
 {
-	Coord2<uint8_t> test_coord;
-	test_coord.x = mapobject_->maptile_->location_.x + mapobject_->vector_.x;
-	test_coord.y = mapobject_->maptile_->location_.y + mapobject_->vector_.y;
+	Vector2<int16_t> test_coord = mapobject_->maptile_->location_ + mapobject_->vector_;
 
 	std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
 
@@ -73,23 +71,21 @@ void AiBike::Default()
 
 void AiBike::Tunnel()
 {
-	Coord2<uint8_t> test_coord;
-	test_coord.x = mapobject_->maptile_->location_.x + mapobject_->vector_.y;
-	test_coord.y = mapobject_->maptile_->location_.y + mapobject_->vector_.x;
+	// check the complement
+	Vector2<int16_t> test_coord = mapobject_->maptile_->location_ + ~mapobject_->vector_;
 
 	if(!CheckTile(game.map_->Tile(test_coord)))
 	{
-		ChangeDirection(Coord2<int8_t>(mapobject_->vector_.y, mapobject_->vector_.x));
+		ChangeDirection(Vector2<int16_t>(mapobject_->vector_.y(), mapobject_->vector_.x()));
 		ai_state_ = AI_DEFAULT;
 		return;
 	}
 
-	test_coord.x = mapobject_->maptile_->location_.x - mapobject_->vector_.y;
-	test_coord.y = mapobject_->maptile_->location_.y - mapobject_->vector_.x;
+	test_coord = mapobject_->maptile_->location_ - ~mapobject_->vector_;
 
 	if(!CheckTile(game.map_->Tile(test_coord)))
 	{
-		ChangeDirection(Coord2<int8_t>(-mapobject_->vector_.y, -mapobject_->vector_.x));
+		ChangeDirection(Vector2<int16_t>(-mapobject_->vector_.y(), -mapobject_->vector_.x()));
 		ai_state_ = AI_DEFAULT;
 		return;
 	}
@@ -99,8 +95,6 @@ void AiBike::Tunnel()
 
 bool AiBike::CheckMapObjects(std::shared_ptr<MapTile> _tile)
 {
-	printf("check map objects\n");
-
 	for(std::list<MapObject*>::iterator mapobject = _tile->mapobject_list_.begin();
 		mapobject != _tile->mapobject_list_.end(); ++mapobject)
 	{
@@ -108,30 +102,23 @@ bool AiBike::CheckMapObjects(std::shared_ptr<MapTile> _tile)
 
 		if((*mapobject)->flags_.clipping_)
 		{
-			printf("check bumped\n");
 			if((*mapobject)->CheckBumped(&*mapobject_))
 				return 1;
 		}
 	}
-	
+
 	return 0;
 }
 
 bool AiBike::CheckTunnel()
 {
-	Coord2<uint8_t> test_coord;
-	test_coord.x = mapobject_->maptile_->location_.x + mapobject_->vector_.y;
-	test_coord.y = mapobject_->maptile_->location_.y + mapobject_->vector_.x;
+	Vector2<int16_t> test_coord = mapobject_->maptile_->location_ + ~mapobject_->vector_;
 
 	if(CheckTile(game.map_->Tile(test_coord)))
 	{
-		test_coord.x = mapobject_->maptile_->location_.x - mapobject_->vector_.y;
-		test_coord.y = mapobject_->maptile_->location_.y - mapobject_->vector_.x;
+		test_coord = mapobject_->maptile_->location_ - ~mapobject_->vector_;
 
-		if(CheckTile(game.map_->Tile(test_coord)))
-		{
-			return 1;
-		}
+		return (CheckTile(game.map_->Tile(test_coord)));
 	}
 
 	return 0;
@@ -139,11 +126,11 @@ bool AiBike::CheckTunnel()
 
 void AiBike::CheckDirection()
 {
-	Coord2<int8_t> vector;
-	vector.y = abs(mapobject_->vector_.x);
-	vector.x = abs(mapobject_->vector_.y);
+	Vector2<int16_t> vector;
+	vector.y(abs(mapobject_->vector_.x()));
+	vector.x(abs(mapobject_->vector_.y()));
 
-	for(Coord2<uint8_t> check_tile(vector.x, vector.y); ; vector.x ? ++check_tile.x : ++check_tile.y)
+	for(Vector2<int16_t> check_tile(vector.x(), vector.y()); ; vector.x() ? check_tile.x(check_tile.x()+1) : check_tile.y(check_tile.y()+1))
 	{
 		if(CheckTile(game.map_->Tile(mapobject_->maptile_->location_ + check_tile)))
 		{
@@ -160,13 +147,10 @@ void AiBike::CheckDirection()
 
 bool AiBike::CheckTile(std::shared_ptr<MapTile> _tile)
 {
-	if(_tile == NULL || _tile->tiletype_->tiletype_flags_.solid_ || _tile->SolidMapObject() != NULL)
-		return 1;
-
-	return 0;
+	return (_tile == NULL || _tile->tiletype_->tiletype_flags_.solid_ || _tile->SolidMapObject() != NULL);
 }
 
-void AiBike::ChangeDirection(Coord2<int8_t> _vector)
+void AiBike::ChangeDirection(Vector2<int16_t> _vector)
 {
 	mapobject_->Move(_vector);
 }

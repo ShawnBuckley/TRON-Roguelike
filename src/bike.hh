@@ -1,7 +1,7 @@
 // TRON-Roguelike xBike.hh
 
-#ifndef ENGINE_XBIKE_HH
-#define ENGINE_XBIKE_HH
+#ifndef TRON_RLENGINEX_BIKE_HH
+#define TRON_RLENGINEX_BIKE_HH
 
 #include <inttypes.h>
 
@@ -9,7 +9,8 @@
 #include <list>
 #include <vector>
 
-#include "coord2.hh"
+#include "math/vector2.hh"
+
 #include "mapobject.hh"
 
 #include "lightwall.hh"
@@ -27,7 +28,7 @@ class Bike : public MapObject
 {
   public:
   	Bike(std::shared_ptr<Color> _color);	
-	Bike(std::shared_ptr<MapObject> _this, MapObjectFlags _mapobject_flags, std::shared_ptr<DisplayObject> _displayobject, std::shared_ptr<TimeObject> _timeobject, Coord2<uint8_t> _location, Coord2<int8_t> _vector = Coord2<int8_t>(+0,+0));
+	Bike(std::shared_ptr<MapObject> _this, MapObjectFlags _mapobject_flags, std::shared_ptr<DisplayObject> _displayobject, std::shared_ptr<TimeObject> _timeobject, Vector2<uint8_t> _location, Vector2<int8_t> _vector = Vector2<int8_t>(+0,+0));
 	~Bike();
 
  	void Save(std::stringstream &_save);
@@ -35,7 +36,7 @@ class Bike : public MapObject
 
 	void Derez();
 
-	bool Move(Coord2<int8_t> _vector);
+	bool Move(Vector2<int16_t> _vector);
 
 	bool Tick();
 	void RemoveWall();
@@ -58,4 +59,4 @@ class Bike : public MapObject
 	std::shared_ptr<DisplayObject> wall_displayobject_[10];
 };
 
-#endif
+#endif // TRON_RLENGINEX_BIKE_HH

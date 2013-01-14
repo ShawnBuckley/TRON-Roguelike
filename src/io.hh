@@ -1,7 +1,7 @@
 // TRON-Rouglike IO.hh
 
-#ifndef ENGINE_IO_HH
-#define ENGINE_IO_HH
+#ifndef TRON_RLENGINEX_IO_HH
+#define TRON_RLENGINEX_IO_HH
 
 #include <cstdint>
 #include <memory>
@@ -33,4 +33,4 @@ class IO
 	std::shared_ptr<Color> old_color_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_IO_HH

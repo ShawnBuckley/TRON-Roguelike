@@ -1,7 +1,7 @@
 // TRON-Roguelike WorldTime.hh
 
-#ifndef RLENGINEX_WORLDTIME_HH
-#define RLENGINEX_WORLDTIME_HH
+#ifndef TRON_RLENGINEX_WORLDTIME_HH
+#define TRON_RLENGINEX_WORLDTIME_HH
 
 #include <boost/date_time/gregorian/gregorian.hpp>
 
@@ -34,4 +34,4 @@ class WorldTime : GameTime
 	uint8_t second_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_WORLDTIME_HH

@@ -1,7 +1,7 @@
 // TRON-Rouglike SDL.hh
 
-#ifndef ENGINE_SDL_HH
-#define ENGINE_SDL_HH
+#ifndef TRON_RLENGINEX_SDL_HH
+#define TRON_RLENGINEX_SDL_HH
 
 #include <SDL/SDL.h>
 
@@ -32,10 +32,10 @@ class SDL : public IO
 	bool WaitInput();
 	bool HandleEvent(SDL_Event &event);
 	
-	void Render(const DisplayObject *_displayobject);
+	void Render(const std::shared_ptr<DisplayObject> _displayobject);
 	void AddSpace();
 	void NewLine();
-	void Move(uint8_t _y, uint8_t _x);
+	void Move(int16_t _y, int16_t _x);
 
 	virtual void SetState() {};
 	virtual void EndState() {};
@@ -57,4 +57,4 @@ class SDL : public IO
 	std::vector<SDL_Surface*> texture_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_SDL_HH

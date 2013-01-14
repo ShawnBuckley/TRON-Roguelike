@@ -1,7 +1,7 @@
 // TRON-Roguelike Object.hh
 
-#ifndef RLENGINEX_OBJECT_HH
-#define RLENGINEX_OBJECT_HH
+#ifndef TRON_RLENGINEX_OBJECT_HH
+#define TRON_RLENGINEX_OBJECT_HH
 
 #include <sstream>
 #include <unordered_map>
@@ -25,4 +25,4 @@ class Object
 	uint32_t id_;
 };
 
-#endif // RLENGINEX_OBJECT_HH
+#endif // TRON_RLENGINEX_OBJECT_HH

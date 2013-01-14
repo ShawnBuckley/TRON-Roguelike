@@ -1,7 +1,7 @@
 // TRON-Roguelike Color.hh
 
-#ifndef ENGINE_XCOLOR_HH
-#define ENGINE_XCOLOR_HH
+#ifndef TRON_RLENGINEX_COLOR_HH
+#define TRON_RLENGINEX_COLOR_HH
 
 #include <cstdint>
 #include <cstdio>
@@ -41,6 +41,6 @@ struct Color : public Object
 	uint8_t b_;
 };
 
-extern std::vector<std::shared_ptr<Color>> kColor;
+extern std::vector<std::shared_ptr<Color> > kColor;
 
-#endif
+#endif // TRON_RLENGINEX_COLOR_HH

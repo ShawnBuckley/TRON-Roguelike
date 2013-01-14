@@ -1,7 +1,7 @@
 // TRON-Roguelike TileType.hh
 
-#ifndef TRONLIKE_TILETYPE_HH
-#define TRONLIKE_TILETYPE_HH
+#ifndef TRON_RLENGINEX_TILETYPE_HH
+#define TRON_RLENGINEX_TILETYPE_HH
 
 #include "displayobject.hh"
 
@@ -33,4 +33,4 @@ class TileType : public Object
 	std::shared_ptr<DisplayObject> displayobject_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_TILETYPE_HH

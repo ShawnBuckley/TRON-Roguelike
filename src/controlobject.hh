@@ -1,7 +1,7 @@
 // TRON-Roguelike ControlObject.hh
 
-#ifndef RLENGINEX_CONTROLOBJECT_HH
-#define RLENGINEX_CONTROLOBJECT_HH
+#ifndef TRON_RLENGINEX_CONTROLOBJECT_HH
+#define TRON_RLENGINEX_CONTROLOBJECT_HH
 
 #include <cstdlib>
 #include <memory>
@@ -24,8 +24,7 @@ class ControlObject : public Object
 	virtual void Think() {};
 	
 	static std::list<ControlObject*> list_;
-	
 	std::shared_ptr<MapObject> mapobject_;
 };
 
-#endif // RLENGINEX_CONTROLOBJECT_HH
+#endif // TRON_RLENGINEX_CONTROLOBJECT_HH

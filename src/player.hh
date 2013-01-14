@@ -1,7 +1,7 @@
 // TRON-Roguelike Player.hh
 
-#ifndef RLENGINEX_PLAYER_HH
-#define RLENGINEX_PLAYER_HH
+#ifndef TRON_RLENGINEX_PLAYER_HH
+#define TRON_RLENGINEX_PLAYER_HH
 
 #include "controlobject.hh"
 
@@ -14,4 +14,4 @@ class Player : public ControlObject
 	bool Input(char _ch);
 };
 
-#endif // RLENGINEX_PLAYER_HH
+#endif // TRON_RLENGINEX_PLAYER_HH

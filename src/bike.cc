@@ -13,8 +13,8 @@
 #include "tiletype.hh"
 #include "map.hh"
 
-const uint8_t kWallSprite[10] = {' ', 192, 179, 217, 196, ' ', 196, 218, 179, 191};
-const char kWallPrint[10] = {' ', '\\', '|', '/', '-', ' ', '-', '/', '|', '\\'};
+const int16_t kWallSprite[10] = {' ', 192, 179, 217, 196, '.', 196, 218, 179, 191};
+const char kWallPrint[10] = {' ', '\\', '|', '/', '-', '.', '-', '/', '|', '\\'};
 
 Bike::Bike(std::shared_ptr<Color> _color)
 {
@@ -37,8 +37,8 @@ void Bike::Save(std::stringstream &_save)
 		<< bike_flags_.drop_walls_ << " "
 		<< linked_ << " "
 		<< (unsigned int)maptile_->id_ << " "
-		<< (signed int)vector_.x << " "
-		<< (signed int)vector_.y << " "
+		<< (signed int)vector_.x() << " "
+		<< (signed int)vector_.y() << " "
 		<< flags_.rez_ << " "
 		<< flags_.clipping_ << " "
 		<< flags_.solid_ << " "
@@ -52,7 +52,7 @@ void Bike::Derez()
 {
 	if(flags_.rez_)
 	{
-		vector_ = Coord2<int8_t>(+0, +0);
+		vector_ = Vector2<int16_t>(+0, +0);
 		flags_.rez_ = 0;
 
 		MapUnlink();
@@ -73,15 +73,15 @@ void Bike::RemoveWall()
 		timeobject_->TimeUnlink();
 }
 
-bool Bike::Move(Coord2<int8_t> _vector)
+bool Bike::Move(Vector2<int16_t> _vector)
 {
-	if(!flags_.rez_ || _vector == -vector_ || (_vector.x && _vector.y) || moved_)
+	if(!flags_.rez_ || _vector == -vector_ || (_vector.x() && _vector.y()) || moved_)
 		return 0;
 
-	Coord2<int8_t> vector = vector_ + _vector;
+	Vector2<int16_t> vector = vector_ + _vector;
 
 	// reverse vector in order to get correct corner DisplayObject
-	if(vector_.y) vector = -vector;
+	if(vector_.y()) vector = -vector;
 
 	change_direction_ = vector.Direction();
 
@@ -95,10 +95,7 @@ bool Bike::Tick()
 {
 	if(flags_.rez_)
 	{
-		Coord2<uint8_t> test_coord;
-
-		test_coord.y = maptile_->location_.y + vector_.y;
-		test_coord.x = maptile_->location_.x + vector_.x;
+		Vector2<int16_t> test_coord = maptile_->location_ + vector_;
 
 		std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
 

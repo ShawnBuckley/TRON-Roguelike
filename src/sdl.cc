@@ -158,7 +158,7 @@ void SDL::Refresh()
 	SDL_Flip(screen_);
 }
 
-void SDL::Render(const DisplayObject *_displayobject)
+void SDL::Render(const std::shared_ptr<DisplayObject> _displayobject)
 {
 	if(_displayobject != NULL)
 	{
@@ -186,7 +186,7 @@ void SDL::NewLine()
 	offset_.x = 0;
 }
 
-void SDL::Move(uint8_t _y, uint8_t _x)
+void SDL::Move(int16_t _y, int16_t _x)
 {
 	offset_.y = _y * yhieght_;
 	offset_.x = _x * xwidth_;
@@ -199,50 +199,65 @@ void SDL::Map()
 	boost::posix_time::ptime now;
 	static boost::posix_time::ptime last_frame;
 
-	Coord2<uint8_t> coord;
+	Vector2<int16_t> coord;
 
 	Clear();
 
-	SetState();
-
-	for(coord.y=0; coord.y<game.map_->y_; ++coord.y) { for(coord.x=0; coord.x<game.map_->x_; ++coord.x)
+	int16_t x_start = game.player_->mapobject_->maptile_->location_.x() - x_/2;
+	int16_t x_limit = game.player_->mapobject_->maptile_->location_.x() + x_/2+1;
+	int16_t y_start = game.player_->mapobject_->maptile_->location_.y() - y_/2;
+	int16_t y_limit = game.player_->mapobject_->maptile_->location_.y() + y_/2+1;
+	
+	for(coord.y(y_start); coord.y() < y_limit; coord.y(coord.y()+1))
+	{	for(coord.x(x_start); coord.x() < x_limit; coord.x(coord.x()+1))
 	{
-		if(game.map_->CoordValid(coord) && game.map_->Tile(coord) != NULL)
+		if(game.map_->CoordValid(coord))
 		{
-			Render(game.map_->Tile(coord)->tiletype_->displayobject_.get());
+			std::shared_ptr<MapTile> tile = game.map_->Tile(coord);
 
-			if(!game.map_->Tile(coord)->Empty())
+ 			if(tile != NULL)
 			{
-				for(std::list<MapObject*>::iterator mapobject = game.map_->Tile(coord)->mapobject_list_.begin();
-					mapobject !=game.map_->Tile(coord)-> mapobject_list_.end(); ++mapobject)
+				Render(tile->tiletype_->displayobject_);
+
+				if(!tile->Empty())
 				{
-					if((*mapobject) != NULL && (*mapobject)->flags_.visible_)
+					for(std::list<MapObject*>::reverse_iterator mapobject = tile->mapobject_list_.rbegin();
+						mapobject != tile-> mapobject_list_.rend(); --mapobject)
 					{
-						Render((*mapobject)->displayobject_.get());
+						if((*mapobject) != NULL && (*mapobject)->flags_.visible_)
+						{
+							Render((*mapobject)->displayobject_);
+						}
 					}
-				}	
+				}
 			}
 		}
-
 		AddSpace();
-	} NewLine(); }
+	} NewLine();
+	}
 
-	EndState();
-
-	if(game.player_ != NULL && game.player_->mapobject_ != NULL && game.player_->mapobject_->flags_.rez_)
+	if(game.player_->mapobject_)
 	{
-		Move(game.player_->mapobject_->maptile_->location_.y, game.player_->mapobject_->maptile_->location_.x);
+		Move(game.player_->mapobject_->maptile_->location_.y(), game.player_->mapobject_->maptile_->location_.x());
 	}
 
 	Refresh();
 
-	now = boost::posix_time::microsec_clock::universal_time();
+	if(realtime_)
+	{
+		now = boost::posix_time::microsec_clock::universal_time();
 
-	difference = (now - last_frame).total_microseconds();
-	delay = 1000000/fps_;
+		difference = (now - last_frame).total_microseconds();
+		delay = 1000000/fps_;
 
-	if(difference < delay)
-		Delay(delay - difference);
+		if(difference < delay)
+		{
+//			printf("Delay: %i\n", delay - difference);
+			Delay(delay - difference);
+		}
+//		else
+//			printf("Behind: %i\n", (signed int)(delay - difference));
 	
-	last_frame = boost::posix_time::microsec_clock::universal_time();
+		last_frame = boost::posix_time::microsec_clock::universal_time();
+	}
 }

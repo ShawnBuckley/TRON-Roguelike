@@ -9,7 +9,6 @@
 #include "game.hh"
 #include "gl.hh"
 #include "sdl.hh"
-#include "curses.hh"
 #include "color.hh"
 #include "lightgrid.hh"
 #include "worldtime.hh"
@@ -17,7 +16,6 @@
 Game::Game()
 {
 	io_ = std::unique_ptr<IO>(new SDL);
-	map_ = std::unique_ptr<Map>(new LightGrid);
 	worldtime_ = std::unique_ptr<WorldTime>(new WorldTime);
 }
 
@@ -37,14 +35,64 @@ void Game::Start()
 	io_->SetFPS(30.0f);
 	SetRealtime(1);
 
-	map_->Gen(1, io_->y_, io_->x_-1);
+	map_ = std::unique_ptr<Map>(new Map);
 
-//	entity_manager_.AddPlayerMapobject(blue);
-	player_ = entity_manager_.AddPlayerBike(blue);
-	player_->mapobject_->Rez(map_->Tile(Coord2<uint8_t>(map_->x_/2+1, map_->y_/2)), Coord2<int8_t>(+1,+0));
+	std::shared_ptr<Sector> sector[4];
 	
-	std::shared_ptr<AiBike> ai_bike = entity_manager_.AddAiBike(red);
-	ai_bike->mapobject_->Rez(map_->Tile(Coord2<uint8_t>(map_->x_/2-1, map_->y_/2)), Coord2<int8_t>(-1,+0));
+	for(int i=0; i<4; ++i)
+	{
+		sector[i] = std::shared_ptr<Sector>(new Sector());
+	}
+
+	std::shared_ptr<Sector> lightgrid(new LightGrid());
+	map_->GenerateSector(
+		lightgrid,
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8),63,63)
+	);
+
+	// top
+	map_->GenerateSector(
+		std::shared_ptr<Sector>(new Sector()),
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0),79,7)
+	);
+
+	// right
+	map_->GenerateSector(
+		sector[1],
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(72,8),7,63)
+	);
+
+	// bottom
+	map_->GenerateSector(
+		sector[2],
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,72),79,7)
+	);
+
+	// left
+	map_->GenerateSector(
+		sector[3],
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,8),7,63)
+	);
+
+	Vector2<int16_t> grid_center(
+		lightgrid->rectangle_.Vertex(0).x()+lightgrid->rectangle_.Width()/2,
+		lightgrid->rectangle_.Vertex(0).y()+lightgrid->rectangle_.Height()/2
+	);
+/*
+	player_ = entity_manager_.AddPlayerMapobject(blue);
+	player_->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1)));
+/*/
+	player_ = entity_manager_.AddPlayerBike(blue);
+	player_->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1)), Vector2<int16_t>(+1,+0));
+//*/
+	std::shared_ptr<AiBike> red_bike = entity_manager_.AddAiBike(red);
+	red_bike->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()-1, grid_center.y()-1)), Vector2<int16_t>(-1,+0));
+
+	std::shared_ptr<AiBike> yellow_bike = entity_manager_.AddAiBike(yellow);
+	yellow_bike->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()+1, grid_center.y()-1)), Vector2<int16_t>(+1,+0));
+
+	std::shared_ptr<AiBike> green_bike = entity_manager_.AddAiBike(green);
+	green_bike->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()-1, grid_center.y()+1)), Vector2<int16_t>(-1,+0));
 
 	Run();
 }
@@ -85,14 +133,12 @@ void Game::Save()
 			it->second->Save(save);
 			save_file << save.str();
 		}
-		else
-			assert(0);
 	}
 }
 
 void Game::Load()
 {
-	
+//	std::ifstream save_file("save", std::ios::begin);
 }
 
 void Game::SetRealtime(bool _realtime)

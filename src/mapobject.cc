@@ -4,8 +4,6 @@
 
 #include <stdio.h>
 
-#include "coord2.hh"
-
 #include "color.hh"
 #include "main.hh"
 #include "mapobject.hh"
@@ -19,7 +17,7 @@ MapObject::MapObject() : linked_(0)
 }
 
 MapObject::MapObject(std::shared_ptr<MapObject> _this, MapObjectFlags _mapobject_flags, std::shared_ptr<DisplayObject> _displayobject,
-	std::shared_ptr<TimeObject> _timeobject, std::shared_ptr<MapTile> _maptile, Coord2<int8_t> _vector)
+	std::shared_ptr<TimeObject> _timeobject, std::shared_ptr<MapTile> _maptile, Vector2<int16_t> _vector)
 	: linked_(0), flags_(_mapobject_flags), displayobject_(_displayobject), timeobject_(_timeobject)
 {
 	timeobject_->mapobject_ = _this;
@@ -43,8 +41,8 @@ void MapObject::Save(std::stringstream &_save)
 		<< id_ << " "
 		<< linked_ << " "
 		<< (unsigned int)maptile_->id_ << " "
-		<< (signed int)vector_.x << " "
-		<< (signed int)vector_.y << " "
+		<< (signed int)vector_.x() << " "
+		<< (signed int)vector_.y() << " "
 		<< flags_.rez_ << " "
 		<< flags_.clipping_ << " "
 		<< flags_.solid_ << " "
@@ -54,7 +52,7 @@ void MapObject::Save(std::stringstream &_save)
 		<< std::endl;
 }
 
-bool MapObject::Rez(std::shared_ptr<MapTile> _maptile, Coord2<int8_t> _vector)
+bool MapObject::Rez(std::shared_ptr<MapTile> _maptile, Vector2<int16_t> _vector)
 {
 	if(SetLocation(_maptile))
 	{
@@ -104,15 +102,10 @@ bool MapObject::SetLocation(std::shared_ptr<MapTile> _maptile)
 	return 1;
 }
 
-bool MapObject::Move(Coord2<int8_t> _vector)
+bool MapObject::Move(Vector2<int16_t> _vector)
 {
-	Coord2<uint8_t> new_coord;
-
-	new_coord.y = maptile_->location_.y + _vector.y;
-	new_coord.x = maptile_->location_.x + _vector.x;
-
-	std::shared_ptr<MapTile> tile = game.map_->Tile(new_coord);
-
+	std::shared_ptr<MapTile> tile = game.map_->Tile(maptile_->location_ + _vector);
+	
 	if(tile != NULL)
 	{
 		if(tile->tiletype_->tiletype_flags_.solid_)
@@ -129,7 +122,7 @@ bool MapObject::Move(Coord2<int8_t> _vector)
 
 bool MapObject::Tick()
 {
-	if(vector_.x || vector_.y)
+	if(vector_.x() || vector_.y())
 	{
 		Move(vector_);
 

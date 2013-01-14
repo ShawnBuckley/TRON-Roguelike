@@ -1,25 +1,27 @@
 // TRON-Roguelike LightGrid.hh
 
-#ifndef TRONLIKE_XLIGHTGRID_HH
-#define TRONLIKE_XLIGHTGRID_HH
+#ifndef TRON_RLENGINEX_LIGHTGRID_HH
+#define TRON_RLENGINEX_LIGHTGRID_HH
 
 #include <memory>
 
 #include "tiletype.hh"
-#include "map.hh"
+#include "sector.hh"
 
-class LightGrid : public Map
+class LightGrid : public Sector
 {
+  public:
+	LightGrid();
 	~LightGrid() {};
 
   	void Save(std::stringstream &_save);
   	void Load() {};
 
-	void Gen(uint8_t z, uint8_t y, uint8_t x);
+	void Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle);
 //	bool Fill(uint8_t Size);
 
 	std::shared_ptr<TileType> kFloor[4];
 	std::shared_ptr<TileType> kWall;
 };
 
-#endif
+#endif // TRON_RLENGINEX_LIGHTGRID_HH

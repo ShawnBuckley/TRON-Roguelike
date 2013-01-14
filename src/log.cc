@@ -1,19 +1,20 @@
 // TRON-Roguelike log.cc
 
-#include <fstream>
-
 #include "log.hh"
 
-std::ofstream log_file;
-
-bool OpenLog(std::string _file)
+bool Log::Open(std::string _file)
 {
-	log_file.open(_file.c_str());
+	file_.open(_file.c_str());
 
-	return log_file.good();
+	return file_.good();
 }
 
-void CloseLog(std::string _file)
+void Log::Write(std::string _string)
 {
-	log_file.close();
+	file_ << _string;
+}
+
+void Log::Close()
+{
+	file_.close();
 }

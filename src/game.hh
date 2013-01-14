@@ -1,7 +1,7 @@
 // TRON-Roguelike Game.hh
 
-#ifndef ENGINEX_XGAME_HH
-#define ENGINEX_XGAME_HH
+#ifndef TRON_RLENGINEX_GAME_HH
+#define TRON_RLENGINEX_GAME_HH
 
 #include <memory>
 
@@ -50,4 +50,4 @@ class Game
 	std::shared_ptr<Player> player_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_GAME_HH

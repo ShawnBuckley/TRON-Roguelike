@@ -9,8 +9,8 @@ void MapTile::Save(std::stringstream &_save)
 	_save << "maptile" << " "
 		<< "a" << " "
 		<< (unsigned int)id_ << " "
-		<< (unsigned int)location_.x << " "
-		<< (unsigned int)location_.y << " "
+		<< (unsigned int)location_.x() << " "
+		<< (unsigned int)location_.y() << " "
 		<< tiletype_->id_ << " "
 		<< (unsigned int)mapobject_list_.size() << " ";
 	for(std::list<MapObject*>::iterator it = mapobject_list_.begin(); it != mapobject_list_.end(); ++it)

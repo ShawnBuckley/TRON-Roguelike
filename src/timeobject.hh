@@ -1,7 +1,7 @@
 // TRON-Roguelike TimeObject.hh
 
-#ifndef RLENGINEX_TIMEOBJECT_HH
-#define RLENGINEX_TIMEOBJECT_HH
+#ifndef TRON_RLENGINEX_TIMEOBJECT_HH
+#define TRON_RLENGINEX_TIMEOBJECT_HH
 
 #include <cstdint>
 #include <memory>
@@ -37,4 +37,4 @@ class TimeObject : public Object
 	std::shared_ptr<ControlObject> controlobject_;
 };
 
-#endif // RLENGINEX_TIMEOBJECT_HH
+#endif // TRON_RLENGINEX_TIMEOBJECT_HH

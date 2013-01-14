@@ -1,13 +1,13 @@
 // TRON-Rogulike MapObject.hh
 
-#ifndef RLENGINEX_MAPOBJECT_HH
-#define RLENGINEX_MAPOBJECT_HH
+#ifndef TRON_RLENGINEX_MAPOBJECT_HH
+#define TRON_RLENGINEX_MAPOBJECT_HH
 
 #include <cstdio>
 #include <cstdint>
 #include <memory>
 
-#include "coord2.hh"
+#include "math/vector2.hh"
 
 #include "object.hh"
 #include "timeobject.hh"
@@ -41,20 +41,20 @@ class MapObject : public Object
 		std::shared_ptr<DisplayObject> _displayobject,
 		std::shared_ptr<TimeObject> _timeobject,
 		std::shared_ptr<MapTile> _maptile,
-		Coord2<int8_t> _vector = Coord2<int8_t>(+0,+0)
+		Vector2<int16_t> _vector = Vector2<int16_t>(+0,+0)
 	);
 	~MapObject();
 
  	virtual void Save(std::stringstream &_save);
   	virtual void Load() {};
 
-	virtual bool Rez(std::shared_ptr<MapTile> _maptile, Coord2<int8_t> _velocity = Coord2<int8_t>(+0,+0));
+	virtual bool Rez(std::shared_ptr<MapTile> _maptile, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
 	virtual void Derez();
 
 	void MapLink();
 	void MapUnlink();
 
-	virtual bool Move(Coord2<int8_t> _vector);
+	virtual bool Move(Vector2<int16_t> _vector);
 	bool SetLocation(std::shared_ptr<MapTile> _tile);
 
 	virtual bool Tick();
@@ -72,10 +72,10 @@ class MapObject : public Object
 
 	bool linked_;
 	std::shared_ptr<MapTile> maptile_;
-	Coord2<int8_t> vector_;
+	Vector2<int16_t> vector_;
 	MapObjectFlags flags_;
 	std::shared_ptr<TimeObject> timeobject_;
 	std::shared_ptr<DisplayObject> displayobject_;
 };
 
-#endif // RLENGINEX_OBJECT_HH
+#endif // TRON_RLENGINEX_OBJECT_HH

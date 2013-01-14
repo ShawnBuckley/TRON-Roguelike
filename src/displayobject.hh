@@ -1,7 +1,7 @@
 // TRON-Roguelike DisplayObject.hh
 
-#ifndef RLENGINEX_DISPLAYOBJECT_HH
-#define RLENGINEX_DISPLAYOBJECT_HH
+#ifndef TRON_RLENGINEX_DISPLAYOBJECT_HH
+#define TRON_RLENGINEX_DISPLAYOBJECT_HH
 
 #include <cstdio>
 #include <cstdint>
@@ -29,4 +29,4 @@ class DisplayObject : public Object
 //	GLuint display_list_;
 };
 
-#endif // RLENGINEX_DISPLAYOBJECT_HH
+#endif // TRON_RLENGINEX_DISPLAYOBJECT_HH

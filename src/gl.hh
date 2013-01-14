@@ -1,7 +1,7 @@
 // TRON-Rouglike GL.hh
 
-#ifndef ENGINE_XGL_HH
-#define ENGINE_XGL_HH
+#ifndef TRON_RLENGINEX_GL_HH
+#define TRON_RLENGINEX_GL_HH
 
 #include <cstdint>
 #include <vector>
@@ -56,4 +56,4 @@ class GL : public SDL
 	std::vector<FontRect> font_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_GL_HH

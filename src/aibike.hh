@@ -1,12 +1,13 @@
 // TRON-Roguelike AiBike.hh
 
-#ifndef TRONLIKE_XAIBIKE_HH
-#define TRONLIKE_XAIBIKE_HH
+#ifndef TRON_RLENGINEX_AIBIKE_HH
+#define TRON_RLENGINEX_AIBIKE_HH
 
 #include <inttypes.h>
 
+#include "math/vector2.hh"
+
 #include "bike.hh"
-#include "coord2.hh"
 #include "controlobject.hh"
 
 class MapObject;
@@ -41,7 +42,7 @@ class AiBike : public ControlObject
 	void CheckDirection();
 	bool CheckTile(std::shared_ptr<MapTile> _tile);
 	bool CheckTunnel();
-	void ChangeDirection(Coord2<int8_t> _vector);
+	void ChangeDirection(Vector2<int16_t> _vector);
 
 	void AttackEnemy(MapObject *_mapobject);
 	MapObject* TargetClosestEntity();
@@ -52,7 +53,7 @@ class AiBike : public ControlObject
 	
 	uint8_t tunnel_distance;
 
-	Coord2<int8_t> wall_hug_;
+	Vector2<int8_t> wall_hug_;
 };
 
-#endif
+#endif // TRON_RLENGINEX_AIBIKE_HH

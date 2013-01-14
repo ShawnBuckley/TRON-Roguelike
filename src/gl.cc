@@ -34,6 +34,8 @@ void UserReadData(png_structp png_ptr, png_bytep texture_, png_size_t length) {
 	((std::istream*)a)->read((char*)texture_, length);
 }
 
+// This is from a tutorial, will give proper credit when I find to which tutorial it belongs
+// It renders PNGs rotated 180 degrees, so the source PNG has been rotated 180 to compensate
 void GL::Init()
 {
 	SDL_Init(SDL_INIT_VIDEO);

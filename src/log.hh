@@ -1,14 +1,20 @@
 // TRON-Roguelike log.hh
 
-#ifndef __INCLUDE_LOG_HH__
-#define __INCLUDE_LOG_HH__
+#ifndef TRON_RLENGINEX_LOG_HH
+#define TRON_RLENGINEX_LOG_HH
 
 #include <string>
 #include <fstream>
 
-bool OpenLog(std::string _file);
-void CloseLog(std::string _file);
+class Log
+{
+  private:
+	std::ofstream file_;
 
-extern std::ofstream log_file;
+  public:
+	bool Open(std::string _file);
+	void Write(std::string _string);
+	void Close();
+};
 
-#endif // __INCLUDE_LOG_HH__
+#endif // TRON_RLENGINEX_LOG_HH

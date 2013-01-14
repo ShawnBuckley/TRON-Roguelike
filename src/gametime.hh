@@ -1,7 +1,7 @@
 // TRON-Roguelike GameTime.hh
 
-#ifndef RLENGINEX_GAMETIME_HH
-#define RLENGINEX_GAMETIME_HH
+#ifndef TRON_RLENGINEX_GAMETIME_HH
+#define TRON_RLENGINEX_GAMETIME_HH
 
 #include <inttypes.h>
 
@@ -21,4 +21,4 @@ class GameTime : public Object
 };
 
 
-#endif
+#endif // TRON_RLENGINEX_GAMETIME_HH
