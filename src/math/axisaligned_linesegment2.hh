@@ -30,22 +30,6 @@ class AxisAligned_LineSegment2
 		end_ =  vertical_ ? _origin.y() + _length : _origin.x() + _length;
 	};
 
-	AxisAligned_LineSegment2(std::array<Vector2<t>, 2> _point)
-	{
-		vertical_ = _point[0].x() == _point[1].x();
-		offset_ = vertical_ ? _point[0].x() : _point[0].y();
-		start_ = vertical_ ? std::min(_point[0].y(), _point[1].y()) : std::min(_point[0].x(), _point[1].x());
-		end_ = vertical_ ? std::max(_point[0].y(), _point[1].y()) : std::max(_point[0].x(), _point[1].x());
-	};
-
-	AxisAligned_LineSegment2(Vector2<t> _one, Vector2<t> _two)
-	{
-		vertical_ = _one.x() == _two.x();
-		offset_ = vertical_ ? _one.x() : _one.y();
-		start_ = vertical_ ? std::min(_one.y(), _two.y()) : std::min(_one.x(), _two.x());
-		end_ = vertical_ ? std::max(_one.y(), _two.y()) : std::max(_one.x(), _two.x());
-	};
-
 	inline bool Parallel(const AxisAligned_LineSegment2<t> _other) const { return (vertical_ == _other.vertical_); };
 	
 	inline t Length() const { return std::abs(end_ - start_); };
@@ -169,17 +153,17 @@ class AxisAligned_LineSegment2
 		
 		if(_set.size() >= 2)
 		{
-			t start;
-			t end;
-			t offset;
-			bool vertical;
+			t start = 0;
+			t end = 0;
+			t offset = 0;
+			bool vertical = 0;
 			bool valid = 1;
 			
 			if(_set[0].x() != _set[1].x())
 			{
 				vertical = 0;
 				
-				if(_set[0].y() == _set[0].y())
+				if(_set[0].y() == _set[1].y())
 				{
 					offset = _set[0].y();
 				}
@@ -192,7 +176,7 @@ class AxisAligned_LineSegment2
 			{
 				vertical = 1;
 				
-				if(_set[0].x() == _set[0].x())
+				if(_set[0].x() == _set[1].x())
 				{
 					offset = _set[0].x();
 				}
@@ -206,17 +190,24 @@ class AxisAligned_LineSegment2
 				valid = 0;
 			}
 		
-			for(int i=2; i<_set.size() && valid; ++i)
+			for(int i=0; i<_set.size() && valid; ++i)
 			{
 				if(vertical)
 				{
-//					if(
+					if(_set[i].y() < start)
+						start = _set[i].y();
+
+					if(_set[i].y() > end)
+						end = _set[i].y();
 				}
 				else
 				{
-					
+					if(_set[i].x() < start)
+						start = _set[i].x();
+
+					if(_set[i].x() > end)
+						end = _set[i].x();
 				}
-				
 			}
 			
 			if(valid)

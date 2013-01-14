@@ -47,7 +47,12 @@ class Vector2
 
 	bool Intersect(const Vector2<t> &_other) const { return (x() == _other.x() && y() == _other.y()); };
 	bool Collinear(const Vector2<t> &_other) const { return (x() == _other.x() || y() == _other.y()); };
-	bool LinIndep(const Vector2<t> &_other) const { return (x() != _other.x() && y() != _other.y()); };
+
+/*	incomplete
+	bool LinIndep(const Vector2<t> &_other) const
+	{
+		return (x() != _other.x() && y() != _other.y());
+	};*/
 
 	Vector2<t> Normalize() const
 	{

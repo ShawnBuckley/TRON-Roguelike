@@ -174,7 +174,7 @@ class AxisAligned_Rectangle2
 					opposite = _set[0];
 				}
 				
-				if(origin.LinIndep(opposite))
+				if(origin.Collinear(opposite))
 					result.push_back(AxisAligned_Rectangle2<t>(origin, opposite.x() - origin.x(), opposite.y() - origin.y()));
 			}
 		}
