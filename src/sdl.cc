@@ -19,6 +19,7 @@
 #include "player.hh"
 #include "bike.hh"
 #include "displayobject.hh"
+#include "sector.hh"
 
 void SDL::Init()
 {
@@ -33,6 +34,10 @@ void SDL::Init()
 
 	assert(LoadTexture("font.bmp"));
 	LoadFont(16, 16, 12, 12);
+	
+	viewport_ = AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0), screen_->w/xwidth_, screen_->h/yheight_);
+	
+	printf("viewport: (%i %i) %i %i\n", viewport_.Vertex(0).x(), viewport_.Vertex(0).y(), viewport_.Width(), viewport_.Height());
 }
 
 SDL::~SDL()
@@ -48,7 +53,7 @@ bool SDL::LoadTexture(std::string _file)
 {
 	SDL_Surface *load;
 	SDL_Surface *texture;
-	
+
 	load = SDL_LoadBMP("font.bmp");
 	load = SDL_DisplayFormat(load);
 
@@ -72,7 +77,7 @@ bool SDL::LoadTexture(std::string _file)
 	return 1;
 }
 
-void SDL::LoadFont(int _x, int _y, int _xwidth, int _yhieght)
+void SDL::LoadFont(int _x, int _y, int _xwidth, int _yheight)
 {
 	SDL_Rect character;
 
@@ -80,9 +85,9 @@ void SDL::LoadFont(int _x, int _y, int _xwidth, int _yhieght)
 	uint8_t y = 0;
 
 	xwidth_ = _xwidth;
-	yhieght_ = _yhieght;
+	yheight_ = _yheight;
 
-	y_ = screen_->h/yhieght_-4;
+	y_ = screen_->h/yheight_-4;
 	x_ = screen_->w/xwidth_;
 
 	character_.reserve(_x * _y);
@@ -93,13 +98,13 @@ void SDL::LoadFont(int _x, int _y, int _xwidth, int _yhieght)
 		{
 			character.x = x;
 			character.y = y;
-			character.h = yhieght_;
+			character.h = yheight_;
 			character.w = xwidth_;
 
 			character_.push_back(character);
 			x += xwidth_;
 		}
-		x = 0; y += yhieght_;
+		x = 0; y += yheight_;
 	}
 }
 
@@ -182,13 +187,13 @@ void SDL::AddSpace()
 
 void SDL::NewLine()
 {
-	offset_.y += yhieght_;
+	offset_.y += yheight_;
 	offset_.x = 0;
 }
 
 void SDL::Move(int16_t _y, int16_t _x)
 {
-	offset_.y = _y * yhieght_;
+	offset_.y = _y * yheight_;
 	offset_.x = _x * xwidth_;
 }
 
@@ -203,20 +208,40 @@ void SDL::Map()
 
 	Clear();
 
-	int16_t x_start = game.player_->mapobject_->maptile_->location_.x() - x_/2;
-	int16_t x_limit = game.player_->mapobject_->maptile_->location_.x() + x_/2+1;
-	int16_t y_start = game.player_->mapobject_->maptile_->location_.y() - y_/2;
-	int16_t y_limit = game.player_->mapobject_->maptile_->location_.y() + y_/2+1;
+	viewport_.Origin(Vector2<int16_t>(
+		game.player_->mapobject_->maptile_->location_.x() - x_/2,
+		game.player_->mapobject_->maptile_->location_.y() - y_/2
+	));
 	
-	for(coord.y(y_start); coord.y() < y_limit; coord.y(coord.y()+1))
-	{	for(coord.x(x_start); coord.x() < x_limit; coord.x(coord.x()+1))
+//	printf("viewport %i %i\n", viewport_.Vertex(0).x(), viewport_.Vertex(0).y());
+/*
+	for(std::vector<std::shared_ptr<Sector> >::iterator sector = game.map_->sector_.begin();
+		sector != game.map_->sector_.end(); ++sector)
 	{
-		if(game.map_->CoordValid(coord))
+		if((*sector) != NULL)
 		{
-			std::shared_ptr<MapTile> tile = game.map_->Tile(coord);
+			Vector2<int16_t> coord;
+			std::vector<Vector2<int16_t> > result = viewport_.Intersect((*sector)->rectangle_);
+			
+			std::vector<AxisAligned_Rectangle2<int16_t> > clip_rect = AxisAligned_Rectangle2<int16_t>::Construct(result);
 
- 			if(tile != NULL)
+			if(!clip_rect.size())
+				continue;
+
+			printf("%p (%i %i) %i %i\n",(*sector).get(), clip_rect[0].Vertex(0).x(), clip_rect[0].Vertex(0).y(), clip_rect[0].Width(), clip_rect[0].Height());
+
+			Move(clip_rect[0].Vertex(0).y(), clip_rect[0].Vertex(0).x());
+
+			for(coord.y(clip_rect[0].Vertex(0).y()); coord.y() < clip_rect[0].Height(); coord.y(coord.y()+1))
+			{	for(coord.x(clip_rect[0].Vertex(0).x()); coord.x() < clip_rect[0].Width(); coord.x(coord.x()+1))
 			{
+				std::shared_ptr<MapTile> tile = (*sector)->Tile(coord);
+
+//	 			if(tile != NULL)
+//					continue;
+
+//				printf("%i %i\n", coord.x(), coord.y());
+
 				Render(tile->tiletype_->displayobject_);
 
 				if(!tile->Empty())
@@ -230,12 +255,77 @@ void SDL::Map()
 						}
 					}
 				}
+
+				AddSpace();
+			} NewLine();
+			}
+		}
+	}
+/*
+	for(std::vector<std::shared_ptr<Sector> >::iterator sector = game.map_->sector_.begin();
+		sector != game.map_->sector_.end(); ++sector)
+	{
+		Vector2<int16_t> coord;
+	
+		Move(
+	
+		for(coord.y((*sector)->rectangle_.Vertex(0).y()); coord.y() < (*sector)->rectangle_.Height(); coord.y(coord.y()+1))
+		{	for(coord.x((*sector)->rectangle_.Vertex(0).x()); coord.x() < (*sector)->rectangle_.Width(); coord.x(coord.x()+1))
+		{
+			if(game.map_->CoordValid(coord))
+			{
+				std::shared_ptr<MapTile> tile = game.map_->Tile(coord);
+
+	 			if(tile != NULL)
+				{
+					Render(tile->tiletype_->displayobject_);
+
+					if(!tile->Empty())
+					{
+						for(std::list<MapObject*>::reverse_iterator mapobject = tile->mapobject_list_.rbegin();
+							mapobject != tile-> mapobject_list_.rend(); ++mapobject)
+						{
+							if((*mapobject) != NULL && (*mapobject)->flags_.visible_)
+							{
+								Render((*mapobject)->displayobject_);
+							}
+						}
+					}
+				}
+			}
+			AddSpace();
+		} NewLine();
+		}
+	}
+/*/
+	for(coord.y(viewport_.Vertex(0).y()); coord.y() < viewport_.Height(); coord.y(coord.y()+1))
+	{	for(coord.x(viewport_.Vertex(0).x()); coord.x() < viewport_.Width(); coord.x(coord.x()+1))
+	{
+		if(game.map_->CoordValid(coord))
+		{
+			std::shared_ptr<MapTile> tile = game.map_->Tile(coord);
+
+ 			if(tile != NULL)
+			{
+				Render(tile->tiletype_->displayobject_);
+
+				if(!tile->Empty())
+				{
+					for(std::list<MapObject*>::reverse_iterator mapobject = tile->mapobject_list_.rbegin();
+						mapobject != tile-> mapobject_list_.rend(); ++mapobject)
+					{
+						if((*mapobject) != NULL && (*mapobject)->flags_.visible_)
+						{
+							Render((*mapobject)->displayobject_);
+						}
+					}
+				}
 			}
 		}
 		AddSpace();
 	} NewLine();
 	}
-
+//*/
 	if(game.player_->mapobject_)
 	{
 		Move(game.player_->mapobject_->maptile_->location_.y(), game.player_->mapobject_->maptile_->location_.x());

@@ -111,7 +111,7 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 		if(tile->tiletype_->tiletype_flags_.solid_)
 			return 0;
 
-		if(tile->SolidMapObject() != NULL)
+		if(tile->SolidMapObject().size())
 			return 0;
 
 		return SetLocation(tile);

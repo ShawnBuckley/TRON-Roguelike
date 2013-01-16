@@ -81,7 +81,8 @@ bool Bike::Move(Vector2<int16_t> _vector)
 	Vector2<int16_t> vector = vector_ + _vector;
 
 	// reverse vector in order to get correct corner DisplayObject
-	if(vector_.y()) vector = -vector;
+	if(vector_.y())
+		vector = -vector;
 
 	change_direction_ = vector.Direction();
 
@@ -107,22 +108,25 @@ bool Bike::Tick()
 				return 0;
 			}
 
-			MapObject *mapobject = tile->SolidMapObject();
+			std::vector<MapObject*> solid_mapobject = tile->SolidMapObject();
 
-			if(mapobject != NULL)
+			for(int i=0; i<solid_mapobject.size(); i++)
 			{
-				if(mapobject->CheckBumped(this))
+				if(solid_mapobject[i] != NULL && solid_mapobject[i] != this)
 				{
-					Derez();
-					return 0;
-				}
-				else
-				{
-					mapobject->Derez();
+					if(solid_mapobject[i]->CheckBumped(this))
+					{
+						Derez();
+						return 0;
+					}
+					else
+					{
+						solid_mapobject[i]->Derez();
+					}
 				}
 			}
 
-			if(bike_flags_.drop_walls_)
+			if(bike_flags_.drop_walls_ && (vector_.x() || vector_.y()))
 			{
 				if(change_direction_)
 				{

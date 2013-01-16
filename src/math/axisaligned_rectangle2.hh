@@ -90,8 +90,8 @@ class AxisAligned_Rectangle2
 		}
 
 		// Checks if this rect is in other
-		if(this_vertex0.x() > other_vertex0.x() && this_vertex0.y() > other_vertex0.y() &&
-			this_vertex2.x() < other_vertex2.x() && this_vertex2.y() < other_vertex2.y())
+		if(this_vertex0.x() >= other_vertex0.x() && this_vertex0.y() >= other_vertex0.y() &&
+			this_vertex2.x() <= other_vertex2.x() && this_vertex2.y() <= other_vertex2.y())
 		{
 			result.push_back(this_vertex0);
 			result.push_back(this_vertex2);
@@ -100,8 +100,8 @@ class AxisAligned_Rectangle2
 		}
 
 		// Checks if other rect is in this
-		if(other_vertex0.x() > this_vertex0.x() && other_vertex0.y() > this_vertex0.y() &&
-			other_vertex2.x() < this_vertex2.x() && other_vertex2.y() < this_vertex2.y())
+		if(other_vertex0.x() >= this_vertex0.x() && other_vertex0.y() >= this_vertex0.y() &&
+			other_vertex2.x() <= this_vertex2.x() && other_vertex2.y() <= this_vertex2.y())
 		{
 			result.push_back(other_vertex0);
 			result.push_back(other_vertex2);
@@ -128,6 +128,9 @@ class AxisAligned_Rectangle2
 		if(_other.Intersect(Vertex(3)))
 			result.push_back(Vertex(3));
 
+		if(result.size() >= 3)
+			return result;
+
 		// Calculates the resulting line segment intersects
 		AxisAligned_LineSegment2<t> this_edge;
 		AxisAligned_LineSegment2<t> other_edge;
@@ -145,7 +148,9 @@ class AxisAligned_Rectangle2
 				intersect = this_edge.Intersect(other_edge);
 
 				for(int k=0; k<intersect.size(); ++k)
+				{
 					result.push_back(intersect[k]);
+				}
 			}
 		}
 
@@ -158,33 +163,25 @@ class AxisAligned_Rectangle2
 	
 		if(_set.size() == 2)
 		{
-			if(_set[0].x() != _set[1].x() && _set[0].y() != _set[1].y())
+			if(!_set[0].Collinear(_set[1]))
 			{
-				Vector2<t> origin;
-				Vector2<t> opposite;
-
 				if(std::abs(_set[0].x()) <= std::abs(_set[1].x()) && std::abs(_set[0].y()) <= std::abs(_set[1].y()))
 				{
-					origin = _set[0];
-					opposite = _set[1];
+					result.push_back(AxisAligned_Rectangle2<t>(_set[0], _set[1].x() - _set[0].x(), _set[1].y() - _set[0].y()));
 				}
 				else
 				{
-					origin = _set[1];
-					opposite = _set[0];
+					result.push_back(AxisAligned_Rectangle2<t>(_set[1], _set[0].x() - _set[1].x(), _set[0].y() - _set[1].y()));
 				}
-				
-				if(origin.Collinear(opposite))
-					result.push_back(AxisAligned_Rectangle2<t>(origin, opposite.x() - origin.x(), opposite.y() - origin.y()));
 			}
 		}
-		else if(_set.size() == 4)
+		else if(_set.size())
 		{
 			bool valid = 1;
 			Vector2<t> origin(_set[0]);
 			Vector2<t> opposite(_set[0]);
 
-			for(int i=0; i<4; ++i)
+			for(int i=0; i<_set.size(); ++i)
 			{
 				if(std::abs(_set[i].x()) <= std::abs(origin.x()) && std::abs(_set[i].y()) <= std::abs(origin.y()))
 					origin = _set[i];
@@ -193,15 +190,10 @@ class AxisAligned_Rectangle2
 					opposite = _set[i];
 			}
 			
-			for(int i=0; i<4; ++i)
+			for(int i=0; i<_set.size(); ++i)
 			{
-				if(_set[i] != opposite)
-					if(!origin.Collinear(_set[i]))
-						valid = 0;
-
-				if(_set[i] != origin)
-					if(!opposite.Collinear(_set[i]))
-						valid = 0;
+				if(!_set[i].Collinear(origin) && !_set[i].Collinear(opposite))
+					valid = 0;
 			}
 			
 			if(valid)

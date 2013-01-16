@@ -49,7 +49,7 @@ class SDL : public IO
 
 	
 	uint8_t xwidth_;
-	uint8_t yhieght_;
+	uint8_t yheight_;
 
 	SDL_Rect offset_;
 	std::vector<SDL_Rect> character_; 

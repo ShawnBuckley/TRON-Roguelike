@@ -18,9 +18,12 @@ void MapTile::Save(std::stringstream &_save)
 	_save << std::endl;
 }
 
-MapObject* MapTile::SolidMapObject()
+std::vector<MapObject*> MapTile::SolidMapObject()
 {
-	if(mapobject_list_.empty()) return NULL;
+	std::vector<MapObject*> result;
+
+	if(mapobject_list_.empty())
+		return result;
 
 	for(std::list<MapObject*>::iterator mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
 	{
@@ -28,11 +31,11 @@ MapObject* MapTile::SolidMapObject()
 
 		if((*mapobject)->flags_.clipping_)
 		{
-			return (*mapobject);
+			result.push_back(*mapobject);
 		}
 	}
 
-	return NULL;
+	return result;
 }
 
 std::shared_ptr<DisplayObject> MapTile::VisibleMapObject()

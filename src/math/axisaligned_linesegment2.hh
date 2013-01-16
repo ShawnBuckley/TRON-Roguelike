@@ -136,12 +136,15 @@ class AxisAligned_LineSegment2
 				}
 			}
 		}
-		else if(start_ <= _other.offset_ && _other.offset_ <= end_ && _other.start_ <= offset_ && offset_ <= end_)
+		else
 		{
-			if(vertical_)
-				result.push_back(Vector2<t>(offset_, _other.offset_));
-			else
-				result.push_back(Vector2<t>(_other.offset_, offset_));
+			if(start_ <= _other.offset_ && _other.offset_ <= end_ && _other.start_ <= offset_ && offset_ <= _other.end_)
+			{
+				if(vertical_)
+					result.push_back(Vector2<t>(offset_, _other.offset_));
+				else
+					result.push_back(Vector2<t>(_other.offset_, offset_));
+			}
 		}
 
 		return result;

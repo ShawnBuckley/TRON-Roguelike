@@ -61,17 +61,18 @@ class Vector2
 		return Vector2<t>(x()*norm, y()*norm);
 	};
 
-	Vector2<t> Reduce() const { return Vector2<t>(x() ? x()/std::abs(x()) : 0, y() ? y()/std::abs(y()) : 0); };
-
-	t Direction() const
+	int Direction() const
 	{
-		Vector2<t> reduce = Reduce();
+//		Vector2<t> normal = Normalize();
 
-		switch(reduce.y())
+		t x_reduce = x()/std::abs(x());
+		t y_reduce = y()/std::abs(y());
+
+		switch(y_reduce)
 		{
-			case +1: switch(reduce.x()) { case -1: return 7; case +0: return 8; case +1: return 9; }
-			case +0: switch(reduce.x()) { case -1: return 4; case +0: return 5; case +1: return 6; }
-			case -1: switch(reduce.x()) { case -1: return 1; case +0: return 2; case +1: return 3; }
+			case +1: switch(x_reduce) { case -1: return 7; case +0: return 8; case +1: return 9; }
+			case +0: switch(x_reduce) { case -1: return 4; case +0: return 5; case +1: return 6; }
+			case -1: switch(x_reduce) { case -1: return 1; case +0: return 2; case +1: return 3; }
 		}
 	};
 };

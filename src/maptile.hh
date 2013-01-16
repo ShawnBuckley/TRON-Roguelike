@@ -30,7 +30,7 @@ class MapTile : public Object
 
 	bool Empty() { return mapobject_list_.empty(); }
 	
-	MapObject* SolidMapObject();
+	std::vector<MapObject*> SolidMapObject();
 	std::shared_ptr<DisplayObject> VisibleMapObject();
 
 

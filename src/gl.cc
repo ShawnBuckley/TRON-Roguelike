@@ -218,7 +218,7 @@ bool GL::LoadTexture(std::string _file)
 	return 1;
 }
 
-void GL::LoadFont(int _x, int _y, int _xwidth, int _yhieght)
+void GL::LoadFont(int _x, int _y, int _xwidth, int _yheight)
 {
 	float x = 0;
 	float y = 0;
@@ -226,9 +226,9 @@ void GL::LoadFont(int _x, int _y, int _xwidth, int _yhieght)
 	float offset_y = 1.0/_y;
 
 	xwidth_ = _xwidth;
-	yhieght_ = _yhieght;
+	yheight_ = _yheight;
 
-	y_ = screen_->h/yhieght_-4;
+	y_ = screen_->h/yheight_-4;
 	x_ = screen_->w/xwidth_;
 
 
@@ -288,7 +288,7 @@ void GL::Print(uint8_t _print, std::shared_ptr<Color> _color)
 	SetColor(_color);
 
 	glTexCoord2f(font_[_print].a, font_[_print].b); glVertex2f(offset_.x, offset_.y);
-	glTexCoord2f(font_[_print].a, font_[_print].d); glVertex2f(offset_.x, offset_.y+yhieght_);
-	glTexCoord2f(font_[_print].c, font_[_print].d); glVertex2f(offset_.x + xwidth_, offset_.y+yhieght_);
+	glTexCoord2f(font_[_print].a, font_[_print].d); glVertex2f(offset_.x, offset_.y+yheight_);
+	glTexCoord2f(font_[_print].c, font_[_print].d); glVertex2f(offset_.x + xwidth_, offset_.y+yheight_);
 	glTexCoord2f(font_[_print].c, font_[_print].b); glVertex2f(offset_.x + xwidth_, offset_.y);
 }

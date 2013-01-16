@@ -7,6 +7,8 @@
 #include <memory>
 #include <string>
 
+#include "math/axisaligned_rectangle2.hh"
+
 class DisplayObject;
 class Color;
 
@@ -31,6 +33,7 @@ class IO
 	uint8_t y_;
 
 	std::shared_ptr<Color> old_color_;
+	AxisAligned_Rectangle2<int16_t> viewport_;
 };
 
 #endif // TRON_RLENGINEX_IO_HH

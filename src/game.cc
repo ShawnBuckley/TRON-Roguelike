@@ -78,13 +78,22 @@ void Game::Start()
 		lightgrid->rectangle_.Vertex(0).x()+lightgrid->rectangle_.Width()/2,
 		lightgrid->rectangle_.Vertex(0).y()+lightgrid->rectangle_.Height()/2
 	);
+
+	printf("viewport (%i %i) %i %i\n", io_->viewport_.Vertex(0).x(), io_->viewport_.Vertex(0).y(), io_->viewport_.Width(), io_->viewport_.Height());
+	
+	for(std::vector<std::shared_ptr<Sector> >::iterator sector = map_->sector_.begin();
+		sector != map_->sector_.end(); ++sector)
+	{
+		printf("%p (%i %i) %i %i\n", (*sector).get(), (*sector)->rectangle_.Vertex(0).x(), (*sector)->rectangle_.Vertex(0).y(), (*sector)->rectangle_.Width(), (*sector)->rectangle_.Height());
+	}
 /*
 	player_ = entity_manager_.AddPlayerMapobject(blue);
-	player_->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1)));
+//	player_->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1)));
+	player_->mapobject_->Rez(map_->Tile(sector[2]->rectangle_.Vertex(0)));
 /*/
 	player_ = entity_manager_.AddPlayerBike(blue);
-	player_->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1)), Vector2<int16_t>(+1,+0));
-//*/
+	player_->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1)), Vector2<int16_t>(+0,+0));
+//*
 	std::shared_ptr<AiBike> red_bike = entity_manager_.AddAiBike(red);
 	red_bike->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()-1, grid_center.y()-1)), Vector2<int16_t>(-1,+0));
 
@@ -93,7 +102,7 @@ void Game::Start()
 
 	std::shared_ptr<AiBike> green_bike = entity_manager_.AddAiBike(green);
 	green_bike->mapobject_->Rez(map_->Tile(Vector2<int16_t>(grid_center.x()-1, grid_center.y()+1)), Vector2<int16_t>(-1,+0));
-
+//*/
 	Run();
 }
 

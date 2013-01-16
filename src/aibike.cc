@@ -147,7 +147,7 @@ void AiBike::CheckDirection()
 
 bool AiBike::CheckTile(std::shared_ptr<MapTile> _tile)
 {
-	return (_tile == NULL || _tile->tiletype_->tiletype_flags_.solid_ || _tile->SolidMapObject() != NULL);
+	return (_tile == NULL || _tile->tiletype_->tiletype_flags_.solid_ || _tile->SolidMapObject().size());
 }
 
 void AiBike::ChangeDirection(Vector2<int16_t> _vector)
