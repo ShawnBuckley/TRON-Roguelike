@@ -52,7 +52,7 @@ void AiBike::Think()
 
 void AiBike::Default()
 {
-	Vector2<int16_t> test_coord = mapobject_->maptile_->location_ + mapobject_->vector_;
+	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + mapobject_->vector_;
 
 	std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
 
@@ -72,7 +72,7 @@ void AiBike::Default()
 void AiBike::Tunnel()
 {
 	// check the complement
-	Vector2<int16_t> test_coord = mapobject_->maptile_->location_ + ~mapobject_->vector_;
+	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + ~mapobject_->vector_;
 
 	if(!CheckTile(game.map_->Tile(test_coord)))
 	{
@@ -81,7 +81,7 @@ void AiBike::Tunnel()
 		return;
 	}
 
-	test_coord = mapobject_->maptile_->location_ - ~mapobject_->vector_;
+	test_coord = mapobject_->location_.maptile_[0][0]->location_ - ~mapobject_->vector_;
 
 	if(!CheckTile(game.map_->Tile(test_coord)))
 	{
@@ -112,11 +112,11 @@ bool AiBike::CheckMapObjects(std::shared_ptr<MapTile> _tile)
 
 bool AiBike::CheckTunnel()
 {
-	Vector2<int16_t> test_coord = mapobject_->maptile_->location_ + ~mapobject_->vector_;
+	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + ~mapobject_->vector_;
 
 	if(CheckTile(game.map_->Tile(test_coord)))
 	{
-		test_coord = mapobject_->maptile_->location_ - ~mapobject_->vector_;
+		test_coord = mapobject_->location_.maptile_[0][0]->location_ - ~mapobject_->vector_;
 
 		return (CheckTile(game.map_->Tile(test_coord)));
 	}
@@ -132,12 +132,12 @@ void AiBike::CheckDirection()
 
 	for(Vector2<int16_t> check_tile(vector.x(), vector.y()); ; vector.x() ? check_tile.x(check_tile.x()+1) : check_tile.y(check_tile.y()+1))
 	{
-		if(CheckTile(game.map_->Tile(mapobject_->maptile_->location_ + check_tile)))
+		if(CheckTile(game.map_->Tile(mapobject_->location_.maptile_[0][0]->location_ + check_tile)))
 		{
 			ChangeDirection(-vector);
 			break;
 		}
-		if(CheckTile(game.map_->Tile(mapobject_->maptile_->location_ - check_tile)))
+		if(CheckTile(game.map_->Tile(mapobject_->location_.maptile_[0][0]->location_ - check_tile)))
 		{
 			ChangeDirection(vector);
 			break;

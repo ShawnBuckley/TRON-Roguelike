@@ -21,7 +21,7 @@ Bike::Bike(std::shared_ptr<Color> _color)
 	moved_ = 0;
 	change_direction_ = 0;
 
-  	for(int i=0; i<10; i++)
+  	for(uint8_t i=0; i<10; i++)
 		wall_displayobject_[i] = std::move(std::shared_ptr<DisplayObject>(new DisplayObject(kWallPrint[i], kWallSprite[i], _color)));
 }
 
@@ -36,7 +36,7 @@ void Bike::Save(std::stringstream &_save)
 		<< change_direction_ << " "
 		<< bike_flags_.drop_walls_ << " "
 		<< linked_ << " "
-		<< (unsigned int)maptile_->id_ << " "
+		<< (unsigned int)location_.id_ << " "
 		<< (signed int)vector_.x() << " "
 		<< (signed int)vector_.y() << " "
 		<< flags_.rez_ << " "
@@ -96,7 +96,7 @@ bool Bike::Tick()
 {
 	if(flags_.rez_)
 	{
-		Vector2<int16_t> test_coord = maptile_->location_ + vector_;
+		Vector2<int16_t> test_coord = location_.maptile_[0][0]->location_ + vector_;
 
 		std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
 
@@ -110,7 +110,7 @@ bool Bike::Tick()
 
 			std::vector<MapObject*> solid_mapobject = tile->SolidMapObject();
 
-			for(int i=0; i<solid_mapobject.size(); i++)
+			for(uint8_t i=0; i<solid_mapobject.size(); i++)
 			{
 				if(solid_mapobject[i] != NULL && solid_mapobject[i] != this)
 				{
@@ -130,13 +130,25 @@ bool Bike::Tick()
 			{
 				if(change_direction_)
 				{
-					wall_list_.push_back(std::shared_ptr<LightWall>(new LightWall(wall_displayobject_[change_direction_], maptile_, this)));
+					wall_list_.push_back(std::shared_ptr<LightWall>(
+						new LightWall(
+							wall_displayobject_[change_direction_],
+							location_,
+							this
+						)
+					));
 				
 					change_direction_ = 0;
 				}
 				else
 				{
-					wall_list_.push_back(std::shared_ptr<LightWall>(new LightWall(wall_displayobject_[vector_.Direction()], maptile_, this)));
+					wall_list_.push_back(std::shared_ptr<LightWall>(
+						new LightWall(
+							wall_displayobject_[vector_.Direction()],
+							location_,
+							this
+						)
+					));
 				}
 			}
 

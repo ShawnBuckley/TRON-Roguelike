@@ -38,6 +38,24 @@ std::vector<MapObject*> MapTile::SolidMapObject()
 	return result;
 }
 
+bool MapTile::AnySolidMapObject()
+{
+	if(mapobject_list_.empty())
+		return 0;
+
+	for(std::list<MapObject*>::iterator mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
+	{
+		if(*mapobject == NULL) continue;
+
+		if((*mapobject)->flags_.clipping_)
+		{
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 std::shared_ptr<DisplayObject> MapTile::VisibleMapObject()
 {
 	if(mapobject_list_.empty()) return NULL;

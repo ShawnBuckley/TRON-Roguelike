@@ -52,7 +52,7 @@ class Bike : public MapObject
 	bool DoubleDispatch_CheckBumped(LightWall *_lightwall) { printf("%p DD BK check LW\n",this); return 1; };
 
 	bool moved_;
-	int change_direction_;
+	uint8_t change_direction_;
 	BikeFlags bike_flags_;
 
 	std::list<std::shared_ptr<LightWall> > wall_list_;

@@ -50,7 +50,7 @@ class AxisAligned_Rectangle2
 		}
 	};
 
-	// non working for all cases
+	// non working for all cases - fails no vertices are in the oppsite rectangle
 	bool CheckIntersect(const AxisAligned_Rectangle2<t> &_other) const
 	{
 		Vector2<t> this_vertex0 = Vertex(0);

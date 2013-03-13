@@ -19,10 +19,10 @@ Object::~Object()
 
 void Object::Link()
 {
-	Object::map_.insert({id_, this});
+//	Object::map_.insert({id_, this});
 }
 
 void Object::Unlink()
 {
-	Object::map_.erase(id_);
+//	Object::map_.erase(id_);
 }

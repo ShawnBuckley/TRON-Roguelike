@@ -22,7 +22,7 @@ MapObject::MapObject(std::shared_ptr<MapObject> _this, MapObjectFlags _mapobject
 {
 	timeobject_->mapobject_ = _this;
 
-	Rez(_maptile, _vector);
+	Rez(std::move(MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(), 1, 1))), _vector);
 
 //	printf("Create MapObject %p\n", this);
 }
@@ -40,7 +40,7 @@ void MapObject::Save(std::stringstream &_save)
 		<< "a" << " "
 		<< id_ << " "
 		<< linked_ << " "
-		<< (unsigned int)maptile_->id_ << " "
+		<< (unsigned int)location_.id_ << " "
 		<< (signed int)vector_.x() << " "
 		<< (signed int)vector_.y() << " "
 		<< flags_.rez_ << " "
@@ -52,9 +52,9 @@ void MapObject::Save(std::stringstream &_save)
 		<< std::endl;
 }
 
-bool MapObject::Rez(std::shared_ptr<MapTile> _maptile, Vector2<int16_t> _vector)
+bool MapObject::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
 {
-	if(SetLocation(_maptile))
+	if(SetLocation(_location))
 	{
 		flags_.rez_ = 1;
 		vector_ = _vector;
@@ -64,7 +64,7 @@ bool MapObject::Rez(std::shared_ptr<MapTile> _maptile, Vector2<int16_t> _vector)
 		
 		return 1;
 	}
-	
+
 	return 0;
 }
 
@@ -72,7 +72,7 @@ void MapObject::Derez()
 {
 	displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('X','X',displayobject_->color_)));
 	flags_ = MapObjectFlags(0, 0, 0, 1);
-	
+
 	if(timeobject_)
 		timeobject_->TimeUnlink();
 }
@@ -80,7 +80,23 @@ void MapObject::Derez()
 void MapObject::MapLink()
 {
 	linked_ = 1;
-	maptile_->mapobject_list_.push_front(this);
+	location_.maptile_.clear();
+	
+	for(int16_t x=0; x<location_.rectangle_.Width(); ++x)
+	{	
+		std::vector<std::shared_ptr<MapTile> > row;
+	
+		for(int16_t y=0; y<location_.rectangle_.Height(); ++y)
+		{
+			std::shared_ptr<MapTile> maptile = game.map_->Tile(location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y));
+			Vector2<int16_t> pos = location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y);
+
+			row.push_back(maptile);
+			maptile->mapobject_list_.push_front(this);
+		}
+
+		location_.maptile_.push_back(row);
+	}
 }
 
 void MapObject::MapUnlink()
@@ -88,14 +104,19 @@ void MapObject::MapUnlink()
 	if(!linked_) return;
 
 	linked_ = 0;
-	maptile_->mapobject_list_.remove(this);
+	for(int16_t x=0; x<location_.rectangle_.Width(); ++x)
+	{	for(int16_t y=0; y<location_.rectangle_.Height(); ++y)
+	{
+		location_.maptile_[x][y]->mapobject_list_.remove(this);
+	}
+	}
 }
 
-bool MapObject::SetLocation(std::shared_ptr<MapTile> _maptile)
+bool MapObject::SetLocation(MapLocation<int16_t> _location)
 {
 	MapUnlink();
 
-	maptile_ = _maptile;
+	location_ = _location;
 
 	MapLink();
 
@@ -104,20 +125,52 @@ bool MapObject::SetLocation(std::shared_ptr<MapTile> _maptile)
 
 bool MapObject::Move(Vector2<int16_t> _vector)
 {
-	std::shared_ptr<MapTile> tile = game.map_->Tile(maptile_->location_ + _vector);
-	
-	if(tile != NULL)
+	MapLocation<int16_t> location = location_;
+	location.rectangle_.Origin(location_.rectangle_.Vertex(0) + _vector);
+
+	std::vector<Vector2<int16_t> > result = location_.rectangle_.Intersect(location.rectangle_);
+	std::vector<AxisAligned_Rectangle2<int16_t> > resultant_rectangle = 
+		AxisAligned_Rectangle2<int16_t>::Construct(result);
+
+	if(resultant_rectangle.size() > 0)
 	{
-		if(tile->tiletype_->tiletype_flags_.solid_)
-			return 0;
+		for(int16_t x=0; x<resultant_rectangle[0].Width(); ++x)
+		{	for(int16_t y=0; y<resultant_rectangle[0].Height(); ++y)
+		{
+			if(location_.rectangle_.Intersect(Vector2<int16_t>(resultant_rectangle[0].Vertex(0).x() + x, resultant_rectangle[0].Vertex(0).y() + y)))
+				continue;
+	
+			if(location_.maptile_[x][y] != NULL)
+			{
+				if(location_.maptile_[x][y]->tiletype_->tiletype_flags_.solid_)
+					return 0;
 
-		if(tile->SolidMapObject().size())
-			return 0;
+				if(location_.maptile_[x][y]->AnySolidMapObject())
+					return 0;
+			}
+		}
+		}
+	}
+	else
+	{
+		for(int16_t x=0; x<location_.rectangle_.Width(); ++x)
+		{	for(int16_t y=0; y<location_.rectangle_.Height(); ++y)
+		{
+			if(location_.maptile_[x][y] != NULL)
+			{
+				if(location_.maptile_[x][y]->tiletype_->tiletype_flags_.solid_)
+					return 0;
 
-		return SetLocation(tile);
+				if(location_.maptile_[x][y]->AnySolidMapObject())
+					return 0;
+			}
+		}
+		}
 	}
 
-	return 0;
+	printf("set location\n");
+
+	return SetLocation(location);
 }
 
 bool MapObject::Tick()

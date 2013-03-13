@@ -9,6 +9,7 @@
 
 #include "math/vector2.hh"
 
+#include "maplocation.hh"
 #include "object.hh"
 #include "timeobject.hh"
 #include "displayobject.hh"
@@ -48,14 +49,14 @@ class MapObject : public Object
  	virtual void Save(std::stringstream &_save);
   	virtual void Load() {};
 
-	virtual bool Rez(std::shared_ptr<MapTile> _maptile, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
+	virtual bool Rez(MapLocation<int16_t> _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
 	virtual void Derez();
 
 	void MapLink();
 	void MapUnlink();
 
 	virtual bool Move(Vector2<int16_t> _vector);
-	bool SetLocation(std::shared_ptr<MapTile> _tile);
+	bool SetLocation(MapLocation<int16_t> _location);
 
 	virtual bool Tick();
 
@@ -71,7 +72,10 @@ class MapObject : public Object
 
 
 	bool linked_;
-	std::shared_ptr<MapTile> maptile_;
+//	std::shared_ptr<MapTile> maptile_;
+//	AxisAligned_Rectangle2<int16_t> location_;
+//	std::shared_ptr<MapLocation<int16_t> > location_;
+	MapLocation<int16_t> location_;
 	Vector2<int16_t> vector_;
 	MapObjectFlags flags_;
 	std::shared_ptr<TimeObject> timeobject_;

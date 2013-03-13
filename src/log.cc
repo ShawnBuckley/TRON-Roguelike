@@ -2,19 +2,17 @@
 
 #include "log.hh"
 
-bool Log::Open(std::string _file)
+Log::Log(std::string _file)
 {
 	file_.open(_file.c_str());
+}
 
-	return file_.good();
+Log::~Log()
+{
+	file_.close();
 }
 
 void Log::Write(std::string _string)
 {
 	file_ << _string;
-}
-
-void Log::Close()
-{
-	file_.close();
 }

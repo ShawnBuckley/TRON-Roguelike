@@ -209,8 +209,8 @@ void SDL::Map()
 	Clear();
 
 	viewport_.Origin(Vector2<int16_t>(
-		game.player_->mapobject_->maptile_->location_.x() - x_/2,
-		game.player_->mapobject_->maptile_->location_.y() - y_/2
+		game.player_->mapobject_->location_.maptile_[0][0]->location_.x() - x_/2,
+		game.player_->mapobject_->location_.maptile_[0][0]->location_.y() - y_/2
 	));
 	
 //	printf("viewport %i %i\n", viewport_.Vertex(0).x(), viewport_.Vertex(0).y());
@@ -328,7 +328,8 @@ void SDL::Map()
 //*/
 	if(game.player_->mapobject_)
 	{
-		Move(game.player_->mapobject_->maptile_->location_.y(), game.player_->mapobject_->maptile_->location_.x());
+		Move(game.player_->mapobject_->location_.maptile_[0][0]->location_.y(),
+			game.player_->mapobject_->location_.maptile_[0][0]->location_.x());
 	}
 
 	Refresh();

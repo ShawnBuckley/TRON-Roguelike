@@ -12,9 +12,9 @@ class Log
 	std::ofstream file_;
 
   public:
-	bool Open(std::string _file);
+	Log(std::string _file);
+	~Log();
 	void Write(std::string _string);
-	void Close();
 };
 
 #endif // TRON_RLENGINEX_LOG_HH

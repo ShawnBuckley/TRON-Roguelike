@@ -10,7 +10,7 @@ class LightWall : public MapObject
 {
   public:
 	LightWall() : bike_(NULL) {};
-	LightWall(std::shared_ptr<DisplayObject> _displayobject, std::shared_ptr<MapTile> _maptile, Bike *_bike);
+	LightWall(std::shared_ptr<DisplayObject> _displayobject, MapLocation<int16_t> _location, Bike *_bike);
 
 	void Save(std::stringstream &_save);
 	void Load();
