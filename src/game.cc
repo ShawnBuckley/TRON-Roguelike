@@ -47,31 +47,31 @@ void Game::Start()
 	std::shared_ptr<Sector> lightgrid(new LightGrid());
 	map_->GenerateSector(
 		lightgrid,
-		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8),63,63)
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8),64,64)
 	);
 
 	// top
 	map_->GenerateSector(
 		std::shared_ptr<Sector>(new Sector()),
-		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0),79,7)
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0),80,8)
 	);
 
 	// right
 	map_->GenerateSector(
 		sector[1],
-		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(72,8),7,63)
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(72,8),8,64)
 	);
 
 	// bottom
 	map_->GenerateSector(
 		sector[2],
-		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,72),79,7)
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,72),80,8)
 	);
 
 	// left
 	map_->GenerateSector(
 		sector[3],
-		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,8),7,63)
+		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,8),8,64)
 	);
 
 	Vector2<int16_t> grid_center(

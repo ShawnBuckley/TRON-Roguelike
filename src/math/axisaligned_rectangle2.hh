@@ -66,8 +66,8 @@ class AxisAligned_Rectangle2
 	
 	bool Intersect(const Vector2<t> &_other) const
 	{
-		return (origin_.x() <= _other.x() && _other.x() <= origin_.x()+width_
-			&& origin_.y() <= _other.y() && _other.y() <= origin_.y()+height_);
+		return (origin_.x() <= _other.x() && _other.x() < origin_.x()+width_
+			&& origin_.y() <= _other.y() && _other.y() < origin_.y()+height_);
 	};
 
 	std::vector<Vector2<t> > Intersect(const AxisAligned_Rectangle2<t> &_other) const

@@ -59,7 +59,7 @@ void LightGrid::Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<i
 		{
 			Vector2<int16_t> location(x+rectangle_.Vertex(0).x(), y+rectangle_.Vertex(0).y());
 		
-			if(y == 0 || y >= rectangle_.Height() || x == 0 || x >= rectangle_.Width())
+			if(y == 0 || y >= rectangle_.Height()-1 || x == 0 || x >= rectangle_.Width()-1)
 				row.push_back(std::move(std::shared_ptr<MapTile>(new MapTile(location, _this, kWall))));
 			else
 			{

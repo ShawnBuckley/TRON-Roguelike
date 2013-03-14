@@ -20,6 +20,7 @@ class WorldTime : GameTime
   	void Load() {};
 
 	void WorldTurn(uint32_t _time);
+	uint64_t Tick() { return tick_; };
 
 	void UpdateSeconds(uint16_t _seconds);
 	void UpdateMinutes(uint16_t _minutes);

@@ -53,6 +53,7 @@ class Bike : public MapObject
 
 	bool moved_;
 	uint8_t change_direction_;
+	uint64_t time_of_death_;
 	BikeFlags bike_flags_;
 
 	std::list<std::shared_ptr<LightWall> > wall_list_;

@@ -10,7 +10,7 @@ class LightWall : public MapObject
 {
   public:
 	LightWall() : bike_(NULL) {};
-	LightWall(std::shared_ptr<DisplayObject> _displayobject, MapLocation<int16_t> _location, Bike *_bike);
+	LightWall(std::shared_ptr<DisplayObject> _displayobject, MapLocation<int16_t> _location, uint64_t _time_dropped, Bike *_bike);
 
 	void Save(std::stringstream &_save);
 	void Load();
@@ -26,6 +26,7 @@ class LightWall : public MapObject
 	bool DoubleDispatch_CheckBumped(LightWall *_lightwall) { printf("%p DD LW check LW\n",this); return 1; };
 	
 	Bike *bike_;
+	uint64_t time_dropped_;
 };
 
 #endif // TRON_RLENGINEX_LIGHTWALL_HH

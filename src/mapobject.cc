@@ -127,48 +127,25 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 {
 	MapLocation<int16_t> location = location_;
 	location.rectangle_.Origin(location_.rectangle_.Vertex(0) + _vector);
-
-	std::vector<Vector2<int16_t> > result = location_.rectangle_.Intersect(location.rectangle_);
-	std::vector<AxisAligned_Rectangle2<int16_t> > resultant_rectangle = 
-		AxisAligned_Rectangle2<int16_t>::Construct(result);
-
-	if(resultant_rectangle.size() > 0)
-	{
-		for(int16_t x=0; x<resultant_rectangle[0].Width(); ++x)
-		{	for(int16_t y=0; y<resultant_rectangle[0].Height(); ++y)
-		{
-			if(location_.rectangle_.Intersect(Vector2<int16_t>(resultant_rectangle[0].Vertex(0).x() + x, resultant_rectangle[0].Vertex(0).y() + y)))
-				continue;
 	
-			if(location_.maptile_[x][y] != NULL)
-			{
-				if(location_.maptile_[x][y]->tiletype_->tiletype_flags_.solid_)
-					return 0;
-
-				if(location_.maptile_[x][y]->AnySolidMapObject())
-					return 0;
-			}
-		}
-		}
-	}
-	else
+	for(int16_t x=0; x<location.rectangle_.Width(); ++x)
+	{	for(int16_t y=0; y<location.rectangle_.Height(); ++y)
 	{
-		for(int16_t x=0; x<location_.rectangle_.Width(); ++x)
-		{	for(int16_t y=0; y<location_.rectangle_.Height(); ++y)
+		Vector2<int16_t> point(location.rectangle_.Vertex(0).x() + x, location.rectangle_.Vertex(0).y() + y);
+	
+		if(location.rectangle_.Intersect(point))
+			continue;
+			
+		if(game.map_->Tile(point) != NULL)
 		{
-			if(location_.maptile_[x][y] != NULL)
-			{
-				if(location_.maptile_[x][y]->tiletype_->tiletype_flags_.solid_)
-					return 0;
+			if(location.maptile_[x][y]->tiletype_->tiletype_flags_.solid_)
+				return 0;
 
-				if(location_.maptile_[x][y]->AnySolidMapObject())
-					return 0;
-			}
-		}
+			if(location.maptile_[x][y]->AnySolidMapObject())
+				return 0;
 		}
 	}
-
-	printf("set location\n");
+	}
 
 	return SetLocation(location);
 }
