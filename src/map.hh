@@ -10,13 +10,13 @@
 #include "math/vector2.hh"
 #include "math/axisaligned_rectangle2.hh"
 
-#include "object.hh"
+#include "gameobject.hh"
 #include "maptile.hh"
 #include "tiletype.hh"
 
 #define NULL __null
 
-class Map : public Object
+class Map : public GameObject
 {
   private:
 

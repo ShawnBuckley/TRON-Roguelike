@@ -160,7 +160,7 @@ void Game::Save()
 {
 /*	std::ofstream save_file("save", std::ios::trunc);
 
-	for(std::unordered_map<uint32_t, Object*>::iterator it = Object::map_.begin(); it != Object::map_.end(); ++it)
+	for(std::unordered_map<uint32_t, GameObject*>::iterator it = Object::map_.begin(); it != Object::map_.end(); ++it)
 	{
 		if(save_file.good())
 		{

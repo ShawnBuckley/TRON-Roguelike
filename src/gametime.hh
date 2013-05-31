@@ -5,9 +5,9 @@
 
 #include <inttypes.h>
 
-#include "object.hh"
+#include "gameobject.hh"
 
-class GameTime : public Object
+class GameTime : public GameObject
 {
   public:
 	GameTime();

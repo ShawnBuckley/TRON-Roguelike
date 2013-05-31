@@ -7,9 +7,9 @@
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/variate_generator.hpp>
 
-#include "object.hh"
+#include "gameobject.hh"
 
-class RNG : public Object
+class RNG : public GameObject
 {
   public:
 	RNG() : seed_(0), count_(0), zero_one_(0, 1), random_bool_(rng_, zero_one_) {};

@@ -11,14 +11,14 @@
 
 #include "math/vector2.hh"
 
-#include "object.hh"
+#include "gameobject.hh"
 #include "tiletype.hh"
 
 class DisplayObject;
 class MapObject;
 class Sector;
 
-class MapTile : public Object
+class MapTile : public GameObject
 {
   public:
 	MapTile() {};

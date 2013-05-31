@@ -7,12 +7,12 @@
 #include <memory>
 #include <list>
 
-#include "object.hh"
+#include "gameobject.hh"
 
 class MapObject;
 class ControlObject;
 
-class TimeObject : public Object
+class TimeObject : public GameObject
 {
   public:
 	TimeObject(uint16_t _speed);

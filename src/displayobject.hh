@@ -7,10 +7,10 @@
 #include <cstdint>
 #include <memory>
 
-#include "object.hh"
+#include "gameobject.hh"
 #include "color.hh"
 
-class DisplayObject : public Object
+class DisplayObject : public GameObject
 {
   public:
 	DisplayObject() : print_(0), sprite_(0) {};

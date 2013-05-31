@@ -7,11 +7,11 @@
 #include <memory>
 #include <list>
 
-#include "object.hh"
+#include "gameobject.hh"
 
 class MapObject;
 
-class ControlObject : public Object
+class ControlObject : public GameObject
 {
   public:
 	ControlObject() {};

@@ -10,7 +10,7 @@
 #include "math/vector2.hh"
 
 #include "maplocation.hh"
-#include "object.hh"
+#include "gameobject.hh"
 #include "timeobject.hh"
 #include "displayobject.hh"
 #include "color.hh"
@@ -32,7 +32,7 @@ struct MapObjectFlags
 	bool visible_;
 };
 
-class MapObject : public Object
+class MapObject : public GameObject
 {
   public:
 	MapObject();

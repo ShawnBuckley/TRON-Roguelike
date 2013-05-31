@@ -5,7 +5,7 @@
 
 #include "math/axisaligned_rectangle2.hh"
 
-#include "object.hh"
+#include "gameobject.hh"
 #include "timeobject.hh"
 
 #include <vector>
@@ -13,7 +13,7 @@
 
 class MapTile;
 
-class Sector : public Object
+class Sector : public GameObject
 {
   public:
 	Sector();
