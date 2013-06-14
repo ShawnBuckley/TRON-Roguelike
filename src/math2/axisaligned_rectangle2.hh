@@ -163,7 +163,7 @@ class AxisAligned_Rectangle2
 	
 		if(_set.size() == 2)
 		{
-			if(!_set[0].Collinear(_set[1]))
+			if(!_set[0].Coaxial({_set[1]}))
 			{
 				if(std::abs(_set[0].x()) <= std::abs(_set[1].x()) && std::abs(_set[0].y()) <= std::abs(_set[1].y()))
 				{
@@ -192,7 +192,7 @@ class AxisAligned_Rectangle2
 			
 			for(int i=0; i<_set.size(); ++i)
 			{
-				if(!_set[i].Collinear(origin) && !_set[i].Collinear(opposite))
+				if(!_set[i].Coaxial({origin}) && !_set[i].Coaxial({opposite}))
 					valid = 0;
 			}
 			

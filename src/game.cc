@@ -74,17 +74,14 @@ void Game::Start()
 		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,8),8,64)
 	);
 
-	Vector2<int16_t> grid_center(
-		lightgrid->rectangle_.Vertex(0).x()+lightgrid->rectangle_.Width()/2,
-		lightgrid->rectangle_.Vertex(0).y()+lightgrid->rectangle_.Height()/2
-	);
+	Vector2<int16_t> grid_center = lightgrid->rectangle_.Center();
 
-	printf("viewport (%i %i) %i %i\n", io_->viewport_.Vertex(0).x(), io_->viewport_.Vertex(0).y(), io_->viewport_.Width(), io_->viewport_.Height());
+	// printf("viewport (%i %i) %i %i\n", io_->viewport_.Vertex(0).x, io_->viewport_.Vertex(0).y io_->viewport_.Width(), io_->viewport_.Height());
 	
 	for(std::vector<std::shared_ptr<Sector> >::iterator sector = map_->sector_.begin();
 		sector != map_->sector_.end(); ++sector)
 	{
-		printf("%p (%i %i) %i %i\n", (*sector).get(), (*sector)->rectangle_.Vertex(0).x(), (*sector)->rectangle_.Vertex(0).y(), (*sector)->rectangle_.Width(), (*sector)->rectangle_.Height());
+		printf("%p (%i %i) %i %i\n", (*sector).get(), (*sector)->rectangle_.Vertex(0).x, (*sector)->rectangle_.Vertex(0).y, (*sector)->rectangle_.Width(), (*sector)->rectangle_.Height());
 	}
 /*
 	player_ = entity_manager_.AddPlayerMapobject(blue);
@@ -98,7 +95,7 @@ void Game::Start()
 	player_ = entity_manager_.AddPlayerBike(blue);
 	player_->mapobject_->Rez(
 		MapLocation<int16_t>(
-			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1), 1, 1)
+			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y+1), 1, 1)
 		),
 		Vector2<int16_t>(+0,+0)
 	);
@@ -106,7 +103,7 @@ void Game::Start()
 	std::shared_ptr<AiBike> red_bike = entity_manager_.AddAiBike(red);
 	red_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
-			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x()-1, grid_center.y()-1), 1, 1)
+			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)
 		),
 		Vector2<int16_t>(-1,+0)
 	);
@@ -114,7 +111,7 @@ void Game::Start()
 	std::shared_ptr<AiBike> yellow_bike = entity_manager_.AddAiBike(yellow);
 	yellow_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
-			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x()+1, grid_center.y()-1), 1, 1)
+			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y-1), 1, 1)
 		),
 		Vector2<int16_t>(+1,+0)
 	);
@@ -122,7 +119,7 @@ void Game::Start()
 	std::shared_ptr<AiBike> green_bike = entity_manager_.AddAiBike(green);
 	green_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
-			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x()-1, grid_center.y()+1), 1, 1)
+			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y+1), 1, 1)
 		),
 		Vector2<int16_t>(-1,+0)
 	);
@@ -135,6 +132,8 @@ void Game::Run()
 	printf("game run\n");
 
 	io_->Map();
+
+	game_flags_.realtime_ = 0;
 
 	while(game_flags_.run_)
 	{

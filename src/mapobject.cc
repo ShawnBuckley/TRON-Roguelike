@@ -41,8 +41,8 @@ void MapObject::Save(std::stringstream &_save)
 		<< id_ << " "
 		<< linked_ << " "
 		<< (unsigned int)location_.id_ << " "
-		<< (signed int)vector_.x() << " "
-		<< (signed int)vector_.y() << " "
+		<< (signed int)vector_.x << " "
+		<< (signed int)vector_.y << " "
 		<< flags_.rez_ << " "
 		<< flags_.clipping_ << " "
 		<< flags_.solid_ << " "
@@ -131,7 +131,7 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 	for(int16_t x=0; x<location.rectangle_.Width(); ++x)
 	{	for(int16_t y=0; y<location.rectangle_.Height(); ++y)
 	{
-		Vector2<int16_t> point(location.rectangle_.Vertex(0).x() + x, location.rectangle_.Vertex(0).y() + y);
+		Vector2<int16_t> point(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
 	
 		if(location.rectangle_.Intersect(point))
 			continue;
@@ -152,7 +152,7 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 
 bool MapObject::Tick()
 {
-	if(vector_.x() || vector_.y())
+	if(vector_.x || vector_.y)
 	{
 		Move(vector_);
 

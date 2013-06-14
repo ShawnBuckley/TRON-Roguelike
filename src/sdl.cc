@@ -37,7 +37,7 @@ void SDL::Init()
 	
 	viewport_ = AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0), screen_->w/xwidth_, screen_->h/yheight_);
 	
-	printf("viewport: (%i %i) %i %i\n", viewport_.Vertex(0).x(), viewport_.Vertex(0).y(), viewport_.Width(), viewport_.Height());
+	printf("viewport: (%i %i) %i %i\n", viewport_.Vertex(0).x, viewport_.Vertex(0).y, viewport_.Width(), viewport_.Height());
 }
 
 SDL::~SDL()
@@ -209,11 +209,11 @@ void SDL::Map()
 	Clear();
 
 	viewport_.Origin(Vector2<int16_t>(
-		game.player_->mapobject_->location_.maptile_[0][0]->location_.x() - x_/2,
-		game.player_->mapobject_->location_.maptile_[0][0]->location_.y() - y_/2
+		game.player_->mapobject_->location_.maptile_[0][0]->location_.x - x_/2,
+		game.player_->mapobject_->location_.maptile_[0][0]->location_.y - y_/2
 	));
 	
-//	printf("viewport %i %i\n", viewport_.Vertex(0).x(), viewport_.Vertex(0).y());
+//	printf("viewport %i %i\n", viewport_.Vertex(0).x, viewport_.Vertex(0).y);
 /*
 	for(std::vector<std::shared_ptr<Sector> >::iterator sector = game.map_->sector_.begin();
 		sector != game.map_->sector_.end(); ++sector)
@@ -228,19 +228,19 @@ void SDL::Map()
 			if(!clip_rect.size())
 				continue;
 
-			printf("%p (%i %i) %i %i\n",(*sector).get(), clip_rect[0].Vertex(0).x(), clip_rect[0].Vertex(0).y(), clip_rect[0].Width(), clip_rect[0].Height());
+			printf("%p (%i %i) %i %i\n",(*sector).get(), clip_rect[0].Vertex(0).x, clip_rect[0].Vertex(0).y, clip_rect[0].Width(), clip_rect[0].Height());
 
-			Move(clip_rect[0].Vertex(0).y(), clip_rect[0].Vertex(0).x());
+			Move(clip_rect[0].Vertex(0).y, clip_rect[0].Vertex(0).x);
 
-			for(coord.y(clip_rect[0].Vertex(0).y()); coord.y() < clip_rect[0].Height(); coord.y(coord.y()+1))
-			{	for(coord.x(clip_rect[0].Vertex(0).x()); coord.x() < clip_rect[0].Width(); coord.x(coord.x()+1))
+			for(coord.y(clip_rect[0].Vertex(0).y); coord.y < clip_rect[0].Height(); coord.y(coord.y+1))
+			{	for(coord.x(clip_rect[0].Vertex(0).x); coord.x < clip_rect[0].Width(); coord.x(coord.x+1))
 			{
 				std::shared_ptr<MapTile> tile = (*sector)->Tile(coord);
 
 //	 			if(tile != NULL)
 //					continue;
 
-//				printf("%i %i\n", coord.x(), coord.y());
+//				printf("%i %i\n", coord.x, coord.y);
 
 				Render(tile->tiletype_->displayobject_);
 
@@ -269,8 +269,8 @@ void SDL::Map()
 	
 		Move(
 	
-		for(coord.y((*sector)->rectangle_.Vertex(0).y()); coord.y() < (*sector)->rectangle_.Height(); coord.y(coord.y()+1))
-		{	for(coord.x((*sector)->rectangle_.Vertex(0).x()); coord.x() < (*sector)->rectangle_.Width(); coord.x(coord.x()+1))
+		for(coord.y((*sector)->rectangle_.Vertex(0).y); coord.y < (*sector)->rectangle_.Height(); coord.y(coord.y+1))
+		{	for(coord.x((*sector)->rectangle_.Vertex(0).x); coord.x < (*sector)->rectangle_.Width(); coord.x(coord.x+1))
 		{
 			if(game.map_->CoordValid(coord))
 			{
@@ -298,8 +298,8 @@ void SDL::Map()
 		}
 	}
 /*/
-	for(coord.y(viewport_.Vertex(0).y()); coord.y() < viewport_.Height(); coord.y(coord.y()+1))
-	{	for(coord.x(viewport_.Vertex(0).x()); coord.x() < viewport_.Width(); coord.x(coord.x()+1))
+	for(coord.y = viewport_.Vertex(0).y; coord.y < viewport_.Height(); coord.y += 1)
+	{	for(coord.x = viewport_.Vertex(0).x; coord.x < viewport_.Width(); coord.x += 1)
 	{
 		if(game.map_->CoordValid(coord))
 		{
@@ -328,8 +328,8 @@ void SDL::Map()
 //*/
 	if(game.player_->mapobject_)
 	{
-		Move(game.player_->mapobject_->location_.maptile_[0][0]->location_.y(),
-			game.player_->mapobject_->location_.maptile_[0][0]->location_.x());
+		Move(game.player_->mapobject_->location_.maptile_[0][0]->location_.y,
+			game.player_->mapobject_->location_.maptile_[0][0]->location_.x);
 	}
 
 	Refresh();

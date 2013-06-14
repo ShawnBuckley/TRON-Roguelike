@@ -24,7 +24,7 @@ void Sector::Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int1
 
 		for(int16_t y=0; y<=rectangle_.Height(); ++y)
 		{
-			row.push_back(std::shared_ptr<MapTile>(new MapTile(Vector2<int16_t>(x+rectangle_.Vertex(0).x(), y+rectangle_.Vertex(0).y()), _this, kGround)));
+			row.push_back(std::shared_ptr<MapTile>(new MapTile(Vector2<int16_t>(x+rectangle_.Vertex(0).x, y+rectangle_.Vertex(0).y), _this, kGround)));
 		}
 
 		tile_.push_back(row);

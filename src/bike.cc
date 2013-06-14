@@ -37,8 +37,8 @@ void Bike::Save(std::stringstream &_save)
 		<< bike_flags_.drop_walls_ << " "
 		<< linked_ << " "
 		<< (unsigned int)location_.id_ << " "
-		<< (signed int)vector_.x() << " "
-		<< (signed int)vector_.y() << " "
+		<< (signed int)vector_.x << " "
+		<< (signed int)vector_.y << " "
 		<< flags_.rez_ << " "
 		<< flags_.clipping_ << " "
 		<< flags_.solid_ << " "
@@ -84,13 +84,13 @@ void Bike::RemoveWall()
 
 bool Bike::Move(Vector2<int16_t> _vector)
 {
-	if(!flags_.rez_ || _vector == -vector_ || (_vector.x() && _vector.y()) || moved_)
+	if(!flags_.rez_ || _vector == -vector_ || (_vector.x && _vector.y) || moved_)
 		return 0;
 
 	Vector2<int16_t> vector = vector_ + _vector;
 
 	// reverse vector in order to get correct corner DisplayObject
-	if(vector_.y())
+	if(vector_.y)
 		vector = -vector;
 
 	change_direction_ = vector.Direction();
@@ -111,7 +111,7 @@ bool Bike::Tick()
 		for(int16_t x=0; x<location.rectangle_.Width(); ++x)
 		{	for(int16_t y=0; y<location.rectangle_.Height(); ++y)
 		{
-			Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x() + x, location.rectangle_.Vertex(0).y() + y);
+			Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
 
 			std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
 
@@ -144,15 +144,15 @@ bool Bike::Tick()
 		}
 		}
 
-		if(bike_flags_.drop_walls_ && (vector_.x() || vector_.y()))
+		if(bike_flags_.drop_walls_ && (vector_.x || vector_.y))
 		{
 			MapLocation<int16_t> location = location_;
 			location.rectangle_.Origin(location.rectangle_.Vertex(0) + vector_);
 
-			Vector2<int16_t> point;
+			Vector2<int16_t> point = location_.rectangle_.Vertex(0);
 
-			for(point.x(location_.rectangle_.Vertex(0).x()); point.x()<location_.rectangle_.Width()+location_.rectangle_.Vertex(0).x(); point.x(point.x()+1))
-			{	for(point.y(location_.rectangle_.Vertex(0).y()); point.y()<location_.rectangle_.Height()+location_.rectangle_.Vertex(0).y(); point.y(point.y()+1))
+			for(; point.x<location_.rectangle_.Width()+location_.rectangle_.Vertex(0).x; point.x += 1)
+			{	for(; point.y<location_.rectangle_.Height()+location_.rectangle_.Vertex(0).y; point.y +=1)
 			{
 				if(!location.rectangle_.Intersect(point))
 				{

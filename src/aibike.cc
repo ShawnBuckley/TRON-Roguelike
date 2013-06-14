@@ -76,7 +76,7 @@ void AiBike::Tunnel()
 
 	if(!CheckTile(game.map_->Tile(test_coord)))
 	{
-		ChangeDirection(Vector2<int16_t>(mapobject_->vector_.y(), mapobject_->vector_.x()));
+		ChangeDirection(Vector2<int16_t>(mapobject_->vector_.y, mapobject_->vector_.x));
 		ai_state_ = AI_DEFAULT;
 		return;
 	}
@@ -85,7 +85,7 @@ void AiBike::Tunnel()
 
 	if(!CheckTile(game.map_->Tile(test_coord)))
 	{
-		ChangeDirection(Vector2<int16_t>(-mapobject_->vector_.y(), -mapobject_->vector_.x()));
+		ChangeDirection(Vector2<int16_t>(-mapobject_->vector_.y, -mapobject_->vector_.x));
 		ai_state_ = AI_DEFAULT;
 		return;
 	}
@@ -126,11 +126,9 @@ bool AiBike::CheckTunnel()
 
 void AiBike::CheckDirection()
 {
-	Vector2<int16_t> vector;
-	vector.y(abs(mapobject_->vector_.x()));
-	vector.x(abs(mapobject_->vector_.y()));
+	Vector2<int16_t> vector(abs(mapobject_->vector_.y), abs(mapobject_->vector_.x));
 
-	for(Vector2<int16_t> check_tile(vector.x(), vector.y()); ; vector.x() ? check_tile.x(check_tile.x()+1) : check_tile.y(check_tile.y()+1))
+	for(Vector2<int16_t> check_tile(vector.x, vector.y); ; vector.x ? check_tile.x+=1 : check_tile.y+=1)
 	{
 		if(CheckTile(game.map_->Tile(mapobject_->location_.maptile_[0][0]->location_ + check_tile)))
 		{

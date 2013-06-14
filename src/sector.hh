@@ -23,9 +23,9 @@ class Sector : public GameObject
 
 	std::shared_ptr<MapTile> Tile(Vector2<int16_t> _coord)
 	{
-		if(0 <= _coord.x() && _coord.x() <=rectangle_.Width() && 0 <= _coord.y() && _coord.y() <= rectangle_.Height())
+		if(0 <= _coord.x && _coord.x <=rectangle_.Width() && 0 <= _coord.y && _coord.y <= rectangle_.Height())
 		{
-			return tile_[_coord.x()][_coord.y()];
+			return tile_[_coord.x][_coord.y];
 		}
 
 		return NULL;
