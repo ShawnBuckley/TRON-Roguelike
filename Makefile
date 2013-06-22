@@ -1,5 +1,5 @@
 all: aibike.o bike.o color.o controlobject.o displayobject.o entitymanager.o game.o gametime.o gl.o lightgrid.o lightwall.o linux.o log.o main.o map.o mapobject.o maptile.o gameobject.o player.o sdl.o sector.o tiletype.o timeobject.o worldtime.o
-	g++ -ggdb -O2 *.o -lcurses -lSDL -lpng -lGL -o engine -std=c++0x
+	g++ -ggdb -O2 *.o -lSDL -lpng -lGL -o engine -std=c++0x
 
 aibike.o: src/aibike.cc
 	g++ -c src/aibike.cc -std=c++0x
