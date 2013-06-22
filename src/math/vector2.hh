@@ -7,8 +7,6 @@
 #include <bitset>
 #include <cmath>
 
-#include "const.hh"
-
 template <typename t>
 class Vector2
 {
