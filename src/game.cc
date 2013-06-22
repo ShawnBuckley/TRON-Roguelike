@@ -17,6 +17,7 @@ Game::Game()
 {
 	io_ = std::unique_ptr<IO>(new SDL);
 	worldtime_ = std::unique_ptr<WorldTime>(new WorldTime);
+	speed_ = 1000;
 }
 
 void Game::Start()
@@ -87,7 +88,7 @@ void Game::Start()
 	player_ = entity_manager_.AddPlayerMapobject(blue);
 	player_->mapobject_->Rez(
 		MapLocation<int16_t>(
-			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x()+1, grid_center.y()+1), 1, 1)
+			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y+1), 1, 1)
 		)
 	);
 /*/
@@ -133,13 +134,17 @@ void Game::Run()
 
 	io_->Map();
 
-	game_flags_.realtime_ = 0;
+	game_flags_.realtime_ = 1;
 
 	while(game_flags_.run_)
 	{
-		io_->Input();
+		uint32_t input = io_->Input();
 		if(game_flags_.paused_) continue;
-		if(game_flags_.realtime_) worldtime_->WorldTurn(player_->mapobject_->timeobject_->speed_);
+		if(game_flags_.realtime_)
+			worldtime_->WorldTurn(speed_);
+		else
+			if(input)
+				worldtime_->WorldTurn(input);
 		io_->Map();
 	}
 }

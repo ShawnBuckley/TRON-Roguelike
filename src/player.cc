@@ -17,32 +17,23 @@ void Player::Save(std::stringstream &_save)
 		<< std::endl;
 }
 
-bool Player::Input(char _ch)
+uint32_t Player::Input(char _ch)
 {
 	switch(_ch)
 	{
-		case 'h': if(mapobject_->Move(Vector2<int16_t>(-1,+0))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
-		case 'j': if(mapobject_->Move(Vector2<int16_t>(+0,+1))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
-		case 'k': if(mapobject_->Move(Vector2<int16_t>(+0,-1))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
-		case 'l': if(mapobject_->Move(Vector2<int16_t>(+1,+0))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
-		case 'b': if(mapobject_->Move(Vector2<int16_t>(-1,+1))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
-		case 'n': if(mapobject_->Move(Vector2<int16_t>(+1,+1))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
-		case 'y': if(mapobject_->Move(Vector2<int16_t>(-1,-1))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
-		case 'u': if(mapobject_->Move(Vector2<int16_t>(+1,-1))) { game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); } return 1;
+		case 'h': if(mapobject_->Move(Vector2<int16_t>(-1,+0))) return mapobject_->timeobject_->speed_;
+		case 'j': if(mapobject_->Move(Vector2<int16_t>(+0,+1))) return mapobject_->timeobject_->speed_;
+		case 'k': if(mapobject_->Move(Vector2<int16_t>(+0,-1))) return mapobject_->timeobject_->speed_;
+		case 'l': if(mapobject_->Move(Vector2<int16_t>(+1,+0))) return mapobject_->timeobject_->speed_;
+		case 'b': if(mapobject_->Move(Vector2<int16_t>(-1,+1))) return mapobject_->timeobject_->speed_;
+		case 'n': if(mapobject_->Move(Vector2<int16_t>(+1,+1))) return mapobject_->timeobject_->speed_;
+		case 'y': if(mapobject_->Move(Vector2<int16_t>(-1,-1))) return mapobject_->timeobject_->speed_;
+		case 'u': if(mapobject_->Move(Vector2<int16_t>(+1,-1))) return mapobject_->timeobject_->speed_;
 		
 		case 's': game.Save();/* game.Pause();*/ break;
 //		case 'L': game.Load();/* game.Pause();*/ break;
-/*
-		case 'h': velocity = Vector2<int16_t>(-1,+0); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-		case 'j': velocity = Vector2<int16_t>(+0,+1); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-		case 'k': velocity = Vector2<int16_t>(+0,-1); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-		case 'l': velocity = Vector2<int16_t>(+1,+0); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-		case 'b': velocity = Vector2<int16_t>(-1,+1); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-		case 'n': velocity = Vector2<int16_t>(+1,+1); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-		case 'y': velocity = Vector2<int16_t>(-1,-1); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-		case 'u': velocity = Vector2<int16_t>(+1,-1); game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
-*/
-		case '.': game.worldtime_->WorldTurn(mapobject_->timeobject_->speed_); return 1;
+
+		case '.': return mapobject_->timeobject_->speed_;
 
 		case 'p': game.Pause(); return 0;
 		case 'q': game.End(); return 0;

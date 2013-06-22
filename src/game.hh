@@ -37,8 +37,8 @@ class Game
 
 	void SetRealtime(bool _realtime);
 
+	uint32_t speed_;
 	EntityManager entity_manager_;
-
 	GameFlags game_flags_;
 
 	std::unique_ptr<IO> io_;

@@ -11,7 +11,7 @@ class Player : public ControlObject
   	void Save(std::stringstream &_save);
   	void Load() {};
 
-	bool Input(char _ch);
+	uint32_t Input(char _ch);
 };
 
 #endif // TRON_RLENGINEX_PLAYER_HH
