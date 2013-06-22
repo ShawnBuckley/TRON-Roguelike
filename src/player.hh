@@ -12,6 +12,10 @@ class Player : public ControlObject
   	void Load() {};
 
 	uint32_t Input(char _ch);
+
+  private:
+	bool GameControls(char _ch);
+	uint32_t PlayerControls(char _ch);
 };
 
 #endif // TRON_RLENGINEX_PLAYER_HH
