@@ -28,9 +28,6 @@ class SDL : public IO
 	void LoadFont(int _x, int _y, int _xwdith, int _yhieght);
 	
 	bool Input();
-	bool PollInput();
-	bool WaitInput();
-	bool HandleEvent(SDL_Event &event);
 	
 	void Render(const std::shared_ptr<DisplayObject> _displayobject);
 	void AddSpace();

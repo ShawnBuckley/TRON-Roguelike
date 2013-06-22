@@ -110,43 +110,16 @@ void SDL::LoadFont(int _x, int _y, int _xwidth, int _yheight)
 
 bool SDL::Input()
 {
-	if(realtime_)
-		return PollInput();
-	else
-		return WaitInput();
-}
-
-bool SDL::WaitInput()
-{
 	SDL_Event event;
 
-	while(SDL_WaitEvent(&event))
+	while(realtime_ ? SDL_PollEvent(&event) : SDL_WaitEvent(&event))
 	{
-		HandleEvent(event);
-	}
-
-	return 0;
-}
-
-bool SDL::PollInput()
-{
-	SDL_Event event;
-
-	while(SDL_PollEvent(&event))
-	{
-		HandleEvent(event);
-	}
-
-	return 0;
-}
-
-bool SDL::HandleEvent(SDL_Event &event)
-{
-	switch(event.type)
-	{
-		case SDL_KEYDOWN: return game.player_->Input(event.key.keysym.sym);
-//		case SDL_VIDEORESIZE: DisplayResize(Event.resize.w, Event.resize.h); Game.Display->Map(); break;
-		case SDL_QUIT: game.End(); return 0;
+		switch(event.type)
+		{
+			case SDL_KEYDOWN: return game.player_->Input(event.key.keysym.sym);
+//			case SDL_VIDEORESIZE: DisplayResize(Event.resize.w, Event.resize.h); Game.Display->Map(); break;
+			case SDL_QUIT: game.End(); return 0;
+		}
 	}
 }
 
