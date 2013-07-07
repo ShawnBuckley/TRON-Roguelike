@@ -38,7 +38,7 @@ class Bike : public MapObject
 
 	bool Move(Vector2<int16_t> _vector);
 
-	bool Tick();
+	uint16_t Tick();
 	void RemoveWall();
 
 	bool CheckBump(MapObject *_mapobject) { printf("%p mapobject double dispatch call - bumped\n", this); return _mapobject->DoubleDispatch_CheckBump(this); };

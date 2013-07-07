@@ -13,7 +13,7 @@ void MapTile::Save(std::stringstream &_save)
 		<< (unsigned int)location_.y << " "
 		<< tiletype_->id_ << " "
 		<< (unsigned int)mapobject_list_.size() << " ";
-	for(std::list<MapObject*>::iterator it = mapobject_list_.begin(); it != mapobject_list_.end(); ++it)
+	for(auto it = mapobject_list_.begin(); it != mapobject_list_.end(); ++it)
 		_save << (unsigned int)((*it)->id_) << " ";
 	_save << std::endl;
 }
@@ -25,7 +25,7 @@ std::vector<MapObject*> MapTile::SolidMapObject()
 	if(mapobject_list_.empty())
 		return result;
 
-	for(std::list<MapObject*>::iterator mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
+	for(auto mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
 	{
 		if(*mapobject == NULL) continue;
 
@@ -43,7 +43,7 @@ bool MapTile::AnySolidMapObject()
 	if(mapobject_list_.empty())
 		return 0;
 
-	for(std::list<MapObject*>::iterator mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
+	for(auto mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
 	{
 		if(*mapobject == NULL) continue;
 
@@ -60,7 +60,7 @@ std::shared_ptr<DisplayObject> MapTile::VisibleMapObject()
 {
 	if(mapobject_list_.empty()) return NULL;
 
-	for(std::list<MapObject*>::iterator mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
+	for(auto mapobject = mapobject_list_.begin(); mapobject != mapobject_list_.end(); ++mapobject)
 	{
 		if((*mapobject) == NULL) continue;
 

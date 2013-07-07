@@ -50,6 +50,8 @@ void Bike::Save(std::stringstream &_save)
 
 void Bike::Derez()
 {
+	printf("derez\n");
+
 	if(flags_.rez_)
 	{
 		vector_ = Vector2<int16_t>(+0, +0);
@@ -101,84 +103,87 @@ bool Bike::Move(Vector2<int16_t> _vector)
 	return 1;
 }
 
-bool Bike::Tick()
+uint16_t Bike::Tick()
 {
 	if(flags_.rez_)
 	{
-		MapLocation<int16_t> location = location_;
-		location.rectangle_.Origin(location_.rectangle_.Vertex(0) + vector_);
-	
-		for(int16_t x=0; x<location.rectangle_.Width(); ++x)
-		{	for(int16_t y=0; y<location.rectangle_.Height(); ++y)
+		if(vector_ > Vector2<int16_t>(0,0))
 		{
-			Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
-
-			std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
-
-			if(tile != NULL)
+			MapLocation<int16_t> location = location_;
+			location.rectangle_.Origin(location_.rectangle_.Vertex(0) + vector_);
+		
+			for(int16_t x=0; x<location.rectangle_.Width(); ++x)
+			{	for(int16_t y=0; y<location.rectangle_.Height(); ++y)
 			{
-				if(tile->tiletype_->tiletype_flags_.solid_)
-				{
-					Derez();
-					return 0;
-				}
+				Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
 
-				std::vector<MapObject*> solid_mapobject = tile->SolidMapObject();
+				std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
 
-				for(uint8_t i=0; i<solid_mapobject.size(); i++)
+				if(tile != NULL)
 				{
-					if(solid_mapobject[i] != NULL && solid_mapobject[i] != this)
+					if(tile->tiletype_->tiletype_flags_.solid_)
 					{
-						if(solid_mapobject[i]->CheckBumped(this))
+						Derez();
+						return 0;
+					}
+
+					std::vector<MapObject*> solid_mapobject = tile->SolidMapObject();
+
+					for(uint8_t i=0; i<solid_mapobject.size(); i++)
+					{
+						if(solid_mapobject[i] != NULL && solid_mapobject[i] != this)
 						{
-							Derez();
-							return 0;
-						}
-						else
-						{
-							solid_mapobject[i]->Derez();
+							if(solid_mapobject[i]->CheckBumped(this))
+							{
+								Derez();
+								return 0;
+							}
+							else
+							{
+								solid_mapobject[i]->Derez();
+							}
 						}
 					}
 				}
 			}
-		}
-		}
+			}
 
-		if(bike_flags_.drop_walls_ && (vector_.x || vector_.y))
-		{
-			MapLocation<int16_t> location = location_;
-			location.rectangle_.Origin(location.rectangle_.Vertex(0) + vector_);
-
-			Vector2<int16_t> point = location_.rectangle_.Vertex(0);
-
-			for(; point.x<location_.rectangle_.Width()+location_.rectangle_.Vertex(0).x; point.x += 1)
-			{	for(; point.y<location_.rectangle_.Height()+location_.rectangle_.Vertex(0).y; point.y +=1)
+			if(bike_flags_.drop_walls_ && (vector_.x || vector_.y))
 			{
-				if(!location.rectangle_.Intersect(point))
+				MapLocation<int16_t> location = location_;
+				location.rectangle_.Origin(location.rectangle_.Vertex(0) + vector_);
+
+				Vector2<int16_t> point = location_.rectangle_.Vertex(0);
+
+				for(; point.x<location_.rectangle_.Width()+location_.rectangle_.Vertex(0).x; point.x += 1)
+				{	for(; point.y<location_.rectangle_.Height()+location_.rectangle_.Vertex(0).y; point.y +=1)
 				{
-					wall_list_.push_back(std::shared_ptr<LightWall>(
-						new LightWall(
-							wall_displayobject_[change_direction_ ? change_direction_ :vector_.Direction()],
-							MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
-							game.worldtime_->Tick(),
-							this
-						)
-					));
+					if(!location.rectangle_.Intersect(point))
+					{
+						wall_list_.push_back(std::shared_ptr<LightWall>(
+							new LightWall(
+								wall_displayobject_[change_direction_ ? change_direction_ :vector_.Direction()],
+								MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
+								game.worldtime_->Tick(),
+								this
+							)
+						));
+					}
 				}
+				}
+		
+				change_direction_ = 0;
 			}
-			}
-	
-			change_direction_ = 0;
+
+			MapObject::Move(vector_);
 		}
 
-		MapObject::Move(vector_);
 		moved_ = 0;
-		timeobject_->time_ -= timeobject_->speed_;
 	}
 	else
 	{
 		RemoveWall();
 	}
 
-	return 1;
+	return timeobject_->speed_;
 }

@@ -58,7 +58,7 @@ class MapObject : public GameObject
 	virtual bool Move(Vector2<int16_t> _vector);
 	bool SetLocation(MapLocation<int16_t> _location);
 
-	virtual bool Tick();
+	virtual uint16_t Tick();
 
 	virtual bool CheckBump(MapObject *_mapobject) { printf("%p mapobject double dispatch call - bump\n", this); return _mapobject->DoubleDispatch_CheckBump(this); };
 	virtual bool DoubleDispatch_CheckBump(MapObject *_mapobject) { printf("%p DD MO bump MO\n",this); return 1; };

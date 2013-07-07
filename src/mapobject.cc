@@ -150,7 +150,7 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 	return SetLocation(location);
 }
 
-bool MapObject::Tick()
+uint16_t MapObject::Tick()
 {
 	if(vector_.x || vector_.y)
 	{

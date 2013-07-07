@@ -27,7 +27,7 @@ class SDL : public IO
 	bool LoadTexture(std::string _file);
 	void LoadFont(int _x, int _y, int _xwdith, int _yhieght);
 	
-	bool Input();
+	uint32_t Input();
 	
 	void Render(const std::shared_ptr<DisplayObject> _displayobject);
 	void AddSpace();

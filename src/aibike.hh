@@ -32,7 +32,8 @@ class AiBike : public ControlObject
 	void Save(std::stringstream &_save);
 	void Load() {};
 
-	void Think();
+	void Think(uint16_t _remaining_time);
+	ControlObjectMove Move();
 
   private:
 	void Default();
@@ -47,13 +48,15 @@ class AiBike : public ControlObject
 	void AttackEnemy(MapObject *_mapobject);
 	MapObject* TargetClosestEntity();
 
-
+	bool think_;
 	AiState ai_state_;
 	uint8_t ai_skill_;
 	
 	uint8_t tunnel_distance;
 
-	Vector2<int8_t> wall_hug_;
+	// Vector2<int8_t> wall_hug_;
+
+	Vector2<int16_t> next_move_;
 };
 
 #endif // TRON_RLENGINEX_AIBIKE_HH

@@ -33,7 +33,7 @@ void Game::Start()
 
 	io_->Init();
 
-	io_->SetFPS(30.0f);
+	io_->SetFPS(20.0f);
 	SetRealtime(1);
 
 	map_ = std::unique_ptr<Map>(new Map);
@@ -79,7 +79,7 @@ void Game::Start()
 
 	// printf("viewport (%i %i) %i %i\n", io_->viewport_.Vertex(0).x, io_->viewport_.Vertex(0).y io_->viewport_.Width(), io_->viewport_.Height());
 	
-	for(std::vector<std::shared_ptr<Sector> >::iterator sector = map_->sector_.begin();
+	for(auto sector = map_->sector_.begin();
 		sector != map_->sector_.end(); ++sector)
 	{
 		printf("%p (%i %i) %i %i\n", (*sector).get(), (*sector)->rectangle_.Vertex(0).x, (*sector)->rectangle_.Vertex(0).y, (*sector)->rectangle_.Width(), (*sector)->rectangle_.Height());
@@ -92,7 +92,6 @@ void Game::Start()
 		)
 	);
 /*/
-
 	player_ = entity_manager_.AddPlayerBike(blue);
 	player_->mapobject_->Rez(
 		MapLocation<int16_t>(
@@ -100,7 +99,7 @@ void Game::Start()
 		),
 		Vector2<int16_t>(+0,+0)
 	);
-//*
+
 	std::shared_ptr<AiBike> red_bike = entity_manager_.AddAiBike(red);
 	red_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
@@ -130,8 +129,6 @@ void Game::Start()
 
 void Game::Run()
 {
-	printf("game run\n");
-
 	io_->Map();
 
 	game_flags_.realtime_ = 1;
@@ -139,14 +136,15 @@ void Game::Run()
 	while(game_flags_.run_)
 	{
 		uint32_t input = io_->Input();
-		if(game_flags_.paused_) continue;
+		if(game_flags_.paused_)
+			continue;
 		if(game_flags_.realtime_)
 			worldtime_->WorldTurn(speed_);
-		else
-			if(input)
-				worldtime_->WorldTurn(input);
+		else if(input)
+			worldtime_->WorldTurn(input);
 		io_->Map();
 	}
+
 }
 
 void Game::End()
@@ -164,7 +162,7 @@ void Game::Save()
 {
 /*	std::ofstream save_file("save", std::ios::trunc);
 
-	for(std::unordered_map<uint32_t, GameObject*>::iterator it = Object::map_.begin(); it != Object::map_.end(); ++it)
+	for(auto it = Object::map_.begin(); it != Object::map_.end(); ++it)
 	{
 		if(save_file.good())
 		{

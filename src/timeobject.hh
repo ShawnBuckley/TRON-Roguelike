@@ -27,7 +27,8 @@ class TimeObject : public GameObject
 
 	void Tick();
 
-	static std::list<TimeObject*> list_;
+	static std::list<TimeObject*> timeobjects_;
+	static uint16_t fastest_speed_;
 
 	bool linked_;
 	uint16_t speed_;

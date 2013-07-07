@@ -41,7 +41,7 @@ std::shared_ptr<MapTile> Map::Tile(Vector2<int16_t> _coord)
 	if(!CoordValid(_coord))
 		return NULL;
 
-	for(std::vector<std::shared_ptr<Sector> >::iterator sector = sector_.begin();
+	for(auto sector = sector_.begin();
 		sector != sector_.end(); ++sector)
 	{
 		if((*sector) != NULL)

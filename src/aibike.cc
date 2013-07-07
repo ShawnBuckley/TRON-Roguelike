@@ -32,22 +32,42 @@ void AiBike::Save(std::stringstream &_save)
 		<< std::endl;
 }
 
-void AiBike::Think()
+void AiBike::Think(uint16_t _think_time)
 {
-//	Skill Check
-//	if(skill_ < 
+	think_ = 1;
+	remaining_time_ = _think_time;
 
-	if(!mapobject_->flags_.rez_)
-		return;
+	// printf("think time: %i\n", _think_time);
 
-	if(CheckTunnel())
-		ai_state_ = AI_TUNNEL;
-
-	switch(ai_state_)
+	while(mapobject_->flags_.rez_ && remaining_time_ > mapobject_->timeobject_->speed_)
 	{
-		case AI_DEFAULT: Default(); break;
-		case AI_TUNNEL: Tunnel(); break;
+		// Skill Check
+		// if(skill_ < 
+
+		// printf("%p: think - rtime %i : speed %i\n", this, remaining_time_, mapobject_->timeobject_->speed_);
+
+		if(CheckTunnel())
+			ai_state_ = AI_TUNNEL;
+
+		switch(ai_state_)
+		{
+			case AI_DEFAULT: Default(); break;
+			case AI_TUNNEL: Tunnel(); break;
+		}
+
+		remaining_time_ -= mapobject_->timeobject_->speed_;
 	}
+}
+
+ControlObjectMove AiBike::Move()
+{
+	ControlObjectMove move = moves_.front();
+
+	mapobject_->Move(move.location_);
+	// mapobject_->vector_ = move.location_;
+	moves_.pop_front();
+
+	return move;
 }
 
 void AiBike::Default()
@@ -56,13 +76,7 @@ void AiBike::Default()
 
 	std::shared_ptr<MapTile> tile = game.map_->Tile(test_coord);
 
-	if(tile == NULL || tile->tiletype_->tiletype_flags_.solid_)
-	{
-		CheckDirection();
-		return;
-	}
-
-	if(!tile->Empty() && CheckMapObjects(tile))
+	if(tile == NULL || tile->tiletype_->tiletype_flags_.solid_ || (!tile->Empty() && CheckMapObjects(tile)))
 	{
 		CheckDirection();
 		return;
@@ -95,7 +109,7 @@ void AiBike::Tunnel()
 
 bool AiBike::CheckMapObjects(std::shared_ptr<MapTile> _tile)
 {
-	for(std::list<MapObject*>::iterator mapobject = _tile->mapobject_list_.begin();
+	for(auto mapobject = _tile->mapobject_list_.begin();
 		mapobject != _tile->mapobject_list_.end(); ++mapobject)
 	{
 		if(*mapobject == NULL) continue;
@@ -126,6 +140,8 @@ bool AiBike::CheckTunnel()
 
 void AiBike::CheckDirection()
 {
+	printf("check direction\n");
+
 	Vector2<int16_t> vector(abs(mapobject_->vector_.y), abs(mapobject_->vector_.x));
 
 	for(Vector2<int16_t> check_tile(vector.x, vector.y); ; vector.x ? check_tile.x+=1 : check_tile.y+=1)
@@ -150,7 +166,8 @@ bool AiBike::CheckTile(std::shared_ptr<MapTile> _tile)
 
 void AiBike::ChangeDirection(Vector2<int16_t> _vector)
 {
-	mapobject_->Move(_vector);
+	moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, _vector));
+	// mapobject_->Move(_vector);
 }
 
 void AiBike::AttackEnemy(MapObject *_mapobject)

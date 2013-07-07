@@ -5,6 +5,9 @@
 
 #include "controlobject.hh"
 
+#include "mapobject.hh"
+#include "timeobject.hh"
+
 class Player : public ControlObject
 {
   public:
@@ -12,6 +15,9 @@ class Player : public ControlObject
   	void Load() {};
 
 	uint32_t Input(char _ch);
+
+	void Think(uint16_t _remaining_time) {};
+	ControlObjectMove Move() {};
 
   private:
 	bool GameControls(char _ch);

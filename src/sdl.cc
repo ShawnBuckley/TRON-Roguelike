@@ -59,7 +59,7 @@ bool SDL::LoadTexture(std::string _file)
 
 	SDL_SetColorKey(load, SDL_SRCCOLORKEY, SDL_MapRGB(load->format, 255, 255, 255));
 
-	for(std::vector<Color*>::iterator color = Color::colors_.begin(); color != Color::colors_.end(); ++color)
+	for(auto color = Color::colors_.begin(); color != Color::colors_.end(); ++color)
 	{
 		if(*color == NULL) continue;
 
@@ -108,7 +108,7 @@ void SDL::LoadFont(int _x, int _y, int _xwidth, int _yheight)
 	}
 }
 
-bool SDL::Input()
+uint32_t SDL::Input()
 {
 	SDL_Event event;
 
@@ -188,7 +188,7 @@ void SDL::Map()
 	
 //	printf("viewport %i %i\n", viewport_.Vertex(0).x, viewport_.Vertex(0).y);
 /*
-	for(std::vector<std::shared_ptr<Sector> >::iterator sector = game.map_->sector_.begin();
+	for(auto sector = game.map_->sector_.begin();
 		sector != game.map_->sector_.end(); ++sector)
 	{
 		if((*sector) != NULL)
@@ -235,7 +235,7 @@ void SDL::Map()
 		}
 	}
 /*
-	for(std::vector<std::shared_ptr<Sector> >::iterator sector = game.map_->sector_.begin();
+	for(auto sector = game.map_->sector_.begin();
 		sector != game.map_->sector_.end(); ++sector)
 	{
 		Vector2<int16_t> coord;
@@ -255,7 +255,7 @@ void SDL::Map()
 
 					if(!tile->Empty())
 					{
-						for(std::list<MapObject*>::reverse_iterator mapobject = tile->mapobject_list_.rbegin();
+						for(auto mapobject = tile->mapobject_list_.rbegin();
 							mapobject != tile-> mapobject_list_.rend(); ++mapobject)
 						{
 							if((*mapobject) != NULL && (*mapobject)->flags_.visible_)
