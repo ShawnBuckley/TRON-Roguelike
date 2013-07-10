@@ -5,10 +5,11 @@
 
 #include <memory>
 
+#include "engine/mapobject.hh"
+#include "engine/player.hh"
+
 #include "aibike.hh"
 #include "bike.hh"
-#include "mapobject.hh"
-#include "player.hh"
 
 class EntityManager
 {
@@ -16,9 +17,9 @@ class EntityManager
 	EntityManager() {};
 	~EntityManager() {};
 
-	std::shared_ptr<Player> AddPlayerMapobject(Colors _color);
-	std::shared_ptr<Player> AddPlayerBike(Colors _color);
-	std::shared_ptr<AiBike> AddAiBike(Colors _color);
+	static std::shared_ptr<Player> AddPlayerMapobject(Colors _color);
+	static std::shared_ptr<Player> AddPlayerBike(Colors _color);
+	static std::shared_ptr<AiBike> AddAiBike(Colors _color);
 };
 
 #endif // TRON_RLENGINEX_ENTITYMANAGER_HH

@@ -5,10 +5,11 @@
 
 #include <inttypes.h>
 
-#include "math/vector2.hh"
+#include "engine/math/vector2.hh"
+#include "engine/controlobject.hh"
 
 #include "bike.hh"
-#include "controlobject.hh"
+
 
 class MapObject;
 class MapTile;

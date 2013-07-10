@@ -1,8 +1,7 @@
 // TRON RLengineX Sector.cc
 
-#include "main.hh"
-
 #include "sector.hh"
+#include "maptile.hh"
 
 Sector::Sector()
 {
@@ -10,6 +9,16 @@ Sector::Sector()
 		new TileType(std::move(std::shared_ptr<DisplayObject>(new DisplayObject('.', 176, kColor[dark_blue])))
 	));
 }
+
+std::shared_ptr<MapTile> Sector::Tile(Vector2<int16_t> _coord)
+{
+	if(0 <= _coord.x && _coord.x <=rectangle_.Width() && 0 <= _coord.y && _coord.y <= rectangle_.Height())
+	{
+		return tile_[_coord.x][_coord.y];
+	}
+
+	return NULL;
+};
 
 void Sector::Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle)
 {

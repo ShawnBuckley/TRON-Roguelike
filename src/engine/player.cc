@@ -2,11 +2,11 @@
 
 #include <stdio.h>
 
+#include "game.hh"
 #include "player.hh"
 #include "mapobject.hh"
 #include "worldtime.hh"
 
-#include "main.hh"
 
 void Player::Save(std::stringstream &_save)
 {
@@ -19,7 +19,7 @@ void Player::Save(std::stringstream &_save)
 
 uint32_t Player::Input(char _ch)
 {
-	if(!GameControls(_ch) && !game.game_flags_.paused_)
+	if(!GameControls(_ch) && !game()->game_flags_.paused_)
 		return PlayerControls(_ch);
 
 	return 0;
@@ -29,11 +29,11 @@ bool Player::GameControls(char _ch)
 {
 	switch(_ch)
 	{
-		case 's': game.Save();/* game.Pause();*/ return 1;
-//		case 'L': game.Load();/* game.Pause();*/ return 1;
+		case 's': game()->Save();/* game()->Pause();*/ return 1;
+//		case 'L': game()->Load();/* game()->Pause();*/ return 1;
 
-		case 'p': game.Pause(); return 1;
-		case 'q': game.End(); return 1;
+		case 'p': game()->Pause(); return 1;
+		case 'q': game()->End(); return 1;
 		
 		default: return 0;
 	}

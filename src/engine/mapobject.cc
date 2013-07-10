@@ -4,8 +4,8 @@
 
 #include <stdio.h>
 
+#include "game.hh"
 #include "color.hh"
-#include "main.hh"
 #include "mapobject.hh"
 #include "map.hh"
 #include "maptile.hh"
@@ -88,7 +88,7 @@ void MapObject::MapLink()
 	
 		for(int16_t y=0; y<location_.rectangle_.Height(); ++y)
 		{
-			std::shared_ptr<MapTile> maptile = game.map_->Tile(location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y));
+			std::shared_ptr<MapTile> maptile = game()->map_->Tile(location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y));
 			Vector2<int16_t> pos = location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y);
 
 			row.push_back(maptile);
@@ -136,7 +136,7 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 		if(location.rectangle_.Intersect(point))
 			continue;
 			
-		if(game.map_->Tile(point) != NULL)
+		if(game()->map_->Tile(point) != NULL)
 		{
 			if(location.maptile_[x][y]->tiletype_->tiletype_flags_.solid_)
 				return 0;

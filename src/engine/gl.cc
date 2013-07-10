@@ -9,8 +9,6 @@
 
 #include <png.h>
 
-#include "main.hh"
-
 #include "color.hh"
 #include "io.hh"
 #include "gl.hh"
@@ -20,7 +18,6 @@
 #include "tiletype.hh"
 #include "mapobject.hh"
 #include "player.hh"
-#include "bike.hh"
 #include "displayobject.hh"
 
 #define PNGSIGSIZE 8

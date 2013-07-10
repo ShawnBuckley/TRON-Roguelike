@@ -7,6 +7,7 @@
 
 #include "gameobject.hh"
 #include "timeobject.hh"
+#include "tiletype.hh"
 
 #include <vector>
 #include <memory>
@@ -21,16 +22,7 @@ class Sector : public GameObject
 	void Save(std::stringstream &_save) {};
 	void Load() {};
 
-	std::shared_ptr<MapTile> Tile(Vector2<int16_t> _coord)
-	{
-		if(0 <= _coord.x && _coord.x <=rectangle_.Width() && 0 <= _coord.y && _coord.y <= rectangle_.Height())
-		{
-			return tile_[_coord.x][_coord.y];
-		}
-
-		return NULL;
-	};
-
+	std::shared_ptr<MapTile> Tile(Vector2<int16_t> _coord);
 	virtual void Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle);
 
 	AxisAligned_Rectangle2<int16_t> rectangle_;

@@ -1,14 +1,11 @@
 // TRON-Roguelike Main.cc
 
-#include "game.hh"
-#include "rng.hh"
-
-Game game;
-RNG rng;
+#include "tron.hh"
 
 int main(int argc, char **argv)
 {
-	game.Start();
+	Game* game = new TRON();
+	game->Start();
 
 	return 0;
 }

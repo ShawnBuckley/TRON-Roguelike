@@ -7,7 +7,6 @@
 
 #include "linux.hh"
 
-#include "main.hh"
 #include "color.hh"
 #include "io.hh"
 #include "sdl.hh"
@@ -17,7 +16,6 @@
 #include "tiletype.hh"
 #include "mapobject.hh"
 #include "player.hh"
-#include "bike.hh"
 #include "displayobject.hh"
 #include "sector.hh"
 
@@ -116,9 +114,9 @@ uint32_t SDL::Input()
 	{
 		switch(event.type)
 		{
-			case SDL_KEYDOWN: return game.player_->Input(event.key.keysym.sym);
-//			case SDL_VIDEORESIZE: DisplayResize(Event.resize.w, Event.resize.h); Game.Display->Map(); break;
-			case SDL_QUIT: game.End(); return 0;
+			case SDL_KEYDOWN: return game()->player_->Input(event.key.keysym.sym);
+//			case SDL_VIDEORESIZE: DisplayResize(Event.resize.w, Event.resize.h); game()->Display->Map(); break;
+			case SDL_QUIT: game()->End(); return 0;
 		}
 	}
 }
@@ -182,14 +180,14 @@ void SDL::Map()
 	Clear();
 
 	viewport_.Origin(Vector2<int16_t>(
-		game.player_->mapobject_->location_.maptile_[0][0]->location_.x - x_/2,
-		game.player_->mapobject_->location_.maptile_[0][0]->location_.y - y_/2
+		game()->player_->mapobject_->location_.maptile_[0][0]->location_.x - x_/2,
+		game()->player_->mapobject_->location_.maptile_[0][0]->location_.y - y_/2
 	));
 	
 //	printf("viewport %i %i\n", viewport_.Vertex(0).x, viewport_.Vertex(0).y);
 /*
-	for(auto sector = game.map_->sector_.begin();
-		sector != game.map_->sector_.end(); ++sector)
+	for(auto sector = game()->map_->sector_.begin();
+		sector != game()->map_->sector_.end(); ++sector)
 	{
 		if((*sector) != NULL)
 		{
@@ -235,8 +233,8 @@ void SDL::Map()
 		}
 	}
 /*
-	for(auto sector = game.map_->sector_.begin();
-		sector != game.map_->sector_.end(); ++sector)
+	for(auto sector = game()->map_->sector_.begin();
+		sector != game()->map_->sector_.end(); ++sector)
 	{
 		Vector2<int16_t> coord;
 	
@@ -245,9 +243,9 @@ void SDL::Map()
 		for(coord.y((*sector)->rectangle_.Vertex(0).y); coord.y < (*sector)->rectangle_.Height(); coord.y(coord.y+1))
 		{	for(coord.x((*sector)->rectangle_.Vertex(0).x); coord.x < (*sector)->rectangle_.Width(); coord.x(coord.x+1))
 		{
-			if(game.map_->CoordValid(coord))
+			if(game()->map_->CoordValid(coord))
 			{
-				std::shared_ptr<MapTile> tile = game.map_->Tile(coord);
+				std::shared_ptr<MapTile> tile = game()->map_->Tile(coord);
 
 	 			if(tile != NULL)
 				{
@@ -274,9 +272,9 @@ void SDL::Map()
 	for(coord.y = viewport_.Vertex(0).y; coord.y < viewport_.Height(); coord.y += 1)
 	{	for(coord.x = viewport_.Vertex(0).x; coord.x < viewport_.Width(); coord.x += 1)
 	{
-		if(game.map_->CoordValid(coord))
+		if(game()->map_->CoordValid(coord))
 		{
-			std::shared_ptr<MapTile> tile = game.map_->Tile(coord);
+			std::shared_ptr<MapTile> tile = game()->map_->Tile(coord);
 
  			if(tile != NULL)
 			{
@@ -299,10 +297,10 @@ void SDL::Map()
 	} NewLine();
 	}
 //*/
-	if(game.player_->mapobject_)
+	if(game()->player_->mapobject_)
 	{
-		Move(game.player_->mapobject_->location_.maptile_[0][0]->location_.y,
-			game.player_->mapobject_->location_.maptile_[0][0]->location_.x);
+		Move(game()->player_->mapobject_->location_.maptile_[0][0]->location_.y,
+			game()->player_->mapobject_->location_.maptile_[0][0]->location_.x);
 	}
 
 	Refresh();

@@ -3,8 +3,8 @@
 #ifndef TRON_RLENGINEX_LIGHTWALL_HH
 #define TRON_RLENGINEX_LIGHTWALL_HH
 
-#include "mapobject.hh"
-#include "displayobject.hh"
+#include "engine/mapobject.hh"
+#include "engine/displayobject.hh"
 
 class LightWall : public MapObject
 {

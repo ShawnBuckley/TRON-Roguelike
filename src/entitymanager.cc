@@ -1,6 +1,7 @@
 // TRON-Roguelike EntityManager.cc
 
-#include "color.hh"
+#include "engine/color.hh"
+
 #include "entitymanager.hh"
 
 std::shared_ptr<Player> EntityManager::AddPlayerMapobject(Colors _color)

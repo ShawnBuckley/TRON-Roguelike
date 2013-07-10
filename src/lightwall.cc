@@ -2,7 +2,7 @@
 
 #include "lightwall.hh"
 #include "bike.hh"
-#include "maptile.hh"
+#include "engine/maptile.hh"
 
 LightWall::LightWall(std::shared_ptr<DisplayObject> _displayobject, MapLocation<int16_t> _location, uint64_t _time_dropped, Bike *_bike)
 {

@@ -9,9 +9,8 @@
 #include <list>
 #include <vector>
 
-#include "math/vector2.hh"
-
-#include "mapobject.hh"
+#include "engine/math/vector2.hh"
+#include "engine/mapobject.hh"
 
 #include "lightwall.hh"
 

@@ -1,9 +1,10 @@
 // TRON-Roguelike LightGrid.cc
 
-#include "color.hh"
+#include "engine/color.hh"
+#include "engine/maptile.hh"
+#include "engine/tiletype.hh"
+
 #include "lightgrid.hh"
-#include "maptile.hh"
-#include "tiletype.hh"
 
 LightGrid::LightGrid()
 {

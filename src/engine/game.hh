@@ -5,7 +5,6 @@
 
 #include <memory>
 
-#include "entitymanager.hh"
 #include "player.hh"
 
 #include "io.hh"
@@ -25,8 +24,9 @@ class Game
 {
   public:
 	Game();
+	~Game() {};
 
-	void Start();
+	virtual void Start();
 	void Run();
 	void End();
 
@@ -38,7 +38,6 @@ class Game
 	void SetRealtime(bool _realtime);
 
 	uint32_t speed_;
-	EntityManager entity_manager_;
 	GameFlags game_flags_;
 
 	std::unique_ptr<IO> io_;
@@ -49,5 +48,7 @@ class Game
 
 	std::shared_ptr<Player> player_;
 };
+
+Game* game();
 
 #endif // TRON_RLENGINEX_GAME_HH

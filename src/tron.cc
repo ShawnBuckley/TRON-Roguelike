@@ -2,26 +2,24 @@
 
 #include <fstream>
 
-#include "linux.hh"
+#include "engine/linux.hh"
+
+#include "engine/worldtime.hh"
+#include "engine/game.hh"
+#include "engine/gl.hh"
+#include "engine/sdl.hh"
+#include "engine/color.hh"
 
 #include "aibike.hh"
 #include "bike.hh"
-#include "game.hh"
-#include "gl.hh"
-#include "sdl.hh"
-#include "color.hh"
 #include "lightgrid.hh"
-#include "worldtime.hh"
+#include "entitymanager.hh"
+#include "tron.hh"
 
-Game::Game()
+void TRON::Start()
 {
-	io_ = std::unique_ptr<IO>(new SDL);
-	worldtime_ = std::unique_ptr<WorldTime>(new WorldTime);
-	speed_ = 1000;
-}
+	printf("TRON start\n");
 
-void Game::Start()
-{
 	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,0)));
 	kColor.push_back(std::shared_ptr<Color>(new Color(255,0,0)));
 	kColor.push_back(std::shared_ptr<Color>(new Color(0,255,0)));
@@ -92,7 +90,7 @@ void Game::Start()
 		)
 	);
 /*/
-	player_ = entity_manager_.AddPlayerBike(blue);
+	player_ = EntityManager::AddPlayerBike(blue);
 	player_->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y+1), 1, 1)
@@ -100,7 +98,7 @@ void Game::Start()
 		Vector2<int16_t>(+0,+0)
 	);
 
-	std::shared_ptr<AiBike> red_bike = entity_manager_.AddAiBike(red);
+	std::shared_ptr<AiBike> red_bike = EntityManager::AddAiBike(red);
 	red_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)
@@ -108,7 +106,7 @@ void Game::Start()
 		Vector2<int16_t>(-1,+0)
 	);
 
-	std::shared_ptr<AiBike> yellow_bike = entity_manager_.AddAiBike(yellow);
+	std::shared_ptr<AiBike> yellow_bike = EntityManager::AddAiBike(yellow);
 	yellow_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y-1), 1, 1)
@@ -116,7 +114,7 @@ void Game::Start()
 		Vector2<int16_t>(+1,+0)
 	);
 
-	std::shared_ptr<AiBike> green_bike = entity_manager_.AddAiBike(green);
+	std::shared_ptr<AiBike> green_bike = EntityManager::AddAiBike(green);
 	green_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y+1), 1, 1)
@@ -125,62 +123,4 @@ void Game::Start()
 	);
 //*/
 	Run();
-}
-
-void Game::Run()
-{
-	io_->Map();
-
-	game_flags_.realtime_ = 1;
-
-	while(game_flags_.run_)
-	{
-		uint32_t input = io_->Input();
-		if(game_flags_.paused_)
-			continue;
-		if(game_flags_.realtime_)
-			worldtime_->WorldTurn(speed_);
-		else if(input)
-			worldtime_->WorldTurn(input);
-		io_->Map();
-	}
-
-}
-
-void Game::End()
-{
-	game_flags_.run_ = 0;
-}
-
-void Game::Pause()
-{
-	game_flags_.paused_ = !game_flags_.paused_;
-	SetRealtime(!game_flags_.realtime_);
-}
-
-void Game::Save()
-{
-/*	std::ofstream save_file("save", std::ios::trunc);
-
-	for(auto it = Object::map_.begin(); it != Object::map_.end(); ++it)
-	{
-		if(save_file.good())
-		{
-			std::stringstream save;
-			it->second->Save(save);
-			save_file << save.str();
-		}
-	}*/
-}
-
-void Game::Load()
-{
-//	std::ifstream save_file("save", std::ios::begin);
-}
-
-void Game::SetRealtime(bool _realtime)
-{
-	game_flags_.realtime_ = _realtime;
-	
-	io_->SetRealtime(_realtime);
 }

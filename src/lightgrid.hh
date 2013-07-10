@@ -5,8 +5,8 @@
 
 #include <memory>
 
-#include "tiletype.hh"
-#include "sector.hh"
+#include "engine/tiletype.hh"
+#include "engine/sector.hh"
 
 class LightGrid : public Sector
 {
