@@ -51,8 +51,13 @@ void Game::Start()
 	player_->mapobject_ = std::move(std::shared_ptr<MapObject>(new MapObject));
 	player_->mapobject_->displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('@', '@', kColor[blue])));
 	player_->mapobject_->flags_ = MapObjectFlags(1, 1, 1, 1);
-
 	player_->mapobject_->timeobject_ = std::move(std::shared_ptr<TimeObject>(new TimeObject(6000)));
+	player_->mapobject_->Rez(
+		MapLocation<int16_t>(
+			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8), 1, 1)
+		),
+		Vector2<int16_t>(+0,+0)
+	);
 
 	Run();
 }
