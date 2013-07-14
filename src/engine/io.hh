@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <list>
 
 #include "math/axisaligned_rectangle2.hh"
 
@@ -31,6 +32,8 @@ class IO
   
 	uint8_t x_;
 	uint8_t y_;
+
+	std::list<char> keystrokes_;
 
 	std::shared_ptr<Color> old_color_;
 	AxisAligned_Rectangle2<int16_t> viewport_;

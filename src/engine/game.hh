@@ -40,12 +40,16 @@ class Game
 	uint32_t speed_;
 	GameFlags game_flags_;
 
+	Vector2<int16_t> camera_;
+
 	std::unique_ptr<IO> io_;
 	std::unique_ptr<Map> map_;
 	std::unique_ptr<WorldTime> worldtime_;
 
-	std::vector<std::shared_ptr<ControlObject> > entities_;
+	// std::vector<std::unique_ptr<ControlObject>> controlobjects_;
+	// ControlObject* player_;
 
+	std::vector<std::shared_ptr<ControlObject> > entities_;
 	std::shared_ptr<Player> player_;
 };
 

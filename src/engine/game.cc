@@ -77,13 +77,15 @@ void Game::Run()
 			worldtime_->WorldTurn(speed_);
 		else if(input)
 			worldtime_->WorldTurn(input);
+		camera_ = player_->mapobject_->location_.maptile_[0][0]->location_;
 		io_->Map();
 	}
-
+	printf("exit run\n");
 }
 
 void Game::End()
 {
+	printf("game end!\n");
 	game_flags_.run_ = 0;
 }
 

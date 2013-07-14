@@ -122,5 +122,6 @@ void TRON::Start()
 		Vector2<int16_t>(-1,+0)
 	);
 //*/
+	printf("run\n");
 	Run();
 }

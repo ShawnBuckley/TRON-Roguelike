@@ -8,43 +8,64 @@
 #include "worldtime.hh"
 
 
-uint32_t Player::Input(char _ch)
+// uint32_t Player::Input(char _ch)
+void Player::Think(uint16_t _remaining_time)
 {
-	if(!GameControls(_ch) && !game()->game_flags_.paused_)
-		return PlayerControls(_ch);
+	// check io controls list
 
-	return 0;
+	for(char ch : game()->io_->keystrokes_)
+	{
+		if(!GameControls(ch) && !game()->game_flags_.paused_)
+		{
+			if(PlayerControls(ch))
+			{
+				game()->io_->keystrokes_.remove(ch);
+				break;
+			}
+		}
+	}
+}
+
+ControlObjectMove Player::Move()
+{
+	ControlObjectMove move = moves_.front();
+
+	mapobject_->Move(move.location_);
+	// mapobject_->vector_ = move.location_;
+	moves_.pop_front();
+
+	return move;
 }
 
 bool Player::GameControls(char _ch)
 {
 	switch(_ch)
 	{
-		case 's': game()->Save();/* game()->Pause();*/ return 1;
+// 		case 's': game()->Save();/* game()->Pause();*/ return 1;
 //		case 'L': game()->Load();/* game()->Pause();*/ return 1;
 
 		case 'p': game()->Pause(); return 1;
 		case 'q': game()->End(); return 1;
-		
-		default: return 0;
 	}
+
+	return 0;
 }
 
-uint32_t Player::PlayerControls(char _ch)
-{
+bool Player::PlayerControls(char _ch)
+{	
 	switch(_ch)
 	{
-		case 'h': if(mapobject_->Move(Vector2<int16_t>(-1,+0))) return mapobject_->timeobject_->speed_;
-		case 'j': if(mapobject_->Move(Vector2<int16_t>(+0,+1))) return mapobject_->timeobject_->speed_;
-		case 'k': if(mapobject_->Move(Vector2<int16_t>(+0,-1))) return mapobject_->timeobject_->speed_;
-		case 'l': if(mapobject_->Move(Vector2<int16_t>(+1,+0))) return mapobject_->timeobject_->speed_;
-		case 'b': if(mapobject_->Move(Vector2<int16_t>(-1,+1))) return mapobject_->timeobject_->speed_;
-		case 'n': if(mapobject_->Move(Vector2<int16_t>(+1,+1))) return mapobject_->timeobject_->speed_;
-		case 'y': if(mapobject_->Move(Vector2<int16_t>(-1,-1))) return mapobject_->timeobject_->speed_;
-		case 'u': if(mapobject_->Move(Vector2<int16_t>(+1,-1))) return mapobject_->timeobject_->speed_;
+		case 'h': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(-1,+0))); return 1;
+		case 'j': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+0,+1))); return 1;
+		case 'k': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+0,-1))); return 1;
+		case 'l': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+1,+0))); return 1;
+		case 'b': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(-1,+1))); return 1;
+		case 'n': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+1,+1))); return 1;
+		case 'y': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(-1,-1))); return 1;
+		case 'u': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+1,-1))); return 1;
 
-		case '.': return mapobject_->timeobject_->speed_;
-		
-		default: return 0;
+		case '.': moves_.push_back(ControlObjectMove(COMT_WAIT, 0, Vector2<int16_t>(0,0))); return 1;
 	}
+
+	return 0;
 }

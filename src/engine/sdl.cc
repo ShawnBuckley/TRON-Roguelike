@@ -114,7 +114,8 @@ uint32_t SDL::Input()
 	{
 		switch(event.type)
 		{
-			case SDL_KEYDOWN: return game()->player_->Input(event.key.keysym.sym);
+			case SDL_KEYDOWN: keystrokes_.push_back(event.key.keysym.sym); return 0;
+			//return game()->player_->Input(event.key.keysym.sym);
 //			case SDL_VIDEORESIZE: DisplayResize(Event.resize.w, Event.resize.h); game()->Display->Map(); break;
 			case SDL_QUIT: game()->End(); return 0;
 		}
@@ -179,11 +180,16 @@ void SDL::Map()
 
 	Clear();
 
+	// viewport_.Origin(Vector2<int16_t>(
+	// 	game()->player_->mapobject_->location_.maptile_[0][0]->location_.x - x_/2,
+	// 	game()->player_->mapobject_->location_.maptile_[0][0]->location_.y - y_/2
+	// ));
+
 	viewport_.Origin(Vector2<int16_t>(
-		game()->player_->mapobject_->location_.maptile_[0][0]->location_.x - x_/2,
-		game()->player_->mapobject_->location_.maptile_[0][0]->location_.y - y_/2
+		game()->camera_.x - x_/2,
+		game()->camera_.y - y_/2
 	));
-	
+
 //	printf("viewport %i %i\n", viewport_.Vertex(0).x, viewport_.Vertex(0).y);
 /*
 	for(auto sector = game()->map_->sector_.begin();
@@ -296,12 +302,8 @@ void SDL::Map()
 		AddSpace();
 	} NewLine();
 	}
-//*/
-	if(game()->player_->mapobject_)
-	{
-		Move(game()->player_->mapobject_->location_.maptile_[0][0]->location_.y,
-			game()->player_->mapobject_->location_.maptile_[0][0]->location_.x);
-	}
+
+	Move(game()->camera_.x, game()->camera_.y);
 
 	Refresh();
 
