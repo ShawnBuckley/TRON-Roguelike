@@ -1,0 +1,22 @@
+remove GameObject
+Improve memory management and ownership 
+	vector of unique_ptrs
+
+remove EntityManager, integrate factory support into Game
+
+integrate TimeObject into ControlObject
+	fix GameTime to use ControlObjects
+	search COM requests for shortest move
+
+remove ControlObject source file
+remove DisplayObject source file
+remove TileType source file
+remove Color, integrate with IO
+
+fix display code, test rect intersection code
+
+
+hook player input into COM
+	multiplayer support
+serialization of objects
+	network code

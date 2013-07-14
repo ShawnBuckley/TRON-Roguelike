@@ -7,11 +7,10 @@
 
 #include "math/axisaligned_rectangle2.hh"
 
-#include "gameobject.hh"
 #include "maptile.hh"
 
 template <typename t>
-class MapLocation : public GameObject
+class MapLocation
 {
   public:
 	MapLocation() {};

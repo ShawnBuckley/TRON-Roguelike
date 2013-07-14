@@ -14,7 +14,7 @@ struct TileTypeFlags
 	bool solid_;
 };
 
-class TileType : public GameObject
+class TileType
 {
   public:
 	TileType(std::shared_ptr<DisplayObject> _displayobject)
@@ -25,9 +25,6 @@ class TileType : public GameObject
 		: displayobject_(_displayobject), tiletype_flags_(_tiletype_flags) {}
 
 	~TileType() {};
-
- 	void Save(std::stringstream &_save);
- 	void Load() {};
 
 	TileTypeFlags tiletype_flags_;
 	std::shared_ptr<DisplayObject> displayobject_;

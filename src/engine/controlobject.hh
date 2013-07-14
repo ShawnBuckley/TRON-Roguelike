@@ -9,8 +9,6 @@
 
 #include "math/vector2.hh"
 
-#include "gameobject.hh"
-
 class MapObject;
 
 enum ControlObjectMoveType
@@ -34,15 +32,12 @@ class ControlObjectMove// : public GameObject
 	Vector2<int16_t> location_;
 };
 
-class ControlObject : public GameObject
+class ControlObject
 {
   public:
 	ControlObject() {};
 //	ControlObject(const ControlObject &_controlobject) : mapobject_(_controlobject.mapobject_) {};
 	~ControlObject() {};
-
-  	virtual void Save(std::stringstream &_save);
-  	virtual void Load();
 
 	virtual void Think(uint16_t _remaining_time)=0;
 	virtual ControlObjectMove Move()=0;

@@ -14,15 +14,6 @@ GameTime::GameTime()
 	tick_ = 0;
 }
 
-void GameTime::Save(std::stringstream &_save)
-{
-	_save << "gametime" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< (unsigned int)tick_ << " "
-		<< std::endl;
-}
-
 // TODO TimeObjects schedule in timeactions, which then execute
 void GameTime::GameTurn(uint16_t _time)
 {

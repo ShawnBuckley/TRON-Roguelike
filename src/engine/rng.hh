@@ -7,9 +7,7 @@
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/variate_generator.hpp>
 
-#include "gameobject.hh"
-
-class RNG : public GameObject
+class RNG
 {
   public:
 	RNG() : seed_(0), count_(0), zero_one_(0, 1), random_bool_(rng_, zero_one_) {};
@@ -20,20 +18,7 @@ class RNG : public GameObject
 
 		return random_bool_();
 	};
-
-  	void Save(std::stringstream &_save)
-  	{
-  		_save << "rng" << " "
-  			<< "a" << " " 
-			<< id_ << " "
-//			<< rng_ << " "
-  			<< seed_ << " "
-  			<< count_ << " "
-  			<< std::endl;
-  	}
   	
-  	void Load() {};
-
   private:
   	int seed_;
   	uint32_t count_;

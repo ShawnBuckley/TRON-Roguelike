@@ -16,9 +16,6 @@ class WorldTime : GameTime
   public:
 	WorldTime();
 
-  	void Save(std::stringstream &_save);
-  	void Load() {};
-
 	void WorldTurn(uint32_t _time);
 	uint64_t Tick() { return tick_; };
 

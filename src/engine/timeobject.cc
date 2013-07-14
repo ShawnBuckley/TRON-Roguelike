@@ -20,19 +20,6 @@ TimeObject::~TimeObject()
 		TimeUnlink();
 }
 
-void TimeObject::Save(std::stringstream &_save)
-{
-	_save << "timeobject" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< linked_ << " "
-		<< (unsigned int)speed_ << " "
-		<< (unsigned int)time_ << " "
-		<< (unsigned int)mapobject_->id_ << " "
-		<< (unsigned int)controlobject_->id_ << " "
-		<< std::endl;
-}
-
 void TimeObject::TimeLink()
 {
 	printf("Time link %p\n", this);

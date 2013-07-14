@@ -5,7 +5,6 @@
 
 #include "math/axisaligned_rectangle2.hh"
 
-#include "gameobject.hh"
 #include "timeobject.hh"
 #include "tiletype.hh"
 
@@ -14,13 +13,10 @@
 
 class MapTile;
 
-class Sector : public GameObject
+class Sector
 {
   public:
 	Sector();
-
-	void Save(std::stringstream &_save) {};
-	void Load() {};
 
 	std::shared_ptr<MapTile> Tile(Vector2<int16_t> _coord);
 	virtual void Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle);

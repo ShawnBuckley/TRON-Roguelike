@@ -14,9 +14,6 @@ class LightGrid : public Sector
 	LightGrid();
 	~LightGrid() {};
 
-  	void Save(std::stringstream &_save);
-  	void Load() {};
-
 	void Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle);
 //	bool Fill(uint8_t Size);
 

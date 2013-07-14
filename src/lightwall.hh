@@ -12,9 +12,6 @@ class LightWall : public MapObject
 	LightWall() : bike_(NULL) {};
 	LightWall(std::shared_ptr<DisplayObject> _displayobject, MapLocation<int16_t> _location, uint64_t _time_dropped, Bike *_bike);
 
-	void Save(std::stringstream &_save);
-	void Load();
-
 	bool CheckBump(MapObject *_mapobject) { printf("%p mapobject double dispatch call - bumped\n", this); return _mapobject->DoubleDispatch_CheckBump(this); };
 	bool DoubleDispatch_CheckBump(MapObject *_mapobject) { printf("%p DD LW bumped MO\n",this); return 1; };
 	bool DoubleDispatch_CheckBump(Bike *_bike) { printf("%p DD LW bumped BK\n",this); return 1; };

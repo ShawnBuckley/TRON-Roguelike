@@ -7,10 +7,9 @@
 #include <cstdint>
 #include <memory>
 
-#include "gameobject.hh"
 #include "color.hh"
 
-class DisplayObject : public GameObject
+class DisplayObject
 {
   public:
 	DisplayObject() : print_(0), sprite_(0) {};
@@ -19,9 +18,6 @@ class DisplayObject : public GameObject
 //	DisplayObject(const DisplayObject &_displayobject) : print_(_displayobject.print_), sprite_(_displayobject.sprite_), color_(_displayobject.color_) {};
 	~DisplayObject() {};
 
- 	virtual void Save(std::stringstream &_save);
-  	virtual void Load();
- 
 	char print_;
 	uint8_t sprite_;
 	std::shared_ptr<Color> color_;

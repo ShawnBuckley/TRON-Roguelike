@@ -34,24 +34,6 @@ MapObject::~MapObject()
 	MapUnlink();
 }
 
-void MapObject::Save(std::stringstream &_save)
-{
-	_save << "mapobject" << " "
-		<< "a" << " "
-		<< id_ << " "
-		<< linked_ << " "
-		<< (unsigned int)location_.id_ << " "
-		<< (signed int)vector_.x << " "
-		<< (signed int)vector_.y << " "
-		<< flags_.rez_ << " "
-		<< flags_.clipping_ << " "
-		<< flags_.solid_ << " "
-		<< flags_.visible_ << " "
-		<< timeobject_->id_ << " "
-		<< displayobject_->id_ << " "
-		<< std::endl;
-}
-
 bool MapObject::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
 {
 	if(SetLocation(_location))

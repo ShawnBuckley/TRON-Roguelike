@@ -6,18 +6,6 @@
 #include "maptile.hh"
 #include "sector.hh"
 
-void Map::Save(std::stringstream &_save)
-{
-	_save << "map" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< (unsigned int)rectangle_.Vertex(0).x << " "
-		<< (unsigned int)rectangle_.Vertex(0).y << " "
-		<< (unsigned int)rectangle_.Width() << " "
-		<< (unsigned int)rectangle_.Height() << " "
-		<< std::endl;
-}
-
 void Map::GenerateSector(std::shared_ptr<Sector> _sector, AxisAligned_Rectangle2<int16_t> _rectangle)
 {
 	_sector->Generate(_sector, _rectangle);

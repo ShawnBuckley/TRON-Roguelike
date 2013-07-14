@@ -8,15 +8,6 @@
 #include "worldtime.hh"
 
 
-void Player::Save(std::stringstream &_save)
-{
-	_save << "player" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< (unsigned int)mapobject_->id_ << " "
-		<< std::endl;
-}
-
 uint32_t Player::Input(char _ch)
 {
 	if(!GameControls(_ch) && !game()->game_flags_.paused_)

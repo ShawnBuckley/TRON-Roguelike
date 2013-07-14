@@ -10,21 +10,17 @@
 #include "math/vector2.hh"
 #include "math/axisaligned_rectangle2.hh"
 
-#include "gameobject.hh"
 #include "maptile.hh"
 #include "tiletype.hh"
 
-#define NULL __null
+// #define NULL __null
 
-class Map : public GameObject
+class Map
 {
   private:
 
   public:  
 	Map() {};
-
-  	void Save(std::stringstream &_save);
-  	void Load() {};
 
 	inline bool CoordValid(Vector2<int16_t>  _point) { return rectangle_.Intersect(_point); };
 	std::shared_ptr<MapTile> Tile(Vector2<int16_t>  _point);

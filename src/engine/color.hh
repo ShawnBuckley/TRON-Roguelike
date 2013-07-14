@@ -8,8 +8,6 @@
 #include <memory>
 #include <vector>
 
-#include "gameobject.hh"
-
 enum Colors
 {
 	black = 0,
@@ -22,13 +20,10 @@ enum Colors
 	white
 };
 
-struct Color : public GameObject
+struct Color
 {
 	Color(uint8_t _r, uint8_t _g, uint8_t _b) : r_(_r), g_(_g), b_(_b) { color_id_ = color_count_++; Color::colors_.push_back(this); };
 //	~Color() { --color_count_; };
-
-	void Save(std::stringstream &_save);
-	void Load();
 
 	static float curses_multiplier_;
 	static uint8_t color_count_;

@@ -11,9 +11,6 @@
 class Player : public ControlObject
 {
   public:
-  	void Save(std::stringstream &_save);
-  	void Load() {};
-
 	uint32_t Input(char _ch);
 
 	void Think(uint16_t _remaining_time) {};

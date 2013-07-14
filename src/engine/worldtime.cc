@@ -16,19 +16,6 @@ WorldTime::WorldTime()
 	second_ = 0;
 }
 
-void WorldTime::Save(std::stringstream &_save)
-{
-	_save << "worldtime" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< date_ << " "
-		<< (unsigned int)hour_ << " "
-		<< (unsigned int)minute_ << " "
-		<< (unsigned int)second_ << " "
-		<< (unsigned int)tick_ << " "
-		<< std::endl;
-}
-
 void WorldTime::WorldTurn(uint32_t _time)
 {
 	GameTurn(_time);

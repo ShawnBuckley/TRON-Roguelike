@@ -30,9 +30,6 @@ class AiBike : public ControlObject
 	AiBike();
 	AiBike(std::shared_ptr<AiBike> _this, std::shared_ptr<Bike> _bike);
 
-	void Save(std::stringstream &_save);
-	void Load() {};
-
 	void Think(uint16_t _remaining_time);
 	ControlObjectMove Move();
 

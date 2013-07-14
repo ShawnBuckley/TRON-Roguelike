@@ -10,7 +10,6 @@
 #include "math/vector2.hh"
 
 #include "maplocation.hh"
-#include "gameobject.hh"
 #include "timeobject.hh"
 #include "displayobject.hh"
 #include "color.hh"
@@ -32,7 +31,7 @@ struct MapObjectFlags
 	bool visible_;
 };
 
-class MapObject : public GameObject
+class MapObject
 {
   public:
 	MapObject();
@@ -45,9 +44,6 @@ class MapObject : public GameObject
 		Vector2<int16_t> _vector = Vector2<int16_t>(+0,+0)
 	);
 	~MapObject();
-
- 	virtual void Save(std::stringstream &_save);
-  	virtual void Load() {};
 
 	virtual bool Rez(MapLocation<int16_t> _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
 	virtual void Derez();

@@ -26,27 +26,6 @@ Bike::Bike(std::shared_ptr<Color> _color)
 
 Bike::~Bike() {}
 
-void Bike::Save(std::stringstream &_save)
-{
-	_save << "bike" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< moved_ << " "
-		<< change_direction_ << " "
-		<< bike_flags_.drop_walls_ << " "
-		<< linked_ << " "
-		<< (unsigned int)location_.id_ << " "
-		<< (signed int)vector_.x << " "
-		<< (signed int)vector_.y << " "
-		<< flags_.rez_ << " "
-		<< flags_.clipping_ << " "
-		<< flags_.solid_ << " "
-		<< flags_.visible_ << " "
-		<< timeobject_->id_ << " "
-		<< displayobject_->id_ << " "
-		<< std::endl;
-}
-
 void Bike::Derez()
 {
 	printf("derez\n");

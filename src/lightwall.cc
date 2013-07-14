@@ -12,18 +12,3 @@ LightWall::LightWall(std::shared_ptr<DisplayObject> _displayobject, MapLocation<
 	bike_ = _bike;
 	Rez(_location);
 };
-
-void LightWall::Save(std::stringstream &_save)
-{
-	_save << "lightwall" << " " << "a" << " "
-		<< (unsigned int)id_ << " "
-		<< (unsigned int)bike_->id_ << " "
-		<< (unsigned int)displayobject_->id_ << " "
-		<< (unsigned int)location_.id_ << " "
-		<< std::endl;
-};
-
-void LightWall::Load()
-{
-	
-};

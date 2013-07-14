@@ -7,20 +7,15 @@
 #include <memory>
 #include <list>
 
-#include "gameobject.hh"
-
 class MapObject;
 class ControlObject;
 
-class TimeObject : public GameObject
+class TimeObject
 {
   public:
 	TimeObject(uint16_t _speed);
 	TimeObject(uint16_t _speed, std::shared_ptr<MapObject> _mapobject, std::shared_ptr<ControlObject> _controlobject);
 	~TimeObject();
-
-  	void Save(std::stringstream &_save);
-  	void Load() {};
 
 	void TimeLink();
 	void TimeUnlink();

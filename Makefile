@@ -1,4 +1,4 @@
-all: aibike.o bike.o color.o controlobject.o displayobject.o entitymanager.o game.o gametime.o gl.o lightgrid.o lightwall.o linux.o log.o main.o map.o mapobject.o maptile.o gameobject.o player.o sdl.o sector.o tiletype.o timeobject.o tron.o worldtime.o
+all: aibike.o bike.o color.o controlobject.o entitymanager.o game.o gametime.o gl.o lightgrid.o lightwall.o linux.o log.o main.o map.o mapobject.o maptile.o player.o sdl.o sector.o timeobject.o tron.o worldtime.o
 	g++ -ggdb -O2 *.o -lSDL -lpng -lGL -o engine -std=c++0x
 
 aibike.o: src/aibike.cc
@@ -13,9 +13,6 @@ color.o: src/engine/color.cc
 controlobject.o: src/engine/controlobject.cc
 	g++ -c src/engine/controlobject.cc -std=c++0x
 
-displayobject.o: src/engine/displayobject.cc
-	g++ -c src/engine/displayobject.cc -std=c++0x
-	
 entitymanager.o: src/entitymanager.cc
 	g++ -c src/entitymanager.cc -std=c++0x
 
@@ -52,9 +49,6 @@ mapobject.o: src/engine/mapobject.cc
 maptile.o: src/engine/maptile.cc
 	g++ -c src/engine/maptile.cc -std=c++0x
 
-gameobject.o: src/engine/gameobject.cc
-	g++ -c src/engine/gameobject.cc -std=c++0x
-
 player.o: src/engine/player.cc
 	g++ -c src/engine/player.cc -std=c++0x
 
@@ -63,9 +57,6 @@ sdl.o: src/engine/sdl.cc
 
 sector.o: src/engine/sector.cc
 	g++ -c src/engine/sector.cc -std=c++0x
-
-tiletype.o: src/engine/tiletype.cc
-	g++ -c src/engine/tiletype.cc -std=c++0x
 
 timeobject.o: src/engine/timeobject.cc
 	g++ -c src/engine/timeobject.cc -std=c++0x

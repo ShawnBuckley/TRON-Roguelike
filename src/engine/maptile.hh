@@ -11,22 +11,18 @@
 
 #include "math/vector2.hh"
 
-#include "gameobject.hh"
 #include "tiletype.hh"
 
 class DisplayObject;
 class MapObject;
 class Sector;
 
-class MapTile : public GameObject
+class MapTile
 {
   public:
 	MapTile() {};
 	MapTile(Vector2<int16_t> _location, std::shared_ptr<Sector> _sector, std::shared_ptr<TileType> _tiletype)
 		: location_(_location), sector_(_sector), tiletype_(_tiletype) {};
-
-	void Save(std::stringstream &_save);
-	void Load() {};
 
 	bool Empty() { return mapobject_list_.empty(); }
 	

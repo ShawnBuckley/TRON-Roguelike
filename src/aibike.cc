@@ -22,17 +22,6 @@ AiBike::AiBike(std::shared_ptr<AiBike> _this, std::shared_ptr<Bike> _bike)
 	_bike->timeobject_->controlobject_ = _this;
 }
 
-void AiBike::Save(std::stringstream &_save)
-{
-	_save << "aibike" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< (unsigned int)ai_state_ << " "
-		<< (unsigned int)ai_skill_ << " "
-		<< (unsigned int)mapobject_->id_ << " "
-		<< std::endl;
-}
-
 void AiBike::Think(uint16_t _think_time)
 {
 	think_ = 1;

@@ -5,15 +5,10 @@
 
 #include <inttypes.h>
 
-#include "gameobject.hh"
-
-class GameTime : public GameObject
+class GameTime
 {
   public:
 	GameTime();
-
-  	virtual void Save(std::stringstream &_save);
-  	virtual void Load() {};
 
 	void GameTurn(uint16_t _time);
 

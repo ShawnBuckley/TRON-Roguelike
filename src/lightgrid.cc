@@ -30,21 +30,6 @@ LightGrid::LightGrid()
 	));
 }
 
-void LightGrid::Save(std::stringstream &_save)
-{
-	_save << "lightgrid" << " "
-		<< "a" << " "
-		<< (unsigned int)id_ << " "
-		<< (unsigned int)rectangle_.Vertex(0).x << " "
-		<< (unsigned int)rectangle_.Vertex(0).y << " "
-		<< (unsigned int)rectangle_.Width() << " "
-		<< (unsigned int)rectangle_.Height() << " ";
-		for(uint8_t i=0; i<5; ++i) 
-			_save << (unsigned int)kFloor[i]->id_ << " ";
-		_save << (unsigned int)kWall->id_ << " "
-		<< std::endl;
-}
-
 void LightGrid::Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle)
 {
 	rectangle_ = _rectangle;
