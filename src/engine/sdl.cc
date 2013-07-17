@@ -114,7 +114,10 @@ uint32_t SDL::Input()
 	{
 		switch(event.type)
 		{
-			case SDL_KEYDOWN: keystrokes_.push_back(event.key.keysym.sym); return 0;
+			case SDL_KEYDOWN:
+			{
+				keystrokes_.push_back(event.key.keysym.sym); return 0;
+			}; break;
 			//return game()->player_->Input(event.key.keysym.sym);
 //			case SDL_VIDEORESIZE: DisplayResize(Event.resize.w, Event.resize.h); game()->Display->Map(); break;
 			case SDL_QUIT: game()->End(); return 0;

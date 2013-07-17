@@ -59,6 +59,8 @@ void Game::Start()
 		Vector2<int16_t>(+0,+0)
 	);
 
+	player_->LoadControls();
+
 	Run();
 }
 
@@ -71,8 +73,12 @@ void Game::Run()
 	while(game_flags_.run_)
 	{
 		uint32_t input = io_->Input();
+		// Player::GameControls();
 		if(game_flags_.paused_)
+		{
+			player_->Think(0);
 			continue;
+		}
 		if(game_flags_.realtime_)
 			worldtime_->WorldTurn(speed_);
 		else if(input)
@@ -91,6 +97,7 @@ void Game::End()
 
 void Game::Pause()
 {
+	printf("game pause\n");
 	game_flags_.paused_ = !game_flags_.paused_;
 	SetRealtime(!game_flags_.realtime_);
 }

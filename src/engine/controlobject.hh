@@ -13,7 +13,8 @@ class MapObject;
 
 enum ControlObjectMoveType
 {
-	COMT_MOVEMENT = 0,
+	COMT_NONE = 0,
+	COMT_MOVEMENT = 1,
 	COMT_WAIT,
 	COMT_ABILITY,
 	COMT_EQUIPMENT,
@@ -39,8 +40,8 @@ class ControlObject
 //	ControlObject(const ControlObject &_controlobject) : mapobject_(_controlobject.mapobject_) {};
 	~ControlObject() {};
 
-	virtual void Think(uint16_t _remaining_time)=0;
-	virtual ControlObjectMove Move()=0;
+	virtual void Think(uint16_t _remaining_time) {};
+	virtual ControlObjectMove Move() {};
 
 	bool HasNextMove() { return !moves_.empty(); };
 	ControlObjectMove NextMove() { return moves_.front(); };

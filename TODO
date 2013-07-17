@@ -1,10 +1,13 @@
 remove GameObject
 hook player input into COM
 	multiplayer support
+fix game engine controls
+	hashmap for controls
 
 remove ControlObject source file
 remove DisplayObject source file
 remove TileType source file
+
 
 
 

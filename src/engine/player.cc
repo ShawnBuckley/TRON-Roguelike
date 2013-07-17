@@ -1,5 +1,7 @@
 // TRON-Roguelike Player.cc
 
+#include <stdexcept>
+
 #include <stdio.h>
 
 #include "game.hh"
@@ -7,21 +9,35 @@
 #include "mapobject.hh"
 #include "worldtime.hh"
 
+void Player::LoadControls()//(std::string _filename)
+// Player::Player()
+{
+	// TODO - function pointers
+	controls_.insert(std::pair<char, PlayerControl>('q', PlayerControl(&Game::End)));
+	controls_.insert(std::pair<char, PlayerControl>('p', PlayerControl(&Game::Pause)));
+	// controls_.insert(std::pair<char, PlayerControl>('s', PlayerControl()));
+	// controls_.insert(std::pair<char, PlayerControl>('L', PlayerControl()));
+
+	controls_.insert(std::pair<char, PlayerControl>('j', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
+	controls_.insert(std::pair<char, PlayerControl>('h', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,+0))));
+	controls_.insert(std::pair<char, PlayerControl>('j', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
+	controls_.insert(std::pair<char, PlayerControl>('k', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,-1))));
+	controls_.insert(std::pair<char, PlayerControl>('l', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,+0))));
+	controls_.insert(std::pair<char, PlayerControl>('b', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,+1))));
+	controls_.insert(std::pair<char, PlayerControl>('n', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,+1))));
+	controls_.insert(std::pair<char, PlayerControl>('y', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,-1))));
+	controls_.insert(std::pair<char, PlayerControl>('u', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,-1))));
+}
 
 // uint32_t Player::Input(char _ch)
 void Player::Think(uint16_t _remaining_time)
 {
-	// check io controls list
-
 	for(char ch : game()->io_->keystrokes_)
 	{
-		if(!GameControls(ch) && !game()->game_flags_.paused_)
+		if(Controls(ch))
 		{
-			if(PlayerControls(ch))
-			{
-				game()->io_->keystrokes_.remove(ch);
-				break;
-			}
+			game()->io_->keystrokes_.remove(ch);
+			break;
 		}
 	}
 }
@@ -37,35 +53,28 @@ ControlObjectMove Player::Move()
 	return move;
 }
 
-bool Player::GameControls(char _ch)
+bool Player::Controls(char _ch)
 {
-	switch(_ch)
+	PlayerControl control;
+	try
 	{
-// 		case 's': game()->Save();/* game()->Pause();*/ return 1;
-//		case 'L': game()->Load();/* game()->Pause();*/ return 1;
-
-		case 'p': game()->Pause(); return 1;
-		case 'q': game()->End(); return 1;
+		control = controls_.at(_ch);
+	}
+	catch(const std::out_of_range& e)
+	{
+		printf("oof\n");
+		return 1;
 	}
 
-	return 0;
-}
-
-bool Player::PlayerControls(char _ch)
-{	
-	switch(_ch)
+	if(!control.game_control_ && !game()->game_flags_.paused_)
 	{
-		case 'h': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(-1,+0))); return 1;
-		case 'j': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+0,+1))); return 1;
-		case 'k': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+0,-1))); return 1;
-		case 'l': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+1,+0))); return 1;
-		case 'b': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(-1,+1))); return 1;
-		case 'n': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+1,+1))); return 1;
-		case 'y': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(-1,-1))); return 1;
-		case 'u': moves_.push_back(ControlObjectMove(COMT_MOVEMENT, 0, Vector2<int16_t>(+1,-1))); return 1;
-
-		case '.': moves_.push_back(ControlObjectMove(COMT_WAIT, 0, Vector2<int16_t>(0,0))); return 1;
+		moves_.push_back(ControlObjectMove(control.move_type_, 0, control.vector_));
+	}
+	else
+	{
+		printf("game control\n");
+		(game()->*control.callback_)();
 	}
 
-	return 0;
+	return 1;
 }

@@ -122,6 +122,8 @@ void TRON::Start()
 		Vector2<int16_t>(-1,+0)
 	);
 //*/
+	player_->LoadControls();
+
 	printf("run\n");
 	Run();
 }
