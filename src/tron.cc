@@ -8,26 +8,25 @@
 #include "engine/game.hh"
 #include "engine/gl.hh"
 #include "engine/sdl.hh"
-#include "engine/color.hh"
+#include "engine/io.hh"
 
 #include "aibike.hh"
 #include "bike.hh"
 #include "lightgrid.hh"
-#include "entitymanager.hh"
 #include "tron.hh"
 
 void TRON::Start()
 {
 	printf("TRON start\n");
 
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,0,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,255,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,255,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,255)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,0,255)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,64)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,255,255)));
+	io_->colors_.push_back(Color(0,0,0));
+	io_->colors_.push_back(Color(255,0,0));
+	io_->colors_.push_back(Color(0,255,0));
+	io_->colors_.push_back(Color(255,255,0));
+	io_->colors_.push_back(Color(0,0,255));
+	io_->colors_.push_back(Color(255,0,255));
+	io_->colors_.push_back(Color(0,0,64));
+	io_->colors_.push_back(Color(255,255,255));
 
 	io_->Init();
 
@@ -36,14 +35,14 @@ void TRON::Start()
 
 	map_ = std::unique_ptr<Map>(new Map);
 
-	std::shared_ptr<Sector> sector[4];
+	Sector* sector[4];
 	
 	for(int i=0; i<4; ++i)
 	{
-		sector[i] = std::shared_ptr<Sector>(new Sector());
+		sector[i] = new Sector();
 	}
 
-	std::shared_ptr<Sector> lightgrid(new LightGrid());
+	Sector* lightgrid = new LightGrid();
 	map_->GenerateSector(
 		lightgrid,
 		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8),64,64)
@@ -51,7 +50,7 @@ void TRON::Start()
 
 	// top
 	map_->GenerateSector(
-		std::shared_ptr<Sector>(new Sector()),
+		sector[0],
 		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0),80,8)
 	);
 
@@ -90,7 +89,7 @@ void TRON::Start()
 		)
 	);
 /*/
-	player_ = EntityManager::AddPlayerBike(blue);
+	player_ = AddPlayerBike(blue);
 	player_->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y+1), 1, 1)
@@ -98,7 +97,8 @@ void TRON::Start()
 		Vector2<int16_t>(+0,+0)
 	);
 
-	std::shared_ptr<AiBike> red_bike = EntityManager::AddAiBike(red);
+	AiBike* red_bike = AddAiBike(red);
+	printf("between\n");
 	red_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)
@@ -106,7 +106,7 @@ void TRON::Start()
 		Vector2<int16_t>(-1,+0)
 	);
 
-	std::shared_ptr<AiBike> yellow_bike = EntityManager::AddAiBike(yellow);
+	AiBike* yellow_bike = AddAiBike(yellow);
 	yellow_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y-1), 1, 1)
@@ -114,16 +114,50 @@ void TRON::Start()
 		Vector2<int16_t>(+1,+0)
 	);
 
-	std::shared_ptr<AiBike> green_bike = EntityManager::AddAiBike(green);
+	AiBike* green_bike = AddAiBike(green);
 	green_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y+1), 1, 1)
 		),
 		Vector2<int16_t>(-1,+0)
 	);
-//*/
+
 	player_->LoadControls();
 
 	printf("run\n");
 	Run();
+}
+
+Player* TRON::AddPlayerBike(uint8_t _color)
+{
+	MapObject* mapobject = new Bike(
+		MapObjectFlags(1,1,1,1),
+		DisplayObject('@', 254, _color),
+		TimeObject(1000));
+
+	Player* player = new Player(mapobject);
+
+	mapobject->timeobject_.mapobject_ = mapobject;
+	mapobject->timeobject_.controlobject_ = player;
+
+	AddControlObject(player);
+
+	return player;
+}
+
+AiBike* TRON::AddAiBike(uint8_t _color)
+{
+	Bike* bike = new Bike(
+		MapObjectFlags(1,1,1,1),
+		DisplayObject('B', 254, _color),
+		TimeObject(1000));
+
+	AiBike* aibike = new AiBike(bike);
+
+	bike->timeobject_.mapobject_ = bike;
+	bike->timeobject_.controlobject_ = aibike;
+
+	AddControlObject(aibike);
+
+	return aibike;
 }

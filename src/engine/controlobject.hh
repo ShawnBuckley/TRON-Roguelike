@@ -37,6 +37,7 @@ class ControlObject
 {
   public:
 	ControlObject() {};
+	ControlObject(MapObject* _mapobject) : mapobject_(_mapobject) {};
 //	ControlObject(const ControlObject &_controlobject) : mapobject_(_controlobject.mapobject_) {};
 	~ControlObject() {};
 
@@ -46,9 +47,10 @@ class ControlObject
 	bool HasNextMove() { return !moves_.empty(); };
 	ControlObjectMove NextMove() { return moves_.front(); };
 	
+	MapObject* mapobject_;
 	// static std::vector<ControlObject*> controlobjects_;
 	std::list<ControlObjectMove> moves_;
-	std::shared_ptr<MapObject> mapobject_;
+	// std::shared_ptr<MapObject> mapobject_;
 
 	uint16_t remaining_time_;
 };

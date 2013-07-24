@@ -14,11 +14,11 @@ class LightGrid : public Sector
 	LightGrid();
 	~LightGrid() {};
 
-	void Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle);
+	void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
 //	bool Fill(uint8_t Size);
 
-	std::shared_ptr<TileType> kFloor[4];
-	std::shared_ptr<TileType> kWall;
+	TileType kFloor[4];
+	TileType kWall;
 };
 
 #endif // TRON_RLENGINEX_LIGHTGRID_HH

@@ -42,7 +42,7 @@ bool MapTile::AnySolidMapObject()
 	return 0;
 }
 
-std::shared_ptr<DisplayObject> MapTile::VisibleMapObject()
+DisplayObject* MapTile::VisibleMapObject()
 {
 	if(mapobject_list_.empty()) return NULL;
 
@@ -52,7 +52,7 @@ std::shared_ptr<DisplayObject> MapTile::VisibleMapObject()
 
 		if((*mapobject)->flags_.visible_)
 		{
-			return (*mapobject)->displayobject_;
+			return &(*mapobject)->displayobject_;
 		}
 	}
 

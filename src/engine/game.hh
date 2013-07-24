@@ -4,21 +4,13 @@
 #define TRON_RLENGINEX_GAME_HH
 
 #include <memory>
+#include <list>
 
 #include "player.hh"
 
 #include "io.hh"
 #include "map.hh"
 #include "worldtime.hh"
-
-struct GameFlags
-{
-	GameFlags() : run_(1), paused_(0), realtime_(0) {};
-
-	bool run_;
-	bool paused_;
-	bool realtime_;
-};
 
 class Game
 {
@@ -37,20 +29,29 @@ class Game
 
 	void SetRealtime(bool _realtime);
 
+	void AddControlObject(ControlObject* _controlobject);
+	Player* BuildPlayerMapobject(uint8_t _color);
+
+	bool run_;
+	bool paused_;
+	bool realtime_;
+
 	uint32_t speed_;
-	GameFlags game_flags_;
+
+
 
 	Vector2<int16_t> camera_;
+	Player* player_;
 
 	std::unique_ptr<IO> io_;
 	std::unique_ptr<Map> map_;
 	std::unique_ptr<WorldTime> worldtime_;
 
-	// std::vector<std::unique_ptr<ControlObject>> controlobjects_;
-	// ControlObject* player_;
+	std::vector<std::unique_ptr<ControlObject>> entities_;
+	std::vector<std::shared_ptr<DisplayObject>> displayobjects_;
+	std::list<uint16_t> entity_open_id_;
 
-	std::vector<std::shared_ptr<ControlObject> > entities_;
-	std::shared_ptr<Player> player_;
+	// std::vector<std::unique_ptr<ControlObject>> controlobjects_;
 };
 
 Game* game();

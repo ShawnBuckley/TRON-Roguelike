@@ -7,7 +7,6 @@
 
 #include "linux.hh"
 
-#include "color.hh"
 #include "io.hh"
 #include "sdl.hh"
 #include "game.hh"
@@ -57,12 +56,12 @@ bool SDL::LoadTexture(std::string _file)
 
 	SDL_SetColorKey(load, SDL_SRCCOLORKEY, SDL_MapRGB(load->format, 255, 255, 255));
 
-	for(auto color = Color::colors_.begin(); color != Color::colors_.end(); ++color)
+	for(auto color = colors_.begin(); color != colors_.end(); ++color)
 	{
-		if(*color == NULL) continue;
+		// if(*color == NULL) continue;
 
 		texture = SDL_ConvertSurface(load, load->format, load->flags);
-		SDL_FillRect(texture, &texture->clip_rect, SDL_MapRGB(texture->format, (*color)->r_, (*color)->g_, (*color)->b_));
+		SDL_FillRect(texture, &texture->clip_rect, SDL_MapRGB(texture->format, (*color).r_, (*color).g_, (*color).b_));
 		SDL_BlitSurface(load, NULL, texture, NULL);
 		SDL_SetColorKey(texture, SDL_SRCCOLORKEY, SDL_MapRGB(load->format, 0, 0, 0));
 
@@ -138,21 +137,21 @@ void SDL::Refresh()
 	SDL_Flip(screen_);
 }
 
-void SDL::Render(const std::shared_ptr<DisplayObject> _displayobject)
+void SDL::Render(const DisplayObject& _displayobject)
 {
-	if(_displayobject != NULL)
-	{
-		Print(_displayobject->sprite_ ? _displayobject->sprite_ : _displayobject->print_, _displayobject->color_);
-	}
-	else
-	{
-		Print('!', kColor[red]);
-	}
+	// if(_displayobject != NULL)
+	// {
+		Print(_displayobject.sprite_ ? _displayobject.sprite_ : _displayobject.print_, _displayobject.color_);
+	// }
+	// else
+	// {
+	// 	Print('!', red);
+	// }
 }
 
-void SDL::Print(uint8_t _print, std::shared_ptr<Color> _color)
+void SDL::Print(uint8_t _print, uint8_t _color)
 {
-	SDL_BlitSurface(texture_[_color->color_id_], &character_[_print], screen_, &offset_);
+	SDL_BlitSurface(texture_[_color], &character_[_print], screen_, &offset_);
 }
 
 void SDL::AddSpace()
@@ -283,7 +282,7 @@ void SDL::Map()
 	{
 		if(game()->map_->CoordValid(coord))
 		{
-			std::shared_ptr<MapTile> tile = game()->map_->Tile(coord);
+			MapTile* tile = game()->map_->Tile(coord);
 
  			if(tile != NULL)
 			{

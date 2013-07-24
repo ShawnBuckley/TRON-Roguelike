@@ -12,7 +12,7 @@
 #include "maplocation.hh"
 #include "timeobject.hh"
 #include "displayobject.hh"
-#include "color.hh"
+#include "io.hh"
 
 class DisplayObject;
 class Color;
@@ -34,15 +34,11 @@ struct MapObjectFlags
 class MapObject
 {
   public:
-	MapObject();
+	MapObject() : linked_(0) {};
 	MapObject(
-		std::shared_ptr<MapObject> _this,
 		MapObjectFlags _mapobject_flags,
-		std::shared_ptr<DisplayObject> _displayobject,
-		std::shared_ptr<TimeObject> _timeobject,
-		std::shared_ptr<MapTile> _maptile,
-		Vector2<int16_t> _vector = Vector2<int16_t>(+0,+0)
-	);
+		const DisplayObject _displayobject
+	) : flags_(_mapobject_flags), displayobject_(_displayobject) {};
 	~MapObject();
 
 	virtual bool Rez(MapLocation<int16_t> _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
@@ -74,8 +70,10 @@ class MapObject
 	MapLocation<int16_t> location_;
 	Vector2<int16_t> vector_;
 	MapObjectFlags flags_;
-	std::shared_ptr<TimeObject> timeobject_;
-	std::shared_ptr<DisplayObject> displayobject_;
+
+	TimeObject timeobject_;
+	DisplayObject displayobject_;
+	// DisplayObject* displayobject_;
 };
 
 #endif // TRON_RLENGINEX_OBJECT_HH

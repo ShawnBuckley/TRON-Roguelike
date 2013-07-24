@@ -5,27 +5,11 @@
 #include <stdio.h>
 
 #include "game.hh"
-#include "color.hh"
+#include "io.hh"
 #include "mapobject.hh"
 #include "map.hh"
 #include "maptile.hh"
 #include "tiletype.hh"
-
-MapObject::MapObject() : linked_(0)
-{
-//	printf("Create MapObject %p\n", this);
-}
-
-MapObject::MapObject(std::shared_ptr<MapObject> _this, MapObjectFlags _mapobject_flags, std::shared_ptr<DisplayObject> _displayobject,
-	std::shared_ptr<TimeObject> _timeobject, std::shared_ptr<MapTile> _maptile, Vector2<int16_t> _vector)
-	: linked_(0), flags_(_mapobject_flags), displayobject_(_displayobject), timeobject_(_timeobject)
-{
-	timeobject_->mapobject_ = _this;
-
-	Rez(std::move(MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(), 1, 1))), _vector);
-
-//	printf("Create MapObject %p\n", this);
-}
 
 MapObject::~MapObject()
 {
@@ -40,9 +24,9 @@ bool MapObject::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
 	{
 		flags_.rez_ = 1;
 		vector_ = _vector;
-		
-		if(timeobject_)
-			timeobject_->TimeLink();
+
+		if(timeobject_.speed_ > 0)
+			timeobject_.TimeLink();
 		
 		return 1;
 	}
@@ -52,11 +36,11 @@ bool MapObject::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
 
 void MapObject::Derez()
 {
-	displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('X','X',displayobject_->color_)));
-	flags_ = MapObjectFlags(0, 0, 0, 1);
+	uint8_t color = displayobject_.color_;
 
-	if(timeobject_)
-		timeobject_->TimeUnlink();
+	displayobject_ = DisplayObject('X', 'X', color);
+	flags_ = MapObjectFlags(0, 0, 0, 1);
+	timeobject_.TimeUnlink();
 }
 
 void MapObject::MapLink()
@@ -66,11 +50,11 @@ void MapObject::MapLink()
 	
 	for(int16_t x=0; x<location_.rectangle_.Width(); ++x)
 	{	
-		std::vector<std::shared_ptr<MapTile> > row;
+		std::vector<MapTile*> row;
 	
 		for(int16_t y=0; y<location_.rectangle_.Height(); ++y)
 		{
-			std::shared_ptr<MapTile> maptile = game()->map_->Tile(location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y));
+			MapTile* maptile = game()->map_->Tile(location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y));
 			Vector2<int16_t> pos = location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y);
 
 			row.push_back(maptile);

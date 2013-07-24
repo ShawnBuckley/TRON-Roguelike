@@ -16,12 +16,6 @@ AiBike::AiBike() : ai_state_(AI_DEFAULT), ai_skill_(100)
 
 }
 
-AiBike::AiBike(std::shared_ptr<AiBike> _this, std::shared_ptr<Bike> _bike)
-	: ai_state_(AI_DEFAULT), ai_skill_(100)
-{
-	_bike->timeobject_->controlobject_ = _this;
-}
-
 void AiBike::Think(uint16_t _think_time)
 {
 	think_ = 1;
@@ -29,12 +23,12 @@ void AiBike::Think(uint16_t _think_time)
 
 	// printf("think time: %i\n", _think_time);
 
-	while(mapobject_->flags_.rez_ && remaining_time_ > mapobject_->timeobject_->speed_)
+	while(mapobject_->flags_.rez_ && remaining_time_ > mapobject_->timeobject_.speed_)
 	{
 		// Skill Check
 		// if(skill_ < 
 
-		// printf("%p: think - rtime %i : speed %i\n", this, remaining_time_, mapobject_->timeobject_->speed_);
+		// printf("%p: think - rtime %i : speed %i\n", this, remaining_time_, mapobject_->timeobject_.speed_);
 
 		if(CheckTunnel())
 			ai_state_ = AI_TUNNEL;
@@ -45,7 +39,7 @@ void AiBike::Think(uint16_t _think_time)
 			case AI_TUNNEL: Tunnel(); break;
 		}
 
-		remaining_time_ -= mapobject_->timeobject_->speed_;
+		remaining_time_ -= mapobject_->timeobject_.speed_;
 	}
 }
 
@@ -64,7 +58,7 @@ void AiBike::Default()
 {
 	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + mapobject_->vector_;
 
-	std::shared_ptr<MapTile> tile = game()->map_->Tile(test_coord);
+	MapTile* tile = game()->map_->Tile(test_coord);
 
 	if(tile == NULL || tile->tiletype_->tiletype_flags_.solid_ || (!tile->Empty() && CheckMapObjects(tile)))
 	{
@@ -97,7 +91,7 @@ void AiBike::Tunnel()
 	Default();
 }
 
-bool AiBike::CheckMapObjects(std::shared_ptr<MapTile> _tile)
+bool AiBike::CheckMapObjects(MapTile* _tile)
 {
 	for(auto mapobject = _tile->mapobject_list_.begin();
 		mapobject != _tile->mapobject_list_.end(); ++mapobject)
@@ -149,7 +143,7 @@ void AiBike::CheckDirection()
 	}
 }
 
-bool AiBike::CheckTile(std::shared_ptr<MapTile> _tile)
+bool AiBike::CheckTile(MapTile* _tile)
 {
 	return (_tile == NULL || _tile->tiletype_->tiletype_flags_.solid_ || _tile->SolidMapObject().size());
 }

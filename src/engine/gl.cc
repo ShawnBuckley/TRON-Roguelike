@@ -9,7 +9,6 @@
 
 #include <png.h>
 
-#include "color.hh"
 #include "io.hh"
 #include "gl.hh"
 #include "game.hh"

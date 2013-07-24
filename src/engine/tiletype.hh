@@ -17,17 +17,19 @@ struct TileTypeFlags
 class TileType
 {
   public:
-	TileType(std::shared_ptr<DisplayObject> _displayobject)
+  	TileType() {};
+	TileType(const DisplayObject _displayobject)
 		: displayobject_(_displayobject) {};
 	TileType(TileTypeFlags _tiletype_flags)
 		: tiletype_flags_(_tiletype_flags) {};
-	TileType(std::shared_ptr<DisplayObject> _displayobject, TileTypeFlags _tiletype_flags)
+	TileType(const DisplayObject _displayobject, TileTypeFlags _tiletype_flags)
 		: displayobject_(_displayobject), tiletype_flags_(_tiletype_flags) {}
 
 	~TileType() {};
 
 	TileTypeFlags tiletype_flags_;
-	std::shared_ptr<DisplayObject> displayobject_;
+	// DisplayObject* displayobject_;
+	DisplayObject displayobject_;
 };
 
 #endif // TRON_RLENGINEX_TILETYPE_HH

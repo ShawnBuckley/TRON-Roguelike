@@ -8,7 +8,7 @@
 #include "gl.hh"
 #include "sdl.hh"
 #include "sector.hh"
-#include "color.hh"
+#include "io.hh"
 #include "player.hh"
 #include "worldtime.hh"
 
@@ -20,19 +20,20 @@ Game::Game()
 	worldtime_ = std::unique_ptr<WorldTime>(new WorldTime);
 	speed_ = 1000;
 
+	paused_ = 0;
 	game_pointer = this;
 }
 
 void Game::Start()
 {
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,0,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,255,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,255,0)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,255)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,0,255)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(0,0,64)));
-	kColor.push_back(std::shared_ptr<Color>(new Color(255,255,255)));
+	io_->colors_.push_back(Color(0,0,0));
+	io_->colors_.push_back(Color(255,0,0));
+	io_->colors_.push_back(Color(0,255,0));
+	io_->colors_.push_back(Color(255,255,0));
+	io_->colors_.push_back(Color(0,0,255));
+	io_->colors_.push_back(Color(255,0,255));
+	io_->colors_.push_back(Color(0,0,64));
+	io_->colors_.push_back(Color(255,255,255));
 
 	io_->Init();
 
@@ -41,17 +42,14 @@ void Game::Start()
 
 	map_ = std::unique_ptr<Map>(new Map);
 
-	std::shared_ptr<Sector> sector = std::shared_ptr<Sector>(new Sector());
+	Sector* sector = new Sector();
 	map_->GenerateSector(
 		sector,
 		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0),64,64)
 	);
 
-	player_ = std::shared_ptr<Player>(new Player);
-	player_->mapobject_ = std::move(std::shared_ptr<MapObject>(new MapObject));
-	player_->mapobject_->displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('@', '@', kColor[blue])));
-	player_->mapobject_->flags_ = MapObjectFlags(1, 1, 1, 1);
-	player_->mapobject_->timeobject_ = std::move(std::shared_ptr<TimeObject>(new TimeObject(6000)));
+	Player* player = BuildPlayerMapobject(blue);
+	AddControlObject(player);
 	player_->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8), 1, 1)
@@ -68,38 +66,42 @@ void Game::Run()
 {
 	io_->Map();
 
-	game_flags_.realtime_ = 1;
+	realtime_ = 1;
 
-	while(game_flags_.run_)
+	while(run_)
 	{
 		uint32_t input = io_->Input();
-		// Player::GameControls();
-		if(game_flags_.paused_)
+		if(paused_)
 		{
 			player_->Think(0);
 			continue;
 		}
-		if(game_flags_.realtime_)
+
+		if(realtime_)
+		{
 			worldtime_->WorldTurn(speed_);
+		}
 		else if(input)
+		{
 			worldtime_->WorldTurn(input);
+		}
+
 		camera_ = player_->mapobject_->location_.maptile_[0][0]->location_;
 		io_->Map();
 	}
-	printf("exit run\n");
 }
 
 void Game::End()
 {
 	printf("game end!\n");
-	game_flags_.run_ = 0;
+	run_ = 0;
 }
 
 void Game::Pause()
 {
 	printf("game pause\n");
-	game_flags_.paused_ = !game_flags_.paused_;
-	SetRealtime(!game_flags_.realtime_);
+	paused_ = !paused_;
+	SetRealtime(!realtime_);
 }
 
 void Game::Save()
@@ -124,7 +126,7 @@ void Game::Load()
 
 void Game::SetRealtime(bool _realtime)
 {
-	game_flags_.realtime_ = _realtime;
+	realtime_ = _realtime;
 	
 	io_->SetRealtime(_realtime);
 }
@@ -132,4 +134,33 @@ void Game::SetRealtime(bool _realtime)
 Game* game()
 {
 	return game_pointer;
+}
+
+void Game::AddControlObject(ControlObject* _controlobject)
+{
+	if(entity_open_id_.empty())
+	{
+		entities_.push_back(std::unique_ptr<ControlObject>(_controlobject));
+	}
+	else
+	{
+		entities_[entity_open_id_.front()] = std::move(std::unique_ptr<ControlObject>(_controlobject));
+		entity_open_id_.pop_front();
+	}
+}
+
+Player* Game::BuildPlayerMapobject(uint8_t _color)
+{
+	MapObject* mapobject = new MapObject(
+		MapObjectFlags(1, 1, 1, 1),
+		DisplayObject('@', '@', _color)
+	);
+
+	ControlObject* controlobject = new Player(mapobject);
+
+	return (Player*)controlobject;
+
+	// mapobject->this_ = std::weak_ptr<MapObject>(mapobject);
+	// mapobject->this_ = std::weak_ptr<MapObject>(mapobject);
+	// mapobject->timeobject_.controlobject_ = std::weak_ptr<ControlObject>(controlobject);
 }

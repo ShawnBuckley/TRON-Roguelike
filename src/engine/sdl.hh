@@ -29,7 +29,7 @@ class SDL : public IO
 	
 	uint32_t Input();
 	
-	void Render(const std::shared_ptr<DisplayObject> _displayobject);
+	void Render(const DisplayObject& _displayobject);
 	void AddSpace();
 	void NewLine();
 	void Move(int16_t _y, int16_t _x);
@@ -39,10 +39,9 @@ class SDL : public IO
 	virtual void Clear();
 	virtual void Refresh();
 	virtual void SetColor(std::shared_ptr<Color> _color) {};
-	virtual void Print(uint8_t _print, std::shared_ptr<Color> _color);
+	virtual void Print(uint8_t _print, uint8_t _color);
 	
 	void Map();
-
 
 	
 	uint8_t xwidth_;

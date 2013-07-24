@@ -13,6 +13,7 @@ class ControlObject;
 class TimeObject
 {
   public:
+  	TimeObject() : linked_(0) {};
 	TimeObject(uint16_t _speed);
 	TimeObject(uint16_t _speed, std::shared_ptr<MapObject> _mapobject, std::shared_ptr<ControlObject> _controlobject);
 	~TimeObject();
@@ -29,8 +30,8 @@ class TimeObject
 	uint16_t speed_;
 	uint16_t time_;
 
-	std::shared_ptr<MapObject> mapobject_;
-	std::shared_ptr<ControlObject> controlobject_;
+	MapObject* mapobject_;
+	ControlObject* controlobject_;
 };
 
 #endif // TRON_RLENGINEX_TIMEOBJECT_HH

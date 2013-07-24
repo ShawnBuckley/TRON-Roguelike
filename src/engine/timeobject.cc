@@ -29,6 +29,8 @@ void TimeObject::TimeLink()
 	if(TimeObject::fastest_speed_ > speed_)
 		TimeObject::fastest_speed_ = speed_;
 
+	printf("fastest_speed_ = %i\n", TimeObject::fastest_speed_);
+
 	linked_ = 1;
 }
 

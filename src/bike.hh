@@ -26,8 +26,17 @@ struct BikeFlags
 class Bike : public MapObject
 {
   public:
-  	Bike(std::shared_ptr<Color> _color);	
-	Bike(std::shared_ptr<MapObject> _this, MapObjectFlags _mapobject_flags, std::shared_ptr<DisplayObject> _displayobject, std::shared_ptr<TimeObject> _timeobject, Vector2<uint8_t> _location, Vector2<int8_t> _vector = Vector2<int8_t>(+0,+0));
+  	Bike(uint8_t _color);	
+	Bike(
+		MapObjectFlags _mapobject_flags,
+		DisplayObject _displayobject,
+		TimeObject _timeobject)
+	{
+		flags_ = _mapobject_flags;
+		displayobject_ = _displayobject;
+		timeobject_ = _timeobject;
+	};
+
 	~Bike();
 
  	void Save(std::stringstream &_save);
@@ -55,8 +64,8 @@ class Bike : public MapObject
 	uint64_t time_of_death_;
 	BikeFlags bike_flags_;
 
-	std::list<std::shared_ptr<LightWall> > wall_list_;
-	std::shared_ptr<DisplayObject> wall_displayobject_[10];
+	std::list<std::unique_ptr<LightWall>> wall_list_;
+	DisplayObject wall_displayobject_[10];
 };
 
 #endif // TRON_RLENGINEX_BIKE_HH

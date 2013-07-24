@@ -28,7 +28,7 @@ class AiBike : public ControlObject
 {
   public:
 	AiBike();
-	AiBike(std::shared_ptr<AiBike> _this, std::shared_ptr<Bike> _bike);
+	AiBike(Bike* _bike) : ai_state_(AI_DEFAULT), ai_skill_(100) { mapobject_ = _bike; };
 
 	void Think(uint16_t _remaining_time);
 	ControlObjectMove Move();
@@ -37,9 +37,9 @@ class AiBike : public ControlObject
 	void Default();
 	void Tunnel();
 	
-	bool CheckMapObjects(std::shared_ptr<MapTile> _tile);
+	bool CheckMapObjects(MapTile* _tile);
 	void CheckDirection();
-	bool CheckTile(std::shared_ptr<MapTile> _tile);
+	bool CheckTile(MapTile* _tile);
 	bool CheckTunnel();
 	void ChangeDirection(Vector2<int16_t> _vector);
 

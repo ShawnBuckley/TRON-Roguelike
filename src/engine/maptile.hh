@@ -21,18 +21,18 @@ class MapTile
 {
   public:
 	MapTile() {};
-	MapTile(Vector2<int16_t> _location, std::shared_ptr<Sector> _sector, std::shared_ptr<TileType> _tiletype)
+	MapTile(Vector2<int16_t> _location, Sector* _sector, TileType* _tiletype)
 		: location_(_location), sector_(_sector), tiletype_(_tiletype) {};
 
 	bool Empty() { return mapobject_list_.empty(); }
 	
 	std::vector<MapObject*> SolidMapObject();
 	bool AnySolidMapObject();
-	std::shared_ptr<DisplayObject> VisibleMapObject();
+	DisplayObject* VisibleMapObject();
 
 
 	Vector2<int16_t> location_;
-	std::shared_ptr<Sector> sector_;
+	Sector* sector_;
 	std::shared_ptr<TileType> tiletype_;
 	std::list<MapObject*> mapobject_list_;
 };

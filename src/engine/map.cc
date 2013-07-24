@@ -6,10 +6,10 @@
 #include "maptile.hh"
 #include "sector.hh"
 
-void Map::GenerateSector(std::shared_ptr<Sector> _sector, AxisAligned_Rectangle2<int16_t> _rectangle)
+void Map::GenerateSector(Sector* _sector, AxisAligned_Rectangle2<int16_t> _rectangle)
 {
-	_sector->Generate(_sector, _rectangle);
-	sector_.push_back(_sector);
+	_sector->Generate(_rectangle);
+	sector_.push_back(std::move(std::unique_ptr<Sector>(_sector)));
 
 	if(_rectangle.Vertex(0).x < rectangle_.Vertex(0).x)
 		rectangle_.Origin(Vector2<int16_t>((_rectangle.Vertex(0).x), rectangle_.Vertex(0).y));
@@ -24,7 +24,7 @@ void Map::GenerateSector(std::shared_ptr<Sector> _sector, AxisAligned_Rectangle2
 		rectangle_.Height(_rectangle.Height()+_rectangle.Vertex(0).y);
 }
 
-std::shared_ptr<MapTile> Map::Tile(Vector2<int16_t> _coord)
+MapTile* Map::Tile(Vector2<int16_t> _coord)
 {
 	if(!CoordValid(_coord))
 		return NULL;
@@ -36,7 +36,7 @@ std::shared_ptr<MapTile> Map::Tile(Vector2<int16_t> _coord)
 		{
 			if((*sector)->rectangle_.Intersect(_coord))
 			{
-				return (*sector)->tile_[_coord.x - (*sector)->rectangle_.Vertex(0).x][_coord.y-(*sector)->rectangle_.Vertex(0).y];
+				return (*sector)->tile_[_coord.x - (*sector)->rectangle_.Vertex(0).x][_coord.y-(*sector)->rectangle_.Vertex(0).y].get();
 			}
 		}
 	}

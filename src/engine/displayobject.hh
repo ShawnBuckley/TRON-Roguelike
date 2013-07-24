@@ -7,20 +7,18 @@
 #include <cstdint>
 #include <memory>
 
-#include "color.hh"
+#include "io.hh"
 
 class DisplayObject
 {
   public:
 	DisplayObject() : print_(0), sprite_(0) {};
-	DisplayObject(char _print, uint8_t _sprite, std::shared_ptr<Color> _color) : print_(_print), sprite_(_sprite), color_(_color) {};
-//	DisplayObject(DisplayObject *_displayobject) : print_(_displayobject->print_), sprite_(_displayobject->sprite_), color_(_displayobject->color_) {};
-//	DisplayObject(const DisplayObject &_displayobject) : print_(_displayobject.print_), sprite_(_displayobject.sprite_), color_(_displayobject.color_) {};
+	DisplayObject(char _print, uint8_t _sprite, uint8_t _color) : print_(_print), sprite_(_sprite), color_(_color) {};
 	~DisplayObject() {};
 
 	char print_;
 	uint8_t sprite_;
-	std::shared_ptr<Color> color_;
+	uint8_t color_;
 	
 //	GLuint display_list_;
 };

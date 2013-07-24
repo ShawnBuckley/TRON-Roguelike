@@ -18,12 +18,12 @@ class Sector
   public:
 	Sector();
 
-	std::shared_ptr<MapTile> Tile(Vector2<int16_t> _coord);
-	virtual void Generate(std::shared_ptr<Sector> _this, AxisAligned_Rectangle2<int16_t> _rectangle);
+	MapTile* Tile(Vector2<int16_t> _coord);
+	virtual void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
 
 	AxisAligned_Rectangle2<int16_t> rectangle_;
-	std::vector<std::vector<std::shared_ptr<MapTile> > > tile_;
-	std::shared_ptr<TileType> kGround;
+	std::vector<std::vector<std::unique_ptr<MapTile>>> tile_;
+	TileType kGround;
 };
 
 class SectorGenerator : public TimeObject

@@ -20,13 +20,13 @@ class MapLocation
 	
 		for(int16_t x=0; x<=rectangle_.Width(); ++x)
 		{
-			std::vector<std::shared_ptr<MapTile> > row;
+			std::vector<MapTile*> row;
 			row.reserve(rectangle_.Height());
 			maptile_.push_back(row);
 		}
 	};
 
-	std::vector<std::vector<std::shared_ptr<MapTile> > > maptile_;
+	std::vector<std::vector<MapTile*>> maptile_;
 	AxisAligned_Rectangle2<t> rectangle_;
 
  	void Save(std::stringstream &_save) {};

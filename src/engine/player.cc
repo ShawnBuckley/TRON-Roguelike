@@ -66,7 +66,7 @@ bool Player::Controls(char _ch)
 		return 1;
 	}
 
-	if(!control.game_control_ && !game()->game_flags_.paused_)
+	if(!control.game_control_ && !game()->paused_)
 	{
 		moves_.push_back(ControlObjectMove(control.move_type_, 0, control.vector_));
 	}

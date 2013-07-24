@@ -5,7 +5,7 @@
 
 #include "engine/mapobject.hh"
 #include "engine/game.hh"
-#include "engine/color.hh"
+#include "engine/io.hh"
 #include "engine/maptile.hh"
 #include "engine/tiletype.hh"
 #include "engine/map.hh"
@@ -15,13 +15,13 @@
 const int16_t kWallSprite[10] = {' ', 192, 179, 217, 196, '.', 196, 218, 179, 191};
 const char kWallPrint[10] = {' ', '\\', '|', '/', '-', '.', '-', '/', '|', '\\'};
 
-Bike::Bike(std::shared_ptr<Color> _color)
+Bike::Bike(uint8_t _color)
 {
 	moved_ = 0;
 	change_direction_ = 0;
 
   	for(uint8_t i=0; i<10; i++)
-		wall_displayobject_[i] = std::move(std::shared_ptr<DisplayObject>(new DisplayObject(kWallPrint[i], kWallSprite[i], _color)));
+		wall_displayobject_[i] = DisplayObject(kWallPrint[i], kWallSprite[i], _color);
 }
 
 Bike::~Bike() {}
@@ -38,7 +38,7 @@ void Bike::Derez()
 		MapUnlink();
 
 		flags_ = MapObjectFlags(0, 0, 0, 1);
-		displayobject_ = std::move(std::shared_ptr<DisplayObject>(new DisplayObject('X', 'X', displayobject_->color_)));
+		displayobject_ = DisplayObject('X', 'X', displayobject_.color_);
 		time_of_death_ = game()->worldtime_->Tick();
 
 		MapLink();
@@ -51,7 +51,7 @@ void Bike::RemoveWall()
 	{
 		uint64_t time = game()->worldtime_->Tick() - time_of_death_;
 	
-		while(time == wall_list_.begin()->get()->time_dropped_)
+		while(wall_list_.front() && time == wall_list_.front()->time_dropped_)
 		{
 			wall_list_.erase(wall_list_.begin());
 
@@ -59,7 +59,9 @@ void Bike::RemoveWall()
 		}
 	}
 	else
-		timeobject_->TimeUnlink();
+	{
+		timeobject_.TimeUnlink();
+	}
 }
 
 bool Bike::Move(Vector2<int16_t> _vector)
@@ -95,7 +97,7 @@ uint16_t Bike::Tick()
 			{
 				Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
 
-				std::shared_ptr<MapTile> tile = game()->map_->Tile(test_coord);
+				MapTile* tile = game()->map_->Tile(test_coord);
 
 				if(tile != NULL)
 				{
@@ -138,13 +140,16 @@ uint16_t Bike::Tick()
 				{
 					if(!location.rectangle_.Intersect(point))
 					{
-						wall_list_.push_back(std::shared_ptr<LightWall>(
-							new LightWall(
-								wall_displayobject_[change_direction_ ? change_direction_ :vector_.Direction()],
+						wall_list_.push_back(
+							std::move(std::unique_ptr<LightWall>(new LightWall(
+								DisplayObject(
+									kWallPrint[change_direction_ ? change_direction_ :vector_.Direction()],
+									kWallSprite[change_direction_ ? change_direction_ :vector_.Direction()],
+									displayobject_.color_),
 								MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
 								game()->worldtime_->Tick(),
 								this
-							)
+							))
 						));
 					}
 				}
@@ -163,5 +168,5 @@ uint16_t Bike::Tick()
 		RemoveWall();
 	}
 
-	return timeobject_->speed_;
+	return timeobject_.speed_;
 }

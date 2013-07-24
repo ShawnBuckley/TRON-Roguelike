@@ -7,11 +7,35 @@
 #include <memory>
 #include <string>
 #include <list>
+#include <vector>
 
 #include "math/axisaligned_rectangle2.hh"
 
 class DisplayObject;
 class Color;
+
+#define CURSES_MULTIPLIER 3.9215686274509803921
+
+enum Colors
+{
+	black = 0,
+	red,
+	green,
+	yellow,
+	blue,
+	magenta,
+	dark_blue,
+	white
+};
+
+struct Color
+{
+	Color(uint8_t _r, uint8_t _g, uint8_t _b) : r_(_r), g_(_g), b_(_b) {};
+
+	uint8_t r_;
+	uint8_t g_;
+	uint8_t b_;
+};
 
 class IO
 {
@@ -37,6 +61,8 @@ class IO
 
 	std::shared_ptr<Color> old_color_;
 	AxisAligned_Rectangle2<int16_t> viewport_;
+
+	std::vector<Color> colors_;
 };
 
 #endif // TRON_RLENGINEX_IO_HH
