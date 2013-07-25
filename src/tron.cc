@@ -98,7 +98,6 @@ void TRON::Start()
 	);
 
 	AiBike* red_bike = AddAiBike(red);
-	printf("between\n");
 	red_bike->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)

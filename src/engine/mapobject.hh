@@ -16,14 +16,23 @@
 
 class DisplayObject;
 class Color;
-class Bike;
-class LightWall;
 class MapTile;
+
+struct MapObjectStats
+{
+	MapObjectStats() : mass_(81647), health_(100) {};
+	MapObjectStats(uint32_t _mass, uint16_t _health) : mass_(_mass), health_(_health) {};
+
+	uint32_t mass_;
+
+	uint16_t health_;
+};
 
 struct MapObjectFlags
 {
 	MapObjectFlags() : rez_(0), clipping_(0), visible_(0) {};
-	MapObjectFlags(bool _rez, bool _clipping, bool _solid, bool _visible) : rez_(_rez), clipping_(_clipping), solid_(_solid), visible_(_visible) {};
+	MapObjectFlags(bool _rez, bool _clipping, bool _solid, bool _visible)
+	: rez_(_rez), clipping_(_clipping), solid_(_solid), visible_(_visible) {};
 
 	bool rez_;
 	bool clipping_;
@@ -36,9 +45,10 @@ class MapObject
   public:
 	MapObject() : linked_(0) {};
 	MapObject(
-		MapObjectFlags _mapobject_flags,
+		MapObjectStats _stats,
+		MapObjectFlags _flags,
 		const DisplayObject _displayobject
-	) : flags_(_mapobject_flags), displayobject_(_displayobject) {};
+	) : stats_(_stats), flags_(_flags), displayobject_(_displayobject) {};
 	~MapObject();
 
 	virtual bool Rez(MapLocation<int16_t> _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
@@ -52,28 +62,17 @@ class MapObject
 
 	virtual uint16_t Tick();
 
-	virtual bool CheckBump(MapObject *_mapobject) { printf("%p mapobject double dispatch call - bump\n", this); return _mapobject->DoubleDispatch_CheckBump(this); };
-	virtual bool DoubleDispatch_CheckBump(MapObject *_mapobject) { printf("%p DD MO bump MO\n",this); return 1; };
-	virtual bool DoubleDispatch_CheckBump(Bike *_bike) { printf("%p DD MO bump BK\n",this); return 1; };
-	virtual bool DoubleDispatch_CheckBump(LightWall *_lightwall) { printf("%p DD MO bump LW\n",this); return 1; };
-
-	virtual bool CheckBumped(MapObject *_mapobject) { printf("%p mapobject double dispatch call - check bumped\n", this); return _mapobject->DoubleDispatch_CheckBumped(this); };
-	virtual bool DoubleDispatch_CheckBumped(MapObject *_mapobject) { printf("%p DD MO check MO\n",this); return 1; };
-	virtual bool DoubleDispatch_CheckBumped(Bike *_bike) { printf("%p DD MO check BK\n",this); return 1; };
-	virtual bool DoubleDispatch_CheckBumped(LightWall *_lightwall) { printf("%p DD MO check LW\n",this); return 1; };
 
 
 	bool linked_;
-//	std::shared_ptr<MapTile> maptile_;
-//	AxisAligned_Rectangle2<int16_t> location_;
-//	std::shared_ptr<MapLocation<int16_t> > location_;
 	MapLocation<int16_t> location_;
 	Vector2<int16_t> vector_;
+
+	MapObjectStats stats_;
 	MapObjectFlags flags_;
 
 	TimeObject timeobject_;
 	DisplayObject displayobject_;
-	// DisplayObject* displayobject_;
 };
 
 #endif // TRON_RLENGINEX_OBJECT_HH

@@ -49,8 +49,7 @@ void Game::Start()
 		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(0,0),64,64)
 	);
 
-	Player* player = BuildPlayerMapobject(blue);
-	AddControlObject(player);
+	Player* player = AddPlayerMapobject(blue);
 	player_->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8), 1, 1)
@@ -150,18 +149,20 @@ void Game::AddControlObject(ControlObject* _controlobject)
 	}
 }
 
-Player* Game::BuildPlayerMapobject(uint8_t _color)
+Player* Game::AddPlayerMapobject(uint8_t _color)
 {
 	MapObject* mapobject = new MapObject(
+		MapObjectStats(),
 		MapObjectFlags(1, 1, 1, 1),
 		DisplayObject('@', '@', _color)
 	);
 
 	ControlObject* controlobject = new Player(mapobject);
 
-	return (Player*)controlobject;
+	mapobject->timeobject_.mapobject_ = mapobject;
+	mapobject->timeobject_.controlobject_ = controlobject;
 
-	// mapobject->this_ = std::weak_ptr<MapObject>(mapobject);
-	// mapobject->this_ = std::weak_ptr<MapObject>(mapobject);
-	// mapobject->timeobject_.controlobject_ = std::weak_ptr<ControlObject>(controlobject);
+	AddControlObject(controlobject);
+
+	return (Player*)controlobject;
 }

@@ -96,11 +96,9 @@ bool AiBike::CheckMapObjects(MapTile* _tile)
 	for(auto mapobject = _tile->mapobject_list_.begin();
 		mapobject != _tile->mapobject_list_.end(); ++mapobject)
 	{
-		if(*mapobject == NULL) continue;
-
-		if((*mapobject)->flags_.clipping_)
+		if((*mapobject) != NULL && (*mapobject)->flags_.clipping_)
 		{
-			if((*mapobject)->CheckBumped(&*mapobject_))
+			if((*mapobject)->stats_.mass_ > (&*mapobject_)->stats_.mass_)
 				return 1;
 		}
 	}

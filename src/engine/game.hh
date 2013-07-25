@@ -30,7 +30,7 @@ class Game
 	void SetRealtime(bool _realtime);
 
 	void AddControlObject(ControlObject* _controlobject);
-	Player* BuildPlayerMapobject(uint8_t _color);
+	Player* AddPlayerMapobject(uint8_t _color);
 
 	bool run_;
 	bool paused_;

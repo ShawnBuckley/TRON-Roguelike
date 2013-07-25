@@ -17,13 +17,12 @@ remove Color, integrate with IO
 
 add bike directional displayobjects
 
+redo mapobject collision code
+	make mapobject unaware of bike
 
 
 
 TODO:
-
-redo mapobject collision code
-	make mapobject unaware of bike
 
 integrate TimeObject into ControlObject
 	fix GameTime to use ControlObjects

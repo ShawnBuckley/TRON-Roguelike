@@ -19,11 +19,22 @@ const char kBikePrint[10] = {' ', ' ', '*', ' ', '<', 'B', '>', ' ', '^', ' '};
 
 Bike::Bike(uint8_t _color)
 {
+	stats_ = MapObjectStats(226796, 100);
 	moved_ = 0;
 	change_direction_ = 0;
 }
 
 Bike::~Bike() {}
+
+bool Bike::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
+{
+	uint8_t direction = _vector.Direction();
+
+	displayobject_.sprite_ = kBikeSprite[direction];
+	displayobject_.print_ = kBikePrint[direction];
+
+	MapObject::Rez(_location, _vector);
+}
 
 void Bike::Derez()
 {
@@ -63,16 +74,6 @@ void Bike::RemoveWall()
 	}
 }
 
-bool Bike::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
-{
-	uint8_t direction = _vector.Direction();
-
-	displayobject_.sprite_ = kBikeSprite[direction];
-	displayobject_.print_ = kBikePrint[direction];
-
-	MapObject::Rez(_location, _vector);
-}
-
 bool Bike::Move(Vector2<int16_t> _vector)
 {
 	if(!flags_.rez_ || _vector == -vector_ || (_vector.x && _vector.y) || moved_)
@@ -105,7 +106,7 @@ uint16_t Bike::Tick()
 
 		return timeobject_.speed_;
 	}
-	
+
 	if(vector_ > Vector2<int16_t>(0,0))
 	{
 		MapLocation<int16_t> location = location_;
@@ -132,7 +133,7 @@ uint16_t Bike::Tick()
 				{
 					if(solid_mapobject[i] != NULL && solid_mapobject[i] != this)
 					{
-						if(solid_mapobject[i]->CheckBumped(this))
+						if(solid_mapobject[i]->stats_.mass_ > stats_.mass_)
 						{
 							Derez();
 							return 0;
