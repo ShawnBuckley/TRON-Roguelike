@@ -59,7 +59,7 @@ class IO
 
 	std::list<char> keystrokes_;
 
-	std::shared_ptr<Color> old_color_;
+	uint8_t old_color_;
 	AxisAligned_Rectangle2<int16_t> viewport_;
 
 	std::vector<Color> colors_;

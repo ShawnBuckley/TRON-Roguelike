@@ -47,8 +47,8 @@ class GL : public SDL
 	void EndState();
 	void Clear();
 	void Refresh();
-	void SetColor(std::shared_ptr<Color> _color);
-	void Print(uint8_t _print, std::shared_ptr<Color> _color);
+	void SetColor(uint8_t _color);
+	void Print(uint8_t _print, uint8_t _color);
 
 
 	GLuint *texture_;

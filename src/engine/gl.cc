@@ -271,15 +271,15 @@ void GL::Refresh()
 	SDL_GL_SwapBuffers();
 }
 
-void GL::SetColor(std::shared_ptr<Color> _color)
+void GL::SetColor(uint8_t _color)
 {
-	if(_color != NULL && _color != old_color_)
+	if(_color != old_color_)
 	{
-		glColor3ub(_color->r_, _color->g_, _color->b_);
+		glColor3ub(colors_[_color].r_, colors_[_color].g_, colors_[_color].b_);
 	}
 }
 
-void GL::Print(uint8_t _print, std::shared_ptr<Color> _color)
+void GL::Print(uint8_t _print, uint8_t _color)
 {
 	SetColor(_color);
 
