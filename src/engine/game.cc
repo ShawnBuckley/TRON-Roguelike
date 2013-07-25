@@ -20,6 +20,7 @@ Game::Game()
 	worldtime_ = std::unique_ptr<WorldTime>(new WorldTime);
 	speed_ = 1000;
 
+	run_ = 1;
 	paused_ = 0;
 	game_pointer = this;
 }

@@ -8,23 +8,31 @@ remove ControlObject source file
 remove DisplayObject source file
 remove TileType source file
 
-
-
-
 Improve memory management and ownership 
 	vector of unique_ptrs
 
 remove EntityManager, integrate factory support into Game
 
+remove Color, integrate with IO
+
+add bike directional displayobjects
+
+
+
+
+TODO:
+
+redo mapobject collision code
+	make mapobject unaware of bike
+
 integrate TimeObject into ControlObject
 	fix GameTime to use ControlObjects
 	search COM requests for shortest move
-
-
-remove Color, integrate with IO
 
 serialization of objects
 	network code
 	prevent other clients from control non local player objects
 
 fix display code, test rect intersection code
+switch to SDL 2.0
+

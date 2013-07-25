@@ -44,6 +44,7 @@ class Bike : public MapObject
 
 	void Derez();
 
+	bool Rez(MapLocation<int16_t> _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
 	bool Move(Vector2<int16_t> _vector);
 
 	uint16_t Tick();
@@ -65,7 +66,8 @@ class Bike : public MapObject
 	BikeFlags bike_flags_;
 
 	std::list<std::unique_ptr<LightWall>> wall_list_;
-	DisplayObject wall_displayobject_[10];
+	// DisplayObject wall_displayobject_[10];
+	// DisplayObject bike_displayobject_[10];
 };
 
 #endif // TRON_RLENGINEX_BIKE_HH

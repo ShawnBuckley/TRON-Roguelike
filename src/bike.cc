@@ -12,16 +12,15 @@
 
 #include "bike.hh"
 
-const int16_t kWallSprite[10] = {' ', 192, 179, 217, 196, '.', 196, 218, 179, 191};
+const uint8_t kWallSprite[10] = {' ', 192, 179, 217, 196, '.', 196, 218, 179, 191};
 const char kWallPrint[10] = {' ', '\\', '|', '/', '-', '.', '-', '/', '|', '\\'};
+const uint8_t kBikeSprite[10] = {' ', ' ', 30, ' ', 17, 254, 16, ' ', 31, ' '};
+const char kBikePrint[10] = {' ', ' ', '*', ' ', '<', 'B', '>', ' ', '^', ' '};
 
 Bike::Bike(uint8_t _color)
 {
 	moved_ = 0;
 	change_direction_ = 0;
-
-  	for(uint8_t i=0; i<10; i++)
-		wall_displayobject_[i] = DisplayObject(kWallPrint[i], kWallSprite[i], _color);
 }
 
 Bike::~Bike() {}
@@ -64,12 +63,27 @@ void Bike::RemoveWall()
 	}
 }
 
+bool Bike::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
+{
+	uint8_t direction = _vector.Direction();
+
+	displayobject_.sprite_ = kBikeSprite[direction];
+	displayobject_.print_ = kBikePrint[direction];
+
+	MapObject::Rez(_location, _vector);
+}
+
 bool Bike::Move(Vector2<int16_t> _vector)
 {
 	if(!flags_.rez_ || _vector == -vector_ || (_vector.x && _vector.y) || moved_)
 		return 0;
 
 	Vector2<int16_t> vector = vector_ + _vector;
+
+	uint8_t direction = _vector.Direction();
+
+	displayobject_.sprite_ = kBikeSprite[direction];
+	displayobject_.print_ = kBikePrint[direction];
 
 	// reverse vector in order to get correct corner DisplayObject
 	if(vector_.y)
@@ -85,88 +99,88 @@ bool Bike::Move(Vector2<int16_t> _vector)
 
 uint16_t Bike::Tick()
 {
-	if(flags_.rez_)
+	if(!flags_.rez_)
 	{
-		if(vector_ > Vector2<int16_t>(0,0))
+		RemoveWall();
+
+		return timeobject_.speed_;
+	}
+	
+	if(vector_ > Vector2<int16_t>(0,0))
+	{
+		MapLocation<int16_t> location = location_;
+		location.rectangle_.Origin(location_.rectangle_.Vertex(0) + vector_);
+	
+		for(int16_t x=0; x<location.rectangle_.Width(); ++x)
+		{	for(int16_t y=0; y<location.rectangle_.Height(); ++y)
 		{
-			MapLocation<int16_t> location = location_;
-			location.rectangle_.Origin(location_.rectangle_.Vertex(0) + vector_);
-		
-			for(int16_t x=0; x<location.rectangle_.Width(); ++x)
-			{	for(int16_t y=0; y<location.rectangle_.Height(); ++y)
+			Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
+
+			MapTile* tile = game()->map_->Tile(test_coord);
+
+			if(tile != NULL)
 			{
-				Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
-
-				MapTile* tile = game()->map_->Tile(test_coord);
-
-				if(tile != NULL)
+				if(tile->tiletype_->tiletype_flags_.solid_)
 				{
-					if(tile->tiletype_->tiletype_flags_.solid_)
-					{
-						Derez();
-						return 0;
-					}
+					Derez();
+					return 0;
+				}
 
-					std::vector<MapObject*> solid_mapobject = tile->SolidMapObject();
+				std::vector<MapObject*> solid_mapobject = tile->SolidMapObject();
 
-					for(uint8_t i=0; i<solid_mapobject.size(); i++)
+				for(uint8_t i=0; i<solid_mapobject.size(); i++)
+				{
+					if(solid_mapobject[i] != NULL && solid_mapobject[i] != this)
 					{
-						if(solid_mapobject[i] != NULL && solid_mapobject[i] != this)
+						if(solid_mapobject[i]->CheckBumped(this))
 						{
-							if(solid_mapobject[i]->CheckBumped(this))
-							{
-								Derez();
-								return 0;
-							}
-							else
-							{
-								solid_mapobject[i]->Derez();
-							}
+							Derez();
+							return 0;
+						}
+						else
+						{
+							solid_mapobject[i]->Derez();
 						}
 					}
 				}
 			}
-			}
-
-			if(bike_flags_.drop_walls_ && (vector_.x || vector_.y))
-			{
-				MapLocation<int16_t> location = location_;
-				location.rectangle_.Origin(location.rectangle_.Vertex(0) + vector_);
-
-				Vector2<int16_t> point = location_.rectangle_.Vertex(0);
-
-				for(; point.x<location_.rectangle_.Width()+location_.rectangle_.Vertex(0).x; point.x += 1)
-				{	for(; point.y<location_.rectangle_.Height()+location_.rectangle_.Vertex(0).y; point.y +=1)
-				{
-					if(!location.rectangle_.Intersect(point))
-					{
-						wall_list_.push_back(
-							std::move(std::unique_ptr<LightWall>(new LightWall(
-								DisplayObject(
-									kWallPrint[change_direction_ ? change_direction_ :vector_.Direction()],
-									kWallSprite[change_direction_ ? change_direction_ :vector_.Direction()],
-									displayobject_.color_),
-								MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
-								game()->worldtime_->Tick(),
-								this
-							))
-						));
-					}
-				}
-				}
-		
-				change_direction_ = 0;
-			}
-
-			MapObject::Move(vector_);
+		}
 		}
 
-		moved_ = 0;
+		if(bike_flags_.drop_walls_ && (vector_.x || vector_.y))
+		{
+			MapLocation<int16_t> location = location_;
+			location.rectangle_.Origin(location.rectangle_.Vertex(0) + vector_);
+
+			Vector2<int16_t> point = location_.rectangle_.Vertex(0);
+
+			for(; point.x<location_.rectangle_.Width()+location_.rectangle_.Vertex(0).x; point.x += 1)
+			{	for(; point.y<location_.rectangle_.Height()+location_.rectangle_.Vertex(0).y; point.y +=1)
+			{
+				if(!location.rectangle_.Intersect(point))
+				{
+					wall_list_.push_back(
+						std::move(std::unique_ptr<LightWall>(new LightWall(
+							DisplayObject(
+								kWallPrint[change_direction_ ? change_direction_ :vector_.Direction()],
+								kWallSprite[change_direction_ ? change_direction_ :vector_.Direction()],
+								displayobject_.color_),
+							MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
+							game()->worldtime_->Tick(),
+							this
+						))
+					));
+				}
+			}
+			}
+	
+			change_direction_ = 0;
+		}
+
+		MapObject::Move(vector_);
 	}
-	else
-	{
-		RemoveWall();
-	}
+
+	moved_ = 0;
 
 	return timeobject_.speed_;
 }
