@@ -9,6 +9,7 @@ class GameTime
 {
   public:
 	GameTime();
+	virtual ~GameTime() {};
 
 	void GameTurn(uint16_t _time);
 

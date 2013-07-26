@@ -17,6 +17,7 @@ class Sector
 {
   public:
 	Sector();
+	virtual ~Sector() {};
 
 	MapTile* Tile(Vector2<int16_t> _coord);
 	virtual void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
@@ -29,6 +30,7 @@ class Sector
 class SectorGenerator : public TimeObject
 {
   public:
+  	virtual ~SectorGenerator() {};
 	bool Tick();
 };
 

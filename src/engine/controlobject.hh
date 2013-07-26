@@ -39,7 +39,7 @@ class ControlObject
 	ControlObject() {};
 	ControlObject(MapObject* _mapobject) : mapobject_(_mapobject) {};
 //	ControlObject(const ControlObject &_controlobject) : mapobject_(_controlobject.mapobject_) {};
-	~ControlObject() {};
+	virtual ~ControlObject() {};
 
 	virtual void Think(uint16_t _remaining_time) {};
 	virtual ControlObjectMove Move() {};

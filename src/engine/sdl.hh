@@ -19,7 +19,7 @@ class SDL : public IO
 	
   public:
 	SDL() : screen_(NULL) {};
-	~SDL();
+	virtual ~SDL();
 
 	virtual void Init();
 

@@ -13,6 +13,7 @@
 
 class DisplayObject;
 class Color;
+class MapObject;
 
 #define CURSES_MULTIPLIER 3.9215686274509803921
 
@@ -50,6 +51,9 @@ class IO
 	void SetFPS(float _fps) { fps_ = _fps; };
 	virtual void SetRealtime(bool _realtime)=0;
 
+
+	MapObject* camera_mapobject_;
+	Vector2<int16_t> camera_location_;
 
 	bool realtime_;
 	float fps_;

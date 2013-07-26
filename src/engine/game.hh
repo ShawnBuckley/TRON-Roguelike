@@ -16,7 +16,7 @@ class Game
 {
   public:
 	Game();
-	~Game() {};
+	virtual ~Game() {};
 
 	virtual void Start();
 	void Run();
@@ -39,8 +39,6 @@ class Game
 	uint32_t speed_;
 
 
-
-	Vector2<int16_t> camera_;
 	Player* player_;
 
 	std::unique_ptr<IO> io_;
@@ -48,7 +46,6 @@ class Game
 	std::unique_ptr<WorldTime> worldtime_;
 
 	std::vector<std::unique_ptr<ControlObject>> entities_;
-	std::vector<std::shared_ptr<DisplayObject>> displayobjects_;
 	std::list<uint16_t> entity_open_id_;
 
 	// std::vector<std::unique_ptr<ControlObject>> controlobjects_;

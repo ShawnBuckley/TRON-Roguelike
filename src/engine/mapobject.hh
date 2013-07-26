@@ -49,7 +49,7 @@ class MapObject
 		MapObjectFlags _flags,
 		const DisplayObject _displayobject
 	) : stats_(_stats), flags_(_flags), displayobject_(_displayobject) {};
-	~MapObject();
+	virtual ~MapObject();
 
 	virtual bool Rez(MapLocation<int16_t> _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
 	virtual void Derez();

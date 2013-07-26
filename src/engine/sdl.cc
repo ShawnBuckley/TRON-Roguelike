@@ -179,6 +179,12 @@ void SDL::Map()
 	static boost::posix_time::ptime last_frame;
 
 	Vector2<int16_t> coord;
+	Vector2<int16_t> camera;
+
+	if(camera_mapobject_)
+		camera = camera_mapobject_->location_.rectangle_.Vertex(0);
+	else
+		camera = camera_location_;
 
 	Clear();
 
@@ -188,8 +194,8 @@ void SDL::Map()
 	// ));
 
 	viewport_.Origin(Vector2<int16_t>(
-		game()->camera_.x - x_/2,
-		game()->camera_.y - y_/2
+		camera.x - x_/2,
+		camera.y - y_/2
 	));
 
 //	printf("viewport %i %i\n", viewport_.Vertex(0).x, viewport_.Vertex(0).y);
@@ -305,7 +311,8 @@ void SDL::Map()
 	} NewLine();
 	}
 
-	Move(game()->camera_.x, game()->camera_.y);
+	Move(camera.x, camera.y);
+
 
 	Refresh();
 

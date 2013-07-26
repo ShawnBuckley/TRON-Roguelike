@@ -57,6 +57,8 @@ void Game::Start()
 		Vector2<int16_t>(+0,+0)
 	);
 
+	io_->camera_mapobject_ = player_->mapobject_;
+
 	player_->LoadControls();
 
 	Run();
@@ -86,7 +88,7 @@ void Game::Run()
 			worldtime_->WorldTurn(input);
 		}
 
-		camera_ = player_->mapobject_->location_.maptile_[0][0]->location_;
+		// camera_ = player_->mapobject_->location_.maptile_[0][0]->location_;
 		io_->Map();
 	}
 }
@@ -106,17 +108,19 @@ void Game::Pause()
 
 void Game::Save()
 {
-/*	std::ofstream save_file("save", std::ios::trunc);
+//	serialize:
+//	game
+//		rng
+//		game/worldtime
+//		map
+//			sectors
+//				items
+//		control objects
+//			mapobjects
+//				extras (lightwalls, etc)
+//				inventories
+//				
 
-	for(auto it = Object::map_.begin(); it != Object::map_.end(); ++it)
-	{
-		if(save_file.good())
-		{
-			std::stringstream save;
-			it->second->Save(save);
-			save_file << save.str();
-		}
-	}*/
 }
 
 void Game::Load()
