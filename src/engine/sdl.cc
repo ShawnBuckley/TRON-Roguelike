@@ -137,16 +137,16 @@ void SDL::Refresh()
 	SDL_Flip(screen_);
 }
 
-void SDL::Render(const DisplayObject& _displayobject)
+void SDL::Render(const DisplayObject* _displayobject)
 {
-	// if(_displayobject != NULL)
-	// {
-		Print(_displayobject.sprite_ ? _displayobject.sprite_ : _displayobject.print_, _displayobject.color_);
-	// }
-	// else
-	// {
-	// 	Print('!', red);
-	// }
+	if(_displayobject != NULL)
+	{
+		Print(_displayobject->sprite_ ? _displayobject->sprite_ : _displayobject->print_, _displayobject->color_);
+	}
+	else
+	{
+		Print('!', red);
+	}
 }
 
 void SDL::Print(uint8_t _print, uint8_t _color)
@@ -290,7 +290,7 @@ void SDL::Map()
 		{
 			MapTile* tile = game()->map_->Tile(coord);
 
- 			if(tile != NULL)
+ 			if(tile != NULL && tile->tiletype_ != NULL)
 			{
 				Render(tile->tiletype_->displayobject_);
 
@@ -312,7 +312,6 @@ void SDL::Map()
 	}
 
 	Move(camera.x, camera.y);
-
 
 	Refresh();
 

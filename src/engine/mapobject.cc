@@ -36,9 +36,9 @@ bool MapObject::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
 
 void MapObject::Derez()
 {
-	uint8_t color = displayobject_.color_;
+	uint8_t color = displayobject_->color_;
 
-	displayobject_ = DisplayObject('X', 'X', color);
+	displayobject_ = game()->AddDisplayObject(DisplayObject('X', 'X', color));
 	flags_ = MapObjectFlags(0, 0, 0, 1);
 	timeobject_.TimeUnlink();
 }
@@ -104,7 +104,7 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 			
 		if(game()->map_->Tile(point) != NULL)
 		{
-			if(location.maptile_[x][y]->tiletype_->tiletype_flags_.solid_)
+			if(location.maptile_[x][y]->tiletype_->flags_.solid_)
 				return 0;
 
 			if(location.maptile_[x][y]->AnySolidMapObject())

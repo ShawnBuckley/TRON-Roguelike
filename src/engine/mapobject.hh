@@ -47,7 +47,7 @@ class MapObject
 	MapObject(
 		MapObjectStats _stats,
 		MapObjectFlags _flags,
-		const DisplayObject _displayobject
+		DisplayObject* _displayobject
 	) : stats_(_stats), flags_(_flags), displayobject_(_displayobject) {};
 	virtual ~MapObject();
 
@@ -63,7 +63,7 @@ class MapObject
 	virtual uint16_t Tick();
 
 
-
+	uint16_t id_;
 	bool linked_;
 	MapLocation<int16_t> location_;
 	Vector2<int16_t> vector_;
@@ -72,7 +72,7 @@ class MapObject
 	MapObjectFlags flags_;
 
 	TimeObject timeobject_;
-	DisplayObject displayobject_;
+	DisplayObject* displayobject_;
 };
 
 #endif // TRON_RLENGINEX_OBJECT_HH

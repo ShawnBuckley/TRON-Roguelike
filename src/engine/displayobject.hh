@@ -16,6 +16,14 @@ class DisplayObject
 	DisplayObject(char _print, uint8_t _sprite, uint8_t _color) : print_(_print), sprite_(_sprite), color_(_color) {};
 	~DisplayObject() {};
 
+	inline bool operator==(const DisplayObject& _other) const
+	{
+		return(print_ == _other.print_ &&
+			sprite_ == _other.print_ &&
+			color_ == _other.color_);
+	}
+
+	uint16_t id_;
 	char print_;
 	uint8_t sprite_;
 	uint8_t color_;

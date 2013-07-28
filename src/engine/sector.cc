@@ -1,11 +1,12 @@
 // TRON RLengineX Sector.cc
 
+#include "game.hh"
 #include "sector.hh"
 #include "maptile.hh"
 
 Sector::Sector()
 {
-	kGround = TileType(DisplayObject('.', 176, dark_blue));
+	ground_ = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('.', 176, dark_blue))));
 }
 
 MapTile* Sector::Tile(Vector2<int16_t> _coord)
@@ -32,7 +33,7 @@ void Sector::Generate(AxisAligned_Rectangle2<int16_t> _rectangle)
 		for(int16_t y=0; y<=rectangle_.Height(); ++y)
 		{
 			row.push_back(std::move(std::unique_ptr<MapTile>(
-				new MapTile(Vector2<int16_t>(x+rectangle_.Vertex(0).x, y+rectangle_.Vertex(0).y), this, &kGround))));
+				new MapTile(Vector2<int16_t>(x+rectangle_.Vertex(0).x, y+rectangle_.Vertex(0).y), this, ground_))));
 		}
 
 		tile_.push_back(std::move(row));

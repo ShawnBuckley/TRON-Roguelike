@@ -17,8 +17,8 @@ class LightGrid : public Sector
 	void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
 //	bool Fill(uint8_t Size);
 
-	TileType kFloor[4];
-	TileType kWall;
+	TileType* floor_[4];
+	TileType* wall_;
 };
 
 #endif // TRON_RLENGINEX_LIGHTGRID_HH

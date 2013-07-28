@@ -15,14 +15,7 @@
 const uint8_t kWallSprite[10] = {' ', 192, 179, 217, 196, '.', 196, 218, 179, 191};
 const char kWallPrint[10] = {' ', '\\', '|', '/', '-', '.', '-', '/', '|', '\\'};
 const uint8_t kBikeSprite[10] = {' ', ' ', 30, ' ', 17, 254, 16, ' ', 31, ' '};
-const char kBikePrint[10] = {' ', ' ', '*', ' ', '<', 'B', '>', ' ', '^', ' '};
-
-Bike::Bike(uint8_t _color)
-{
-	stats_ = MapObjectStats(226796, 100);
-	moved_ = 0;
-	change_direction_ = 0;
-}
+const char kBikePrint[10] = {' ', ' ', 'v', ' ', '<', 'B', '>', ' ', '^', ' '};
 
 Bike::~Bike() {}
 
@@ -30,8 +23,8 @@ bool Bike::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
 {
 	uint8_t direction = _vector.Direction();
 
-	displayobject_.sprite_ = kBikeSprite[direction];
-	displayobject_.print_ = kBikePrint[direction];
+	displayobject_ = game()->AddDisplayObject(DisplayObject(kBikePrint[direction],
+		kBikeSprite[direction], displayobject_->color_));
 
 	MapObject::Rez(_location, _vector);
 }
@@ -48,7 +41,7 @@ void Bike::Derez()
 		MapUnlink();
 
 		flags_ = MapObjectFlags(0, 0, 0, 1);
-		displayobject_ = DisplayObject('X', 'X', displayobject_.color_);
+		displayobject_ = game()->AddDisplayObject(DisplayObject('X', 'X', displayobject_->color_));
 		time_of_death_ = game()->worldtime_->Tick();
 
 		MapLink();
@@ -61,7 +54,7 @@ void Bike::RemoveWall()
 	{
 		uint64_t time = game()->worldtime_->Tick() - time_of_death_;
 	
-		while(wall_list_.front() && time == wall_list_.front()->time_dropped_)
+		while(wall_list_.size() && time == wall_list_.front()->time_dropped_)
 		{
 			wall_list_.erase(wall_list_.begin());
 
@@ -69,9 +62,7 @@ void Bike::RemoveWall()
 		}
 	}
 	else
-	{
 		timeobject_.TimeUnlink();
-	}
 }
 
 bool Bike::Move(Vector2<int16_t> _vector)
@@ -83,8 +74,8 @@ bool Bike::Move(Vector2<int16_t> _vector)
 
 	uint8_t direction = _vector.Direction();
 
-	displayobject_.sprite_ = kBikeSprite[direction];
-	displayobject_.print_ = kBikePrint[direction];
+	displayobject_->sprite_ = kBikeSprite[direction];
+	displayobject_->print_ = kBikePrint[direction];
 
 	// reverse vector in order to get correct corner DisplayObject
 	if(vector_.y)
@@ -121,7 +112,7 @@ uint16_t Bike::Tick()
 
 			if(tile != NULL)
 			{
-				if(tile->tiletype_->tiletype_flags_.solid_)
+				if(tile->tiletype_->flags_.solid_)
 				{
 					Derez();
 					return 0;
@@ -162,10 +153,10 @@ uint16_t Bike::Tick()
 				{
 					wall_list_.push_back(
 						std::move(std::unique_ptr<LightWall>(new LightWall(
-							DisplayObject(
+							game()->AddDisplayObject(DisplayObject(
 								kWallPrint[change_direction_ ? change_direction_ :vector_.Direction()],
 								kWallSprite[change_direction_ ? change_direction_ :vector_.Direction()],
-								displayobject_.color_),
+								displayobject_->color_)),
 							MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
 							game()->worldtime_->Tick(),
 							this

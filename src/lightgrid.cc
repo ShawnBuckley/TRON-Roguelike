@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "engine/game.hh"
 #include "engine/io.hh"
 #include "engine/maptile.hh"
 #include "engine/tiletype.hh"
@@ -10,12 +11,12 @@
 
 LightGrid::LightGrid()
 {
-	kFloor[0] = TileType(DisplayObject('+', 197, dark_blue));
-	kFloor[1] = TileType(DisplayObject('-', 196, dark_blue));
-	kFloor[2] = TileType(DisplayObject('|', 179, dark_blue));
-	kFloor[3] = TileType(DisplayObject(' ', 255, black));
+	floor_[0] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('+', 197, dark_blue))));
+	floor_[1] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('-', 196, dark_blue))));
+	floor_[2] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('|', 179, dark_blue))));
+	floor_[3] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject(' ', 255, black))));
 
-	kWall = TileType(DisplayObject('#', 219, dark_blue), TileTypeFlags(1, 1));
+	wall_ = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('#', 219, dark_blue)), TileTypeFlags(1, 1)));
 }
 
 void LightGrid::Generate(AxisAligned_Rectangle2<int16_t> _rectangle)
@@ -35,18 +36,18 @@ void LightGrid::Generate(AxisAligned_Rectangle2<int16_t> _rectangle)
 		
 			if(y == 0 || y >= rectangle_.Height()-1 || x == 0 || x >= rectangle_.Width()-1)
 				row.push_back(std::move(std::unique_ptr<MapTile>(
-					new MapTile(location, this, &kWall))));
+					new MapTile(location, this, wall_))));
 			else
 			{
 				if(y % 2)
 				{
 					row.push_back(std::move(std::unique_ptr<MapTile>(
-						new MapTile(location, this, x % 2 ? &kFloor[0] : &kFloor[1]))));
+						new MapTile(location, this, x % 2 ? floor_[0] : floor_[1]))));
 				}
 				else
 				{
 					row.push_back(std::move(std::unique_ptr<MapTile>(
-						new MapTile(location, this, x % 2 ? &kFloor[2] : &kFloor[3]))));
+						new MapTile(location, this, x % 2 ? floor_[2] : floor_[3]))));
 				}
 			}
 		}

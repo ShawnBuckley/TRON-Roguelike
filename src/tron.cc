@@ -123,6 +123,8 @@ void TRON::Start()
 
 	player_->LoadControls();
 
+	io_->camera_mapobject_ = player_->mapobject_;
+
 	printf("run\n");
 	Run();
 }
@@ -131,7 +133,7 @@ Player* TRON::AddPlayerBike(uint8_t _color)
 {
 	MapObject* mapobject = new Bike(
 		MapObjectFlags(1,1,1,1),
-		DisplayObject('@', 254, _color),
+		AddDisplayObject(DisplayObject('@', 254, _color)),
 		TimeObject(1000));
 
 	Player* player = new Player(mapobject);
@@ -140,6 +142,7 @@ Player* TRON::AddPlayerBike(uint8_t _color)
 	mapobject->timeobject_.controlobject_ = player;
 
 	AddControlObject(player);
+	AddMapobject(mapobject);
 
 	return player;
 }
@@ -148,7 +151,7 @@ AiBike* TRON::AddAiBike(uint8_t _color)
 {
 	Bike* bike = new Bike(
 		MapObjectFlags(1,1,1,1),
-		DisplayObject('B', 254, _color),
+		AddDisplayObject(DisplayObject('B', 254, _color)),
 		TimeObject(1000));
 
 	AiBike* aibike = new AiBike(bike);
@@ -157,6 +160,7 @@ AiBike* TRON::AddAiBike(uint8_t _color)
 	bike->timeobject_.controlobject_ = aibike;
 
 	AddControlObject(aibike);
+	AddMapobject(bike);
 
 	return aibike;
 }

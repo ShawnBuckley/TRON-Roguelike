@@ -29,7 +29,7 @@ class Bike : public MapObject
   	Bike(uint8_t _color);	
 	Bike(
 		MapObjectFlags _mapobject_flags,
-		DisplayObject _displayobject,
+		DisplayObject* _displayobject,
 		TimeObject _timeobject)
 	{
 		flags_ = _mapobject_flags;

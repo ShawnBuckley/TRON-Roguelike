@@ -43,3 +43,8 @@ MapTile* Map::Tile(Vector2<int16_t> _coord)
 
 	return NULL;
 }
+
+void Map::AddTileType(TileType *_tiletype)
+{
+	
+}

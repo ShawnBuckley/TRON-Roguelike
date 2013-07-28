@@ -29,6 +29,9 @@ class Game
 
 	void SetRealtime(bool _realtime);
 
+	DisplayObject* AddDisplayObject(const DisplayObject _displayobject);
+	TileType* AddTileType(const TileType _tiletype);
+	void AddMapobject(MapObject* _mapobject);
 	void AddControlObject(ControlObject* _controlobject);
 	Player* AddPlayerMapobject(uint8_t _color);
 
@@ -44,6 +47,15 @@ class Game
 	std::unique_ptr<IO> io_;
 	std::unique_ptr<Map> map_;
 	std::unique_ptr<WorldTime> worldtime_;
+
+	std::vector<std::unique_ptr<DisplayObject>> displayobjects_;
+	std::list<uint16_t> displayobject_open_id_;
+
+	std::vector<std::unique_ptr<TileType>> tiletypes_;
+	std::list<uint16_t> tiletype_open_id_;
+
+	std::vector<std::unique_ptr<MapObject>> mapobjects_;
+	std::list<uint16_t> mapobject_open_id_;
 
 	std::vector<std::unique_ptr<ControlObject>> entities_;
 	std::list<uint16_t> entity_open_id_;

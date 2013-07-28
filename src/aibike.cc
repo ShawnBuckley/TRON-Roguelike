@@ -60,7 +60,7 @@ void AiBike::Default()
 
 	MapTile* tile = game()->map_->Tile(test_coord);
 
-	if(tile == NULL || tile->tiletype_->tiletype_flags_.solid_ || (!tile->Empty() && CheckMapObjects(tile)))
+	if(tile == NULL || tile->tiletype_->flags_.solid_ || (!tile->Empty() && CheckMapObjects(tile)))
 	{
 		CheckDirection();
 		return;
@@ -143,7 +143,7 @@ void AiBike::CheckDirection()
 
 bool AiBike::CheckTile(MapTile* _tile)
 {
-	return (_tile == NULL || _tile->tiletype_->tiletype_flags_.solid_ || _tile->SolidMapObject().size());
+	return (_tile == NULL || _tile->tiletype_->flags_.solid_ || _tile->SolidMapObject().size());
 }
 
 void AiBike::ChangeDirection(Vector2<int16_t> _vector)

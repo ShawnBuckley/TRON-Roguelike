@@ -29,7 +29,7 @@ class SDL : public IO
 	
 	uint32_t Input();
 	
-	void Render(const DisplayObject& _displayobject);
+	void Render(const DisplayObject* _displayobject);
 	void AddSpace();
 	void NewLine();
 	void Move(int16_t _y, int16_t _x);

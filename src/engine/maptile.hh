@@ -33,7 +33,8 @@ class MapTile
 
 	Vector2<int16_t> location_;
 	Sector* sector_;
-	std::shared_ptr<TileType> tiletype_;
+	// std::shared_ptr<TileType> tiletype_;
+	TileType* tiletype_;
 	std::list<MapObject*> mapobject_list_;
 };
 

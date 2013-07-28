@@ -52,7 +52,7 @@ DisplayObject* MapTile::VisibleMapObject()
 
 		if((*mapobject)->flags_.visible_)
 		{
-			return &(*mapobject)->displayobject_;
+			return (*mapobject)->displayobject_;
 		}
 	}
 

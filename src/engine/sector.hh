@@ -24,7 +24,7 @@ class Sector
 
 	AxisAligned_Rectangle2<int16_t> rectangle_;
 	std::vector<std::vector<std::unique_ptr<MapTile>>> tile_;
-	TileType kGround;
+	TileType* ground_;
 };
 
 class SectorGenerator : public TimeObject

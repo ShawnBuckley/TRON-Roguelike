@@ -21,7 +21,7 @@ enum ControlObjectMoveType
 	COMT_ITEM,
 };
 
-class ControlObjectMove// : public GameObject
+class ControlObjectMove
 {
   public:
   	ControlObjectMove() {};
@@ -52,6 +52,7 @@ class ControlObject
 	std::list<ControlObjectMove> moves_;
 	// std::shared_ptr<MapObject> mapobject_;
 
+	uint16_t id_;
 	uint16_t remaining_time_;
 };
 

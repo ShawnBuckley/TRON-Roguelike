@@ -26,10 +26,14 @@ class Map
 	inline bool CoordValid(Vector2<int16_t>  _point) { return rectangle_.Intersect(_point); };
 	MapTile* Tile(Vector2<int16_t>  _point);
 
+	void AddTileType(TileType *_tiletype);
 	void GenerateSector(Sector* _sector, AxisAligned_Rectangle2<int16_t> _rectangle);
+
+
 
 	AxisAligned_Rectangle2<int16_t> rectangle_;
 	std::vector<std::unique_ptr<Sector>> sector_;
+	std::vector<std::unique_ptr<TileType>> tiletypes_;
 };
 
 #endif // TRON_RLENGINEX_MAP_HH
