@@ -65,16 +65,8 @@ void GameTime::GameTurn(uint16_t _time)
 
 			if(timeobject == NULL || !timeobject->linked_ || !timeobject->speed_) continue;
 
-			if(timeobject->controlobject_ != NULL)
-			{
-				ControlObjectMove move = timeobject->controlobject_->Move();
-				timeobject->time_ -= move.time_;
-			}
-
-			if(timeobject->mapobject_ != NULL)
-			{
-				timeobject->time_ -= timeobject->mapobject_->Tick();
-			}
+			timeobject->time_ += fastest_speed;
+			timeobject->Tick();
 		}
 	}
 

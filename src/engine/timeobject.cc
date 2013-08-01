@@ -44,3 +44,28 @@ void TimeObject::TimeUnlink()
 
 	linked_ = 0;
 }
+
+void TimeObject::Tick()
+{
+	if(controlobject_ != NULL)
+	{
+		ControlObjectMove move = controlobject_->NextMove();
+
+		if(move.time_ < time_)
+		{
+			ControlObjectMove move = controlobject_->Move();
+			time_ -= move.time_;
+		}
+	}
+
+	if(mapobject_ != NULL)
+	{
+		MapObjectMove move = mapobject_->NextTick();
+
+		if(move.time_ < time_)
+		{
+			mapobject_->Tick();
+			time_ -= move.time_;
+		}
+	}
+}
