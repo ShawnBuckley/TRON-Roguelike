@@ -75,7 +75,7 @@ void Game::Run()
 		uint32_t input = io_->Input();
 		if(paused_)
 		{
-			player_->Think(0);
+			player_->Think();
 			continue;
 		}
 

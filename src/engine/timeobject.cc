@@ -6,7 +6,6 @@
 
 
 std::list<TimeObject*> TimeObject::timeobjects_;
-uint16_t TimeObject::fastest_speed_ = 65535;
 
 TimeObject::TimeObject(uint16_t _speed)
 	: speed_(_speed), time_(0) {}
@@ -26,11 +25,6 @@ void TimeObject::TimeLink()
 
 	TimeObject::timeobjects_.push_back(this);
 	
-	if(TimeObject::fastest_speed_ > speed_)
-		TimeObject::fastest_speed_ = speed_;
-
-	printf("fastest_speed_ = %i\n", TimeObject::fastest_speed_);
-
 	linked_ = 1;
 }
 
@@ -47,17 +41,6 @@ void TimeObject::TimeUnlink()
 	}
 */
 	TimeObject::timeobjects_.remove(this);
-
-	if(TimeObject::fastest_speed_ == speed_)
-	{
-		TimeObject::fastest_speed_ = 65535;
-
-		for(auto timeobject : TimeObject::timeobjects_)
-		{
-			if(timeobject->speed_ < TimeObject::fastest_speed_)
-				TimeObject::fastest_speed_ = timeobject->speed_;
-		}
-	}
 
 	linked_ = 0;
 }

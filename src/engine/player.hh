@@ -35,7 +35,7 @@ class Player : public ControlObject
   	void LoadControls();//(std::string _filename);
   	bool Controls(char _ch);
 
-	void Think(uint16_t _remaining_time);
+	void Think();
 	ControlObjectMove Move();
 
   private:

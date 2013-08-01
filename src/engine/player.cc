@@ -30,7 +30,7 @@ void Player::LoadControls()//(std::string _filename)
 }
 
 // uint32_t Player::Input(char _ch)
-void Player::Think(uint16_t _remaining_time)
+void Player::Think()
 {
 	for(char ch : game()->io_->keystrokes_)
 	{
@@ -44,13 +44,18 @@ void Player::Think(uint16_t _remaining_time)
 
 ControlObjectMove Player::Move()
 {
-	ControlObjectMove move = moves_.front();
+	if(moves_.size())
+	{
+		ControlObjectMove move = moves_.front();
 
-	mapobject_->Move(move.location_);
-	// mapobject_->vector_ = move.location_;
-	moves_.pop_front();
+		mapobject_->Move(move.location_);
+		// mapobject_->vector_ = move.location_;
+		moves_.pop_front();
 
-	return move;
+		return move;
+	}
+
+	return ControlObjectMove();
 }
 
 bool Player::Controls(char _ch)

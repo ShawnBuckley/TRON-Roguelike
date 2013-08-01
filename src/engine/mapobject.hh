@@ -40,6 +40,16 @@ struct MapObjectFlags
 	bool visible_;
 };
 
+class MapObjectMove
+{
+public:
+  	MapObjectMove() : time_(0) {};
+  	MapObjectMove(uint16_t _time, Vector2<int16_t> _vector) : time_(_time), vector_(_vector) {};
+
+	uint16_t time_;
+	Vector2<int16_t> vector_;
+};
+
 class MapObject
 {
   public:
@@ -57,9 +67,11 @@ class MapObject
 	void MapLink();
 	void MapUnlink();
 
+	virtual bool Move(MapObjectMove _move) {};
 	virtual bool Move(Vector2<int16_t> _vector);
 	bool SetLocation(MapLocation<int16_t> _location);
 
+	virtual MapObjectMove NextTick() { return MapObjectMove(timeobject_.speed_, vector_); };
 	virtual uint16_t Tick();
 
 
@@ -67,6 +79,7 @@ class MapObject
 	bool linked_;
 	MapLocation<int16_t> location_;
 	Vector2<int16_t> vector_;
+	std::list<MapObjectMove> moves_;
 
 	MapObjectStats stats_;
 	MapObjectFlags flags_;

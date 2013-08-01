@@ -6,6 +6,8 @@
 #include <memory>
 #include <list>
 
+#include <boost/archive/basic_archive.hpp>
+
 #include "player.hh"
 
 #include "io.hh"
@@ -17,6 +19,12 @@ class Game
   public:
 	Game();
 	virtual ~Game() {};
+
+	template<class Archive>
+	void serialize(Archive& ar, const unsigned int version)
+	{
+
+	};
 
 	virtual void Start();
 	void Run();

@@ -98,7 +98,8 @@ uint16_t Bike::Tick()
 		return timeobject_.speed_;
 	}
 
-	if(vector_ > Vector2<int16_t>(0,0))
+	// if(vector_ > Vector2<int16_t>(0,0))
+	if(vector_.x || vector_.y)
 	{
 		MapLocation<int16_t> location = location_;
 		location.rectangle_.Origin(location_.rectangle_.Vertex(0) + vector_);

@@ -16,45 +16,41 @@ AiBike::AiBike() : ai_state_(AI_DEFAULT), ai_skill_(100)
 
 }
 
-void AiBike::Think(uint16_t _think_time)
+void AiBike::Think()
 {
+	bool change_direction = 0;
+
 	think_ = 1;
-	remaining_time_ = _think_time;
 
-	// printf("think time: %i\n", _think_time);
+	if(CheckTunnel())
+		ai_state_ = AI_TUNNEL;
 
-	while(mapobject_->flags_.rez_ && remaining_time_ > mapobject_->timeobject_.speed_)
+	switch(ai_state_)
 	{
-		// Skill Check
-		// if(skill_ < 
+		case AI_DEFAULT: change_direction = Default(); break;
+		case AI_TUNNEL: change_direction = Tunnel(); break;
+	}
 
-		// printf("%p: think - rtime %i : speed %i\n", this, remaining_time_, mapobject_->timeobject_.speed_);
-
-		if(CheckTunnel())
-			ai_state_ = AI_TUNNEL;
-
-		switch(ai_state_)
-		{
-			case AI_DEFAULT: Default(); break;
-			case AI_TUNNEL: Tunnel(); break;
-		}
-
-		remaining_time_ -= mapobject_->timeobject_.speed_;
+	if(!change_direction)
+	{
+		moves_.push_back(ControlObjectMove());
 	}
 }
 
 ControlObjectMove AiBike::Move()
 {
 	ControlObjectMove move = moves_.front();
-
-	mapobject_->Move(move.location_);
-	// mapobject_->vector_ = move.location_;
 	moves_.pop_front();
+
+	if(move.type_ != COMT_NONE)
+	{
+		mapobject_->Move(move.location_);
+	}
 
 	return move;
 }
 
-void AiBike::Default()
+bool AiBike::Default()
 {
 	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + mapobject_->vector_;
 
@@ -62,12 +58,13 @@ void AiBike::Default()
 
 	if(tile == NULL || tile->tiletype_->flags_.solid_ || (!tile->Empty() && CheckMapObjects(tile)))
 	{
-		CheckDirection();
-		return;
+		return CheckDirection();
 	}
+
+	return 0;
 }
 
-void AiBike::Tunnel()
+bool AiBike::Tunnel()
 {
 	// check the complement
 	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + ~mapobject_->vector_;
@@ -76,7 +73,7 @@ void AiBike::Tunnel()
 	{
 		ChangeDirection(Vector2<int16_t>(mapobject_->vector_.y, mapobject_->vector_.x));
 		ai_state_ = AI_DEFAULT;
-		return;
+		return 1;
 	}
 
 	test_coord = mapobject_->location_.maptile_[0][0]->location_ - ~mapobject_->vector_;
@@ -85,10 +82,10 @@ void AiBike::Tunnel()
 	{
 		ChangeDirection(Vector2<int16_t>(-mapobject_->vector_.y, -mapobject_->vector_.x));
 		ai_state_ = AI_DEFAULT;
-		return;
+		return 1;
 	}
 
-	Default();
+	return Default();
 }
 
 bool AiBike::CheckMapObjects(MapTile* _tile)
@@ -120,7 +117,7 @@ bool AiBike::CheckTunnel()
 	return 0;
 }
 
-void AiBike::CheckDirection()
+bool AiBike::CheckDirection()
 {
 	printf("check direction\n");
 
@@ -131,14 +128,16 @@ void AiBike::CheckDirection()
 		if(CheckTile(game()->map_->Tile(mapobject_->location_.maptile_[0][0]->location_ + check_tile)))
 		{
 			ChangeDirection(-vector);
-			break;
+			return 1;
 		}
 		if(CheckTile(game()->map_->Tile(mapobject_->location_.maptile_[0][0]->location_ - check_tile)))
 		{
 			ChangeDirection(vector);
-			break;
+			return 1;
 		}
 	}
+
+	return 0;
 }
 
 bool AiBike::CheckTile(MapTile* _tile)

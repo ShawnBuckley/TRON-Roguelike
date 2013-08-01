@@ -24,7 +24,7 @@ enum ControlObjectMoveType
 class ControlObjectMove
 {
   public:
-  	ControlObjectMove() {};
+  	ControlObjectMove() : type_(COMT_NONE), time_(0) {};
   	ControlObjectMove(ControlObjectMoveType _type, uint16_t _time, Vector2<int16_t> _location)
 		: type_(_type), time_(_time), location_(_location) {};
 
@@ -41,12 +41,18 @@ class ControlObject
 //	ControlObject(const ControlObject &_controlobject) : mapobject_(_controlobject.mapobject_) {};
 	virtual ~ControlObject() {};
 
-	virtual void Think(uint16_t _remaining_time) {};
+	virtual void Think() {};
 	virtual ControlObjectMove Move() {};
+	ControlObjectMove NextMove()
+	{
+		if(moves_.empty())
+		{
+			Think();
+		}
 
-	bool HasNextMove() { return !moves_.empty(); };
-	ControlObjectMove NextMove() { return moves_.front(); };
-	
+		return moves_.front();
+	};
+
 	MapObject* mapobject_;
 	// static std::vector<ControlObject*> controlobjects_;
 	std::list<ControlObjectMove> moves_;

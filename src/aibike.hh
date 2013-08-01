@@ -30,15 +30,15 @@ class AiBike : public ControlObject
 	AiBike();
 	AiBike(Bike* _bike) : ai_state_(AI_DEFAULT), ai_skill_(100) { mapobject_ = _bike; };
 
-	void Think(uint16_t _remaining_time);
+	void Think();
 	ControlObjectMove Move();
 
   private:
-	void Default();
-	void Tunnel();
+	bool Default();
+	bool Tunnel();
 	
 	bool CheckMapObjects(MapTile* _tile);
-	void CheckDirection();
+	bool CheckDirection();
 	bool CheckTile(MapTile* _tile);
 	bool CheckTunnel();
 	void ChangeDirection(Vector2<int16_t> _vector);
