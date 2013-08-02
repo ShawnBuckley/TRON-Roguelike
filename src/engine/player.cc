@@ -4,21 +4,39 @@
 
 #include <stdio.h>
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
 #include "game.hh"
 #include "player.hh"
 #include "mapobject.hh"
 #include "worldtime.hh"
 
-void Player::LoadControls()//(std::string _filename)
-// Player::Player()
+void Player::LoadControls(std::string _filename)
 {
-	// TODO - function pointers
+//*
+	boost::property_tree::ptree pt;
+	boost::property_tree::json_parser::read_json(_filename, pt);
+
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.quit"), PlayerControl(&Game::End)));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.pause"), PlayerControl(&Game::Pause)));
+	// controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("gamesave"), PlayerControl()));
+	// controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("gameload"), PlayerControl()));
+
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_north"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_west"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,+0))));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_south"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_east"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,-1))));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_southwest"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,+1))));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_southeast"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,+1))));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_northwest"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,-1))));
+	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_northeast"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,-1))));
+/*/
 	controls_.insert(std::pair<char, PlayerControl>('q', PlayerControl(&Game::End)));
 	controls_.insert(std::pair<char, PlayerControl>('p', PlayerControl(&Game::Pause)));
 	// controls_.insert(std::pair<char, PlayerControl>('s', PlayerControl()));
 	// controls_.insert(std::pair<char, PlayerControl>('L', PlayerControl()));
 
-	controls_.insert(std::pair<char, PlayerControl>('j', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
 	controls_.insert(std::pair<char, PlayerControl>('h', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,+0))));
 	controls_.insert(std::pair<char, PlayerControl>('j', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
 	controls_.insert(std::pair<char, PlayerControl>('k', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,-1))));
@@ -27,6 +45,7 @@ void Player::LoadControls()//(std::string _filename)
 	controls_.insert(std::pair<char, PlayerControl>('n', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,+1))));
 	controls_.insert(std::pair<char, PlayerControl>('y', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,-1))));
 	controls_.insert(std::pair<char, PlayerControl>('u', PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,-1))));
+//*/
 }
 
 // uint32_t Player::Input(char _ch)
@@ -38,6 +57,10 @@ void Player::Think()
 		{
 			game()->io_->keystrokes_.remove(ch);
 			break;
+		}
+		else
+		{
+			moves_.push_back(ControlObjectMove());
 		}
 	}
 }
@@ -63,6 +86,7 @@ bool Player::Controls(char _ch)
 	PlayerControl control;
 	try
 	{
+		printf("char: %c\n", _ch);
 		control = controls_.at(_ch);
 	}
 	catch(const std::out_of_range& e)

@@ -21,7 +21,7 @@ TimeObject::~TimeObject()
 
 void TimeObject::TimeLink()
 {
-	printf("Time link %p\n", this);
+	printf("Time link %p, %i\n", this, speed_);
 
 	TimeObject::timeobjects_.push_back(this);
 	

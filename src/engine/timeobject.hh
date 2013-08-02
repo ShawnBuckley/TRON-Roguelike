@@ -13,7 +13,7 @@ class ControlObject;
 class TimeObject
 {
   public:
-  	TimeObject() : linked_(0) {};
+  	TimeObject() : linked_(0), speed_(0), time_(0) {};
 	TimeObject(uint16_t _speed);
 	TimeObject(uint16_t _speed, std::shared_ptr<MapObject> _mapobject, std::shared_ptr<ControlObject> _controlobject);
 	~TimeObject();

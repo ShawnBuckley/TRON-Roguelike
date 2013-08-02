@@ -121,7 +121,7 @@ void TRON::Start()
 		Vector2<int16_t>(-1,+0)
 	);
 
-	player_->LoadControls();
+	player_->LoadControls("player.json");
 
 	io_->camera_mapobject_ = player_->mapobject_;
 

@@ -46,11 +46,12 @@ class ControlObject
 	ControlObjectMove NextMove()
 	{
 		if(moves_.empty())
-		{
 			Think();
-		}
 
-		return moves_.front();
+		if(!moves_.empty())
+			return moves_.front();
+
+		return ControlObjectMove();
 	};
 
 	MapObject* mapobject_;

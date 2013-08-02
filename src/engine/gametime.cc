@@ -17,6 +17,9 @@ GameTime::GameTime()
 // TODO TimeObjects schedule in timeactions, which then execute
 void GameTime::GameTurn(uint16_t _time)
 {
+	if(TimeObject::timeobjects_.empty())
+		return;
+
 	uint16_t fastest_speed = 65535;
 	uint16_t tick_counts;
 	uint16_t time_remainder;
@@ -48,10 +51,11 @@ void GameTime::GameTurn(uint16_t _time)
 		}
 	}
 
+	// bug if time is smaller than fastest speed
 	tick_counts = _time / fastest_speed;
-	time_remainder = _time % fastest_speed;
+	time_remainder = !tick_counts ? _time : _time % fastest_speed;
 
-	// printf("time %i / fastest_speed %i = counts %i, remainder %i\n", _time, fastest_speed, tick_counts, time_remainder);
+	printf("time %i / fastest_speed %i = counts %i, remainder %i\n", _time, fastest_speed, tick_counts, time_remainder);
 
 	for(int i=0; i<tick_counts; ++i)
 	{
@@ -72,11 +76,13 @@ void GameTime::GameTurn(uint16_t _time)
 
 	if(time_remainder > 0)
 	{
+		printf("remainder\n");
 		tick_ += time_remainder;
 
 		for(TimeObject* timeobject : TimeObject::timeobjects_)
 		{
 			timeobject->time_ += time_remainder;
+			printf("%p %i\n", timeobject, timeobject->time_);
 		}
 	}
 }

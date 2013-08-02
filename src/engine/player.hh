@@ -32,7 +32,7 @@ class Player : public ControlObject
 {
   public:
   	Player(MapObject* _mapobject) { mapobject_ = _mapobject; };
-  	void LoadControls();//(std::string _filename);
+  	void LoadControls(std::string _filename);
   	bool Controls(char _ch);
 
 	void Think();

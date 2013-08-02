@@ -59,7 +59,7 @@ void Game::Start()
 
 	io_->camera_mapobject_ = player_->mapobject_;
 
-	player_->LoadControls();
+	player_->LoadControls("player.json");
 
 	Run();
 }
