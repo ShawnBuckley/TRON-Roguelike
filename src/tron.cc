@@ -133,7 +133,7 @@ Player* TRON::AddPlayerBike(uint8_t _color)
 {
 	MapObject* mapobject = new Bike(
 		MapObjectFlags(1,1,1,1),
-		AddDisplayObject(DisplayObject('@', 254, _color)),
+		_color,
 		TimeObject(1000));
 
 	Player* player = new Player(mapobject);
@@ -151,7 +151,7 @@ AiBike* TRON::AddAiBike(uint8_t _color)
 {
 	Bike* bike = new Bike(
 		MapObjectFlags(1,1,1,1),
-		AddDisplayObject(DisplayObject('B', 254, _color)),
+		_color,
 		TimeObject(1000));
 
 	AiBike* aibike = new AiBike(bike);

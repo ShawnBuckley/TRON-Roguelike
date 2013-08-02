@@ -55,7 +55,7 @@ void GameTime::GameTurn(uint16_t _time)
 	tick_counts = _time / fastest_speed;
 	time_remainder = !tick_counts ? _time : _time % fastest_speed;
 
-	printf("time %i / fastest_speed %i = counts %i, remainder %i\n", _time, fastest_speed, tick_counts, time_remainder);
+	// printf("time %i / fastest_speed %i = counts %i, remainder %i\n", _time, fastest_speed, tick_counts, time_remainder);
 
 	for(int i=0; i<tick_counts; ++i)
 	{
@@ -76,7 +76,7 @@ void GameTime::GameTurn(uint16_t _time)
 
 	if(time_remainder > 0)
 	{
-		printf("remainder\n");
+		// printf("remainder\n");
 		tick_ += time_remainder;
 
 		for(TimeObject* timeobject : TimeObject::timeobjects_)

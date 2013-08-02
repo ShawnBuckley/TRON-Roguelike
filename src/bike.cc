@@ -17,14 +17,27 @@ const char kWallPrint[10] = {' ', '\\', '|', '/', '-', '.', '-', '/', '|', '\\'}
 const uint8_t kBikeSprite[10] = {' ', ' ', 30, ' ', 17, 254, 16, ' ', 31, ' '};
 const char kBikePrint[10] = {' ', ' ', 'v', ' ', '<', 'B', '>', ' ', '^', ' '};
 
+Bike::Bike(MapObjectFlags _mapobject_flags,	uint8_t _color, TimeObject _timeobject)
+{
+	flags_ = _mapobject_flags;
+	timeobject_ = _timeobject;
+
+	for(int i=0; i<10; i++)
+	{
+		bike_displayobject_[i] = game()->AddDisplayObject(DisplayObject(kBikePrint[i],
+			kBikeSprite[i], _color));
+		wall_displayobject_[i] = game()->AddDisplayObject(DisplayObject(kWallPrint[i],
+			kWallSprite[i], _color));
+	}
+}
+
 Bike::~Bike() {}
 
 bool Bike::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
 {
 	uint8_t direction = _vector.Direction();
 
-	displayobject_ = game()->AddDisplayObject(DisplayObject(kBikePrint[direction],
-		kBikeSprite[direction], displayobject_->color_));
+	displayobject_ = bike_displayobject_[direction];
 
 	MapObject::Rez(_location, _vector);
 }
@@ -74,8 +87,7 @@ bool Bike::Move(Vector2<int16_t> _vector)
 
 	uint8_t direction = _vector.Direction();
 
-	displayobject_->sprite_ = kBikeSprite[direction];
-	displayobject_->print_ = kBikePrint[direction];
+	displayobject_ = bike_displayobject_[direction];
 
 	// reverse vector in order to get correct corner DisplayObject
 	if(vector_.y)
@@ -154,10 +166,7 @@ uint16_t Bike::Tick()
 				{
 					wall_list_.push_back(
 						std::move(std::unique_ptr<LightWall>(new LightWall(
-							game()->AddDisplayObject(DisplayObject(
-								kWallPrint[change_direction_ ? change_direction_ :vector_.Direction()],
-								kWallSprite[change_direction_ ? change_direction_ :vector_.Direction()],
-								displayobject_->color_)),
+							wall_displayobject_[change_direction_ ? change_direction_ :vector_.Direction()],
 							MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
 							game()->worldtime_->Tick(),
 							this

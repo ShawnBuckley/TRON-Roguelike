@@ -8,6 +8,7 @@
 #include <memory>
 #include <list>
 #include <vector>
+#include <array>
 
 #include "engine/math/vector2.hh"
 #include "engine/mapobject.hh"
@@ -26,17 +27,7 @@ struct BikeFlags
 class Bike : public MapObject
 {
   public:
-  	Bike(uint8_t _color);	
-	Bike(
-		MapObjectFlags _mapobject_flags,
-		DisplayObject* _displayobject,
-		TimeObject _timeobject)
-	{
-		flags_ = _mapobject_flags;
-		displayobject_ = _displayobject;
-		timeobject_ = _timeobject;
-	};
-
+	Bike(MapObjectFlags _mapobject_flags, uint8_t _color, TimeObject _timeobject);
 	~Bike();
 
  	void Save(std::stringstream &_save);
@@ -55,6 +46,11 @@ class Bike : public MapObject
 	uint8_t change_direction_;
 	uint64_t time_of_death_;
 	BikeFlags bike_flags_;
+
+	std::array<DisplayObject*, 10> bike_displayobject_;
+	std::array<DisplayObject*, 10> wall_displayobject_;
+	// DisplayObject* bike_displayobject_[10];
+	// DisplayObject* wall_displayobject_[10];
 
 	std::list<std::unique_ptr<LightWall>> wall_list_;
 };
