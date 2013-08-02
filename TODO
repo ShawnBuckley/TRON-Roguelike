@@ -20,14 +20,12 @@ add bike directional displayobjects
 redo mapobject collision code
 	make mapobject unaware of bike
 
+integrate TimeObject into ControlObject - no
+	search COM requests for shortest move
 
 
 TODO:
 
-integrate TimeObject into ControlObject
-	fix GameTime to use ControlObjects
-	mapobject timers?
-	search COM requests for shortest move
 
 serialization of objects
 	network code
@@ -36,3 +34,7 @@ serialization of objects
 fix display code, test rect intersection code
 switch to SDL 2.0
 	upgrade GL version
+
+LOS, FOV
+
+Items, Inventory
