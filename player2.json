@@ -1,0 +1,17 @@
+{
+	"controls": {
+		"quit": "q",
+		"pause": "p",
+		"save": "s",
+		"load": "L",
+		"move_west": "a",
+		"move_south": "s",
+		"move_north": "w",
+		"move_east": "d",
+		"move_southwest": "z",
+		"move_southeast": "c",
+		"move_northwest": "q",
+		"move_northeast": "e",
+		"wait": "x"
+	}
+}
