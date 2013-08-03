@@ -11,7 +11,9 @@ class GameTime
 	GameTime();
 	virtual ~GameTime() {};
 
-	void GameTurn(uint16_t _time);
+	uint64_t TickCount() { return tick_; };
+
+	virtual uint16_t Turn();
 
 	uint64_t tick_;
 };

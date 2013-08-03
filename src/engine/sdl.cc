@@ -105,7 +105,7 @@ void SDL::LoadFont(int _x, int _y, int _xwidth, int _yheight)
 	}
 }
 
-uint32_t SDL::Input()
+void SDL::Input()
 {
 	SDL_Event event;
 
@@ -115,11 +115,11 @@ uint32_t SDL::Input()
 		{
 			case SDL_KEYDOWN:
 			{
-				keystrokes_.push_back(event.key.keysym.sym); return 0;
+				keystrokes_.push_back(event.key.keysym.sym); return;
 			}; break;
 			//return game()->player_->Input(event.key.keysym.sym);
 //			case SDL_VIDEORESIZE: DisplayResize(Event.resize.w, Event.resize.h); game()->Display->Map(); break;
-			case SDL_QUIT: game()->End(); return 0;
+			case SDL_QUIT: game()->End(); return;
 		}
 	}
 }
@@ -182,9 +182,16 @@ void SDL::Map()
 	Vector2<int16_t> camera;
 
 	if(camera_mapobject_)
+	{
 		camera = camera_mapobject_->location_.rectangle_.Vertex(0);
+	}
 	else
+	{
 		camera = camera_location_;
+	}
+
+	// printf("camera_location_ %i %i\n", camera_location_.x, camera_location_.y);
+	// printf("Camera location: %i %i\n", camera.x, camera.y);
 
 	Clear();
 

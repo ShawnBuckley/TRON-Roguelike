@@ -49,12 +49,11 @@ class Game
 
 	uint32_t speed_;
 
-
-	Player* player_;
+	std::vector<Player*> players_;
 
 	std::unique_ptr<IO> io_;
 	std::unique_ptr<Map> map_;
-	std::unique_ptr<WorldTime> worldtime_;
+	std::unique_ptr<GameTime> time_;
 
 	std::vector<std::unique_ptr<DisplayObject>> displayobjects_;
 	std::list<uint16_t> displayobject_open_id_;

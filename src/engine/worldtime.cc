@@ -16,11 +16,9 @@ WorldTime::WorldTime()
 	second_ = 0;
 }
 
-void WorldTime::WorldTurn(uint32_t _time)
+uint16_t WorldTime::Turn()
 {
-	GameTurn(_time);
-
-	UpdateSeconds(_time/1000);
+	UpdateSeconds(GameTime::Turn()/1000);
 
 //	std::cout << date_ << " " << (int)hour_ << ":" << (int)minute_ << ":" << (int)second_ << std::endl;
 }

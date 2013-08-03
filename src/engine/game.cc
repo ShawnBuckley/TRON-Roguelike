@@ -17,7 +17,7 @@ Game* game_pointer;
 Game::Game()
 {
 	io_ = std::unique_ptr<IO>(new SDL);
-	worldtime_ = std::unique_ptr<WorldTime>(new WorldTime);
+	time_ = std::unique_ptr<GameTime>(new WorldTime);
 	speed_ = 1000;
 
 	run_ = 1;
@@ -50,16 +50,18 @@ void Game::Start()
 	);
 
 	Player* player = AddPlayerMapobject(blue);
-	player_->mapobject_->Rez(
+	player->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8), 1, 1)
 		),
 		Vector2<int16_t>(+0,+0)
 	);
 
-	io_->camera_mapobject_ = player_->mapobject_;
+	io_->camera_mapobject_ = player->mapobject_;
 
-	player_->LoadControls("player.json");
+	player->LoadControls("player.json");
+
+	players_.push_back(player);
 
 	Run();
 }
@@ -72,23 +74,15 @@ void Game::Run()
 
 	while(run_)
 	{
-		uint32_t input = io_->Input();
-		if(paused_)
+		io_->Input();
+
+		for(Player* player : players_)
 		{
-			player_->Think();
-			continue;
+			if(player) player->Controls();
 		}
 
-		if(realtime_)
-		{
-			worldtime_->WorldTurn(speed_);
-		}
-		else if(input)
-		{
-			worldtime_->WorldTurn(input);
-		}
+		time_->Turn();
 
-		// camera_ = player_->mapobject_->location_.maptile_[0][0]->location_;
 		io_->Map();
 	}
 }

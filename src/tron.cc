@@ -89,21 +89,29 @@ void TRON::Start()
 		)
 	);
 /*/
-	player_ = AddPlayerBike(blue);
-	player_->mapobject_->Rez(
+	Player* player = AddPlayerBike(blue);
+	player->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y+1), 1, 1)
 		),
 		Vector2<int16_t>(+0,+0)
 	);
 
-	AiBike* red_bike = AddAiBike(red);
-	red_bike->mapobject_->Rez(
+	Player* player2 = AddPlayerBike(red);
+	player2->mapobject_->Rez(
 		MapLocation<int16_t>(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)
 		),
-		Vector2<int16_t>(-1,+0)
+		Vector2<int16_t>(+0,+0)
 	);
+
+	// AiBike* red_bike = AddAiBike(red);
+	// red_bike->mapobject_->Rez(
+	// 	MapLocation<int16_t>(
+	// 		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)
+	// 	),
+	// 	Vector2<int16_t>(-1,+0)
+	// );
 
 	AiBike* yellow_bike = AddAiBike(yellow);
 	yellow_bike->mapobject_->Rez(
@@ -121,9 +129,15 @@ void TRON::Start()
 		Vector2<int16_t>(-1,+0)
 	);
 
-	player_->LoadControls("player.json");
+	player->LoadControls("player.json");
+	player2->LoadControls("player2.json");
 
-	io_->camera_mapobject_ = player_->mapobject_;
+	// io_->camera_mapobject_ = player->mapobject_;
+	io_->camera_mapobject_ = NULL;
+	io_->camera_location_ = grid_center;
+
+	players_.push_back(player);
+	players_.push_back(player2);
 
 	printf("run\n");
 	Run();

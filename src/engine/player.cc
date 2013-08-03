@@ -12,28 +12,30 @@
 #include "mapobject.hh"
 #include "worldtime.hh"
 
+std::unordered_map<char, PlayerControl> Player::mapped_controls_;
+
 void Player::LoadControls(std::string _filename)
 {
 	boost::property_tree::ptree pt;
 	boost::property_tree::json_parser::read_json(_filename, pt);
 
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.quit"), PlayerControl(&Game::End)));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.pause"), PlayerControl(&Game::Pause)));
-	// controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.save"), PlayerControl()));
-	// controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.load"), PlayerControl()));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.quit"), PlayerControl(this, &Game::End)));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.pause"), PlayerControl(this, &Game::Pause)));
+	// Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.save"), PlayerControl()));
+	// Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.load"), PlayerControl()));
 
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_north"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,-1))));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_west"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,+0))));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_south"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_east"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,+0))));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_southwest"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,+1))));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_southeast"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,+1))));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_northwest"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(-1,-1))));
-	controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_northeast"), PlayerControl(COMT_MOVEMENT, Vector2<int16_t>(+1,-1))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_north"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(+0,-1))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_west"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(-1,+0))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_south"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(+0,+1))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_east"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(+1,+0))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_southwest"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(-1,+1))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_southeast"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(+1,+1))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_northwest"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(-1,-1))));
+	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(pt.get<char>("controls.move_northeast"), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(+1,-1))));
 }
 
 // uint32_t Player::Input(char _ch)
-void Player::Think()
+void Player::Controls()
 {
 	for(char ch : game()->io_->keystrokes_)
 	{
@@ -42,10 +44,10 @@ void Player::Think()
 			game()->io_->keystrokes_.remove(ch);
 			break;
 		}
-		else
-		{
-			moves_.push_back(ControlObjectMove());
-		}
+		// else
+		// {
+		// 	moves_.push_back(ControlObjectMove());
+		// }
 	}
 }
 
@@ -68,15 +70,21 @@ ControlObjectMove Player::Move()
 bool Player::Controls(char _ch)
 {
 	PlayerControl control;
+
 	try
 	{
 		printf("char: %c\n", _ch);
-		control = controls_.at(_ch);
+		control = Player::mapped_controls_.at(_ch);
 	}
 	catch(const std::out_of_range& e)
 	{
 		printf("oof\n");
 		return 1;
+	}
+
+	if(control.player_ != this)
+	{
+		return 0;
 	}
 
 	if(!control.game_control_ && !game()->paused_)

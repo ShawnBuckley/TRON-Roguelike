@@ -55,7 +55,7 @@ void Bike::Derez()
 
 		flags_ = MapObjectFlags(0, 0, 0, 1);
 		displayobject_ = game()->AddDisplayObject(DisplayObject('X', 'X', displayobject_->color_));
-		time_of_death_ = game()->worldtime_->Tick();
+		time_of_death_ = game()->time_->TickCount();
 
 		MapLink();
 	}
@@ -65,13 +65,13 @@ void Bike::RemoveWall()
 {
 	if(wall_list_.size())
 	{
-		uint64_t time = game()->worldtime_->Tick() - time_of_death_;
+		uint64_t time = game()->time_->TickCount() - time_of_death_;
 	
 		while(wall_list_.size() && time == wall_list_.front()->time_dropped_)
 		{
 			wall_list_.erase(wall_list_.begin());
 
-			time = game()->worldtime_->Tick() - time_of_death_;
+			time = game()->time_->TickCount() - time_of_death_;
 		}
 	}
 	else
@@ -168,7 +168,7 @@ uint16_t Bike::Tick()
 						std::move(std::unique_ptr<LightWall>(new LightWall(
 							wall_displayobject_[change_direction_ ? change_direction_ :vector_.Direction()],
 							MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
-							game()->worldtime_->Tick(),
+							game()->time_->TickCount(),
 							this
 						))
 					));

@@ -45,7 +45,7 @@ class IO
   public:
 	virtual void Init()=0;
 
-	virtual uint32_t Input()=0;
+	virtual void Input()=0;
 	virtual void Map()=0;
 
 	void SetFPS(float _fps) { fps_ = _fps; };
