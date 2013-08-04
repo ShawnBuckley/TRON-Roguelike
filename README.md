@@ -6,7 +6,8 @@ TRON on Roguelike EngineX
 	Requires:
 		G++ 4.6.2+
 		SDL-1.2
-		libboost
+		yaml-cpp
+		boost::gregorian
 		libPNG
 		OpenGL
 

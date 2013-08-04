@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include <yaml-cpp/yaml.h>
+
 #include "engine/linux.hh"
 
 #include "engine/worldtime.hh"
@@ -14,6 +16,21 @@
 #include "bike.hh"
 #include "lightgrid.hh"
 #include "tron.hh"
+
+void TRON::Serialize(YAML::Emitter& out)
+{
+	out << YAML::Key << "TRON";
+	out << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "version";
+	out << YAML::Value << version_;
+	out << YAML::Key << "run";
+	out << YAML::Value << run_;
+	out << YAML::Key << "paused";
+	out << YAML::Value << paused_;
+	out << YAML::Key << "realtime";
+	out << YAML::Value << realtime_;
+	out << YAML::EndMap;
+}
 
 void TRON::Start()
 {
@@ -84,14 +101,14 @@ void TRON::Start()
 /*
 	player_ = entity_manager_.AddPlayerMapobject(blue);
 	player_->mapobject_->Rez(
-		MapLocation<int16_t>(
+		MapLocation(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y+1), 1, 1)
 		)
 	);
 /*/
 	Player* player = AddPlayerBike(blue);
 	player->mapobject_->Rez(
-		MapLocation<int16_t>(
+		MapLocation(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y+1), 1, 1)
 		),
 		Vector2<int16_t>(+0,+0)
@@ -99,7 +116,7 @@ void TRON::Start()
 
 	Player* player2 = AddPlayerBike(red);
 	player2->mapobject_->Rez(
-		MapLocation<int16_t>(
+		MapLocation(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)
 		),
 		Vector2<int16_t>(+0,+0)
@@ -107,7 +124,7 @@ void TRON::Start()
 
 	// AiBike* red_bike = AddAiBike(red);
 	// red_bike->mapobject_->Rez(
-	// 	MapLocation<int16_t>(
+	// 	MapLocation(
 	// 		AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y-1), 1, 1)
 	// 	),
 	// 	Vector2<int16_t>(-1,+0)
@@ -115,7 +132,7 @@ void TRON::Start()
 
 	AiBike* yellow_bike = AddAiBike(yellow);
 	yellow_bike->mapobject_->Rez(
-		MapLocation<int16_t>(
+		MapLocation(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x+1, grid_center.y-1), 1, 1)
 		),
 		Vector2<int16_t>(+1,+0)
@@ -123,14 +140,14 @@ void TRON::Start()
 
 	AiBike* green_bike = AddAiBike(green);
 	green_bike->mapobject_->Rez(
-		MapLocation<int16_t>(
+		MapLocation(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(grid_center.x-1, grid_center.y+1), 1, 1)
 		),
 		Vector2<int16_t>(-1,+0)
 	);
 
-	player->LoadControls("player.json");
-	player2->LoadControls("player2.json");
+	player->LoadControls("player.yaml");
+	player2->LoadControls("player2.yaml");
 
 	// io_->camera_mapobject_ = player->mapobject_;
 	io_->camera_mapobject_ = NULL;
@@ -156,7 +173,7 @@ Player* TRON::AddPlayerBike(uint8_t _color)
 	mapobject->timeobject_.controlobject_ = player;
 
 	AddControlObject(player);
-	AddMapobject(mapobject);
+	AddMapObject(mapobject);
 
 	return player;
 }
@@ -174,7 +191,7 @@ AiBike* TRON::AddAiBike(uint8_t _color)
 	bike->timeobject_.controlobject_ = aibike;
 
 	AddControlObject(aibike);
-	AddMapobject(bike);
+	AddMapObject(bike);
 
 	return aibike;
 }

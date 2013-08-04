@@ -12,6 +12,8 @@ class TRON : public Game
   	TRON() {};
   	~TRON() {};
 
+  	void Serialize(YAML::Emitter& out);
+
 	void Start();
 	Player* AddPlayerBike(uint8_t _color);
 	AiBike* AddAiBike(uint8_t _color);

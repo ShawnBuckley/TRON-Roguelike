@@ -5,6 +5,8 @@
 
 #include <string>
 
+#include <yaml-cpp/yaml.h>
+
 #include "worldtime.hh"
 
 WorldTime::WorldTime()
@@ -14,6 +16,28 @@ WorldTime::WorldTime()
 	hour_ = 0;
 	minute_ = 0;
 	second_ = 0;
+}
+
+void WorldTime::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "type";
+	out << YAML::Value << "WorldTime";
+	out << YAML::Key << "tick";
+	out << YAML::Value << tick_;
+	out << YAML::Key << "year";
+	out << YAML::Value << (int)date_.year();
+	out << YAML::Key << "month";
+	out << YAML::Value << (int)date_.month();
+	out << YAML::Key << "day";
+	out << YAML::Value << (int)date_.day();
+	out << YAML::Key << "hour";
+	out << YAML::Value << (int)hour_;
+	out << YAML::Key << "minute";
+	out << YAML::Value << (int)minute_;
+	out << YAML::Key << "second";
+	out << YAML::Value << (int)second_;
+	out << YAML::EndMap;
 }
 
 uint16_t WorldTime::Turn()

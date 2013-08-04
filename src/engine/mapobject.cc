@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+#include <yaml-cpp/yaml.h>
+
 #include "game.hh"
 #include "io.hh"
 #include "mapobject.hh"
@@ -11,14 +13,78 @@
 #include "maptile.hh"
 #include "tiletype.hh"
 
+
 MapObject::~MapObject()
 {
-//	printf("Erase MapObject %p\n", this);
+	// printf("Erase MapObject %p %i\n", this, id_);
 
 	MapUnlink();
 }
 
-bool MapObject::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
+/*	uint16_t id_;
+	bool linked_;
+	MapLocation location_;
+	Vector2<int16_t> vector_;
+	std::list<MapObjectMove> moves_;
+
+	MapObjectStats stats_;
+	MapObjectFlags flags_;
+
+	TimeObject timeobject_;
+	DisplayObject* displayobject_;*/
+
+void MapObjectStats::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "type";
+	out << YAML::Value << "MapObjectStats";
+	out << YAML::Key << "mass";
+	out << YAML::Value << mass_;
+	out << YAML::Key << "health";
+	out << YAML::Value << health_;
+	out << YAML::EndMap;
+}
+
+void MapObjectFlags::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "type";
+	out << YAML::Value << "MapObjectFlags";
+	out << YAML::Key << "rez";
+	out << YAML::Value << rez_;
+	out << YAML::Key << "clipping";
+	out << YAML::Value << clipping_;
+	out << YAML::Key << "solid";
+	out << YAML::Value << solid_;
+	out << YAML::Key << "visible";
+	out << YAML::Value << visible_;
+	out << YAML::EndMap;
+}
+
+void MapObject::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "type";
+	out << YAML::Value << "MapObject";
+	out << YAML::Key << "id";
+	out << YAML::Value << id_;
+	out << YAML::Key << "linked";
+	out << YAML::Value << linked_;
+	out << YAML::Key << "displayobject";
+	out << YAML::Value << (int)displayobject_->id_;
+	out << YAML::Key << "stats";
+	stats_.Serialize(out);
+	out << YAML::Key << "flags";
+	flags_.Serialize(out);
+	out << YAML::Key << "location";
+	location_.Serialize(out);
+	out << YAML::Key << "vector";
+	out << YAML::Flow;
+	out << YAML::Value << YAML::BeginSeq << vector_.x << vector_.y << YAML::EndSeq;
+	out << YAML::EndMap;
+}
+
+bool MapObject::Rez(MapLocation _location, Vector2<int16_t> _vector)
 {
 	if(SetLocation(_location))
 	{
@@ -38,7 +104,7 @@ void MapObject::Derez()
 {
 	uint8_t color = displayobject_->color_;
 
-	displayobject_ = game()->AddDisplayObject(DisplayObject('X', 'X', color));
+	displayobject_ = game().AddDisplayObject(DisplayObject('X', 'X', color));
 	flags_ = MapObjectFlags(0, 0, 0, 1);
 	timeobject_.TimeUnlink();
 }
@@ -54,7 +120,7 @@ void MapObject::MapLink()
 	
 		for(int16_t y=0; y<location_.rectangle_.Height(); ++y)
 		{
-			MapTile* maptile = game()->map_->Tile(location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y));
+			MapTile* maptile = game().map_->Tile(location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y));
 			Vector2<int16_t> pos = location_.rectangle_.Vertex(0) + Vector2<int16_t>(x, y);
 
 			row.push_back(maptile);
@@ -78,7 +144,7 @@ void MapObject::MapUnlink()
 	}
 }
 
-bool MapObject::SetLocation(MapLocation<int16_t> _location)
+bool MapObject::SetLocation(MapLocation _location)
 {
 	MapUnlink();
 
@@ -91,7 +157,7 @@ bool MapObject::SetLocation(MapLocation<int16_t> _location)
 
 bool MapObject::Move(Vector2<int16_t> _vector)
 {
-	MapLocation<int16_t> location = location_;
+	MapLocation location = location_;
 	location.rectangle_.Origin(location_.rectangle_.Vertex(0) + _vector);
 	
 	for(int16_t x=0; x<location.rectangle_.Width(); ++x)
@@ -102,7 +168,7 @@ bool MapObject::Move(Vector2<int16_t> _vector)
 		if(location.rectangle_.Intersect(point))
 			continue;
 			
-		if(game()->map_->Tile(point) != NULL)
+		if(game().map_->Tile(point) != NULL)
 		{
 			if(location.maptile_[x][y]->tiletype_->flags_.solid_)
 				return 0;

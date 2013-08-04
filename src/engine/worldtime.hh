@@ -4,6 +4,9 @@
 #define TRON_RLENGINEX_WORLDTIME_HH
 
 #include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/serialization/export.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/nvp.hpp>
 
 #include <string>
 
@@ -11,10 +14,17 @@
 
 #include "gametime.hh"
 
+namespace YAML
+{
+	class Emitter;
+}
+
 class WorldTime : public GameTime
 {
   public:
 	WorldTime();
+
+	void Serialize(YAML::Emitter& out);
 
 	uint16_t Turn();
 

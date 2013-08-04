@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <utility>
 
+#include <yaml-cpp/yaml.h>
+
 #include "engine/mapobject.hh"
 #include "engine/game.hh"
 #include "engine/io.hh"
@@ -21,19 +23,51 @@ Bike::Bike(MapObjectFlags _mapobject_flags,	uint8_t _color, TimeObject _timeobje
 {
 	flags_ = _mapobject_flags;
 	timeobject_ = _timeobject;
+	drop_walls_ = 1;
 
 	for(int i=0; i<10; i++)
 	{
-		bike_displayobject_[i] = game()->AddDisplayObject(DisplayObject(kBikePrint[i],
+		bike_displayobject_[i] = game().AddDisplayObject(DisplayObject(kBikePrint[i],
 			kBikeSprite[i], _color));
-		wall_displayobject_[i] = game()->AddDisplayObject(DisplayObject(kWallPrint[i],
+		wall_displayobject_[i] = game().AddDisplayObject(DisplayObject(kWallPrint[i],
 			kWallSprite[i], _color));
 	}
 }
 
 Bike::~Bike() {}
 
-bool Bike::Rez(MapLocation<int16_t> _location, Vector2<int16_t> _vector)
+void Bike::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "type";
+	out << YAML::Value << "Bike";
+	out << YAML::Key << "id";
+	out << YAML::Value << id_;
+	out << YAML::Key << "linked";
+	out << YAML::Value << linked_;
+	out << YAML::Key << "moved";
+	out << YAML::Value << moved_;
+	out << YAML::Key << "drop_walls";
+	out << YAML::Value << drop_walls_;
+	out << YAML::Key << "change_direction";
+	out << YAML::Value << (int)change_direction_;
+	out << YAML::Key << "time_of_death";
+	out << YAML::Value << time_of_death_;
+	out << YAML::Key << "displayobject";
+	out << YAML::Value << (int)displayobject_->id_;
+	out << YAML::Key << "stats";
+	stats_.Serialize(out);
+	out << YAML::Key << "flags";
+	flags_.Serialize(out);
+	out << YAML::Key << "location";
+	location_.Serialize(out);
+	out << YAML::Key << "vector";
+	out << YAML::Flow;
+	out << YAML::Value << YAML::BeginSeq << vector_.x << vector_.y << YAML::EndSeq;
+	out << YAML::EndMap;
+}
+
+bool Bike::Rez(MapLocation _location, Vector2<int16_t> _vector)
 {
 	uint8_t direction = _vector.Direction();
 
@@ -54,8 +88,8 @@ void Bike::Derez()
 		MapUnlink();
 
 		flags_ = MapObjectFlags(0, 0, 0, 1);
-		displayobject_ = game()->AddDisplayObject(DisplayObject('X', 'X', displayobject_->color_));
-		time_of_death_ = game()->time_->TickCount();
+		displayobject_ = game().AddDisplayObject(DisplayObject('X', 'X', displayobject_->color_));
+		time_of_death_ = game().time_->TickCount();
 
 		MapLink();
 	}
@@ -65,13 +99,14 @@ void Bike::RemoveWall()
 {
 	if(wall_list_.size())
 	{
-		uint64_t time = game()->time_->TickCount() - time_of_death_;
+		uint64_t time = game().time_->TickCount() - time_of_death_;
 	
 		while(wall_list_.size() && time == wall_list_.front()->time_dropped_)
 		{
+			game().RemoveMapObject(wall_list_.front());
 			wall_list_.erase(wall_list_.begin());
 
-			time = game()->time_->TickCount() - time_of_death_;
+			time = game().time_->TickCount() - time_of_death_;
 		}
 	}
 	else
@@ -113,7 +148,7 @@ uint16_t Bike::Tick()
 	// if(vector_ > Vector2<int16_t>(0,0))
 	if(vector_.x || vector_.y)
 	{
-		MapLocation<int16_t> location = location_;
+		MapLocation location = location_;
 		location.rectangle_.Origin(location_.rectangle_.Vertex(0) + vector_);
 	
 		for(int16_t x=0; x<location.rectangle_.Width(); ++x)
@@ -121,7 +156,7 @@ uint16_t Bike::Tick()
 		{
 			Vector2<int16_t> test_coord(location.rectangle_.Vertex(0).x + x, location.rectangle_.Vertex(0).y + y);
 
-			MapTile* tile = game()->map_->Tile(test_coord);
+			MapTile* tile = game().map_->Tile(test_coord);
 
 			if(tile != NULL)
 			{
@@ -152,9 +187,9 @@ uint16_t Bike::Tick()
 		}
 		}
 
-		if(bike_flags_.drop_walls_ && (vector_.x || vector_.y))
+		if(drop_walls_ && (vector_.x || vector_.y))
 		{
-			MapLocation<int16_t> location = location_;
+			MapLocation location = location_;
 			location.rectangle_.Origin(location.rectangle_.Vertex(0) + vector_);
 
 			Vector2<int16_t> point = location_.rectangle_.Vertex(0);
@@ -164,14 +199,14 @@ uint16_t Bike::Tick()
 			{
 				if(!location.rectangle_.Intersect(point))
 				{
-					wall_list_.push_back(
-						std::move(std::unique_ptr<LightWall>(new LightWall(
+					LightWall* wall = new LightWall(
 							wall_displayobject_[change_direction_ ? change_direction_ :vector_.Direction()],
-							MapLocation<int16_t>(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
-							game()->time_->TickCount(),
-							this
-						))
-					));
+							MapLocation(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
+							game().time_->TickCount(),
+							this);
+						
+					game().AddMapObject(wall);
+					wall_list_.push_back(wall);
 				}
 			}
 			}

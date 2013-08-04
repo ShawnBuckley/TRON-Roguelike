@@ -1,5 +1,5 @@
 all: aibike.o bike.o game.o gametime.o gl.o lightgrid.o lightwall.o linux.o log.o main.o map.o mapobject.o maptile.o player.o sdl.o sector.o timeobject.o tron.o worldtime.o
-	g++ -ggdb -O2 *.o -lSDL -lpng -lGL -lboost_serialization -o engine -std=c++0x
+	g++ -ggdb -O2 *.o -lSDL -lpng -lGL -lyaml-cpp -o engine -std=c++0x
 
 aibike.o: src/aibike.cc
 	g++ -c src/aibike.cc -std=c++0x

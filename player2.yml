@@ -1,0 +1,15 @@
+pause: p
+quit: o
+save: S
+load: L
+move_east: d
+move_south: s
+move_north: w
+move_west: a
+move_northeast: e
+move_northwest: q
+
+move_southeast: c
+move_southwest: z
+
+wait: x

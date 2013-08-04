@@ -4,6 +4,8 @@
 
 #include <algorithm>
 
+#include <yaml-cpp/yaml.h>
+
 #include "gametime.hh"
 #include "mapobject.hh"
 #include "timeobject.hh"
@@ -12,6 +14,15 @@
 GameTime::GameTime()
 {
 	tick_ = 0;
+}
+
+void GameTime::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "type";
+	out << YAML::Value << "GameTime";
+	out << YAML::Key << "tick";
+	out << YAML::Value << tick_;
 }
 
 // TODO TimeObjects schedule in timeactions, which then execute

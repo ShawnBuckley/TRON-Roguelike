@@ -54,7 +54,7 @@ bool AiBike::Default()
 {
 	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + mapobject_->vector_;
 
-	MapTile* tile = game()->map_->Tile(test_coord);
+	MapTile* tile = game().map_->Tile(test_coord);
 
 	if(tile == NULL || tile->tiletype_->flags_.solid_ || (!tile->Empty() && CheckMapObjects(tile)))
 	{
@@ -69,7 +69,7 @@ bool AiBike::Tunnel()
 	// check the complement
 	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + ~mapobject_->vector_;
 
-	if(!CheckTile(game()->map_->Tile(test_coord)))
+	if(!CheckTile(game().map_->Tile(test_coord)))
 	{
 		ChangeDirection(Vector2<int16_t>(mapobject_->vector_.y, mapobject_->vector_.x));
 		ai_state_ = AI_DEFAULT;
@@ -78,7 +78,7 @@ bool AiBike::Tunnel()
 
 	test_coord = mapobject_->location_.maptile_[0][0]->location_ - ~mapobject_->vector_;
 
-	if(!CheckTile(game()->map_->Tile(test_coord)))
+	if(!CheckTile(game().map_->Tile(test_coord)))
 	{
 		ChangeDirection(Vector2<int16_t>(-mapobject_->vector_.y, -mapobject_->vector_.x));
 		ai_state_ = AI_DEFAULT;
@@ -107,11 +107,11 @@ bool AiBike::CheckTunnel()
 {
 	Vector2<int16_t> test_coord = mapobject_->location_.maptile_[0][0]->location_ + ~mapobject_->vector_;
 
-	if(CheckTile(game()->map_->Tile(test_coord)))
+	if(CheckTile(game().map_->Tile(test_coord)))
 	{
 		test_coord = mapobject_->location_.maptile_[0][0]->location_ - ~mapobject_->vector_;
 
-		return (CheckTile(game()->map_->Tile(test_coord)));
+		return (CheckTile(game().map_->Tile(test_coord)));
 	}
 
 	return 0;
@@ -125,12 +125,12 @@ bool AiBike::CheckDirection()
 
 	for(Vector2<int16_t> check_tile(vector.x, vector.y); ; vector.x ? check_tile.x+=1 : check_tile.y+=1)
 	{
-		if(CheckTile(game()->map_->Tile(mapobject_->location_.maptile_[0][0]->location_ + check_tile)))
+		if(CheckTile(game().map_->Tile(mapobject_->location_.maptile_[0][0]->location_ + check_tile)))
 		{
 			ChangeDirection(-vector);
 			return 1;
 		}
-		if(CheckTile(game()->map_->Tile(mapobject_->location_.maptile_[0][0]->location_ - check_tile)))
+		if(CheckTile(game().map_->Tile(mapobject_->location_.maptile_[0][0]->location_ - check_tile)))
 		{
 			ChangeDirection(vector);
 			return 1;

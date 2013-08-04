@@ -3,10 +3,11 @@
 #ifndef TRON_RLENGINEX_GAME_HH
 #define TRON_RLENGINEX_GAME_HH
 
+#include <unordered_map>
+#include <iostream>
 #include <memory>
+#include <vector>
 #include <list>
-
-#include <boost/archive/basic_archive.hpp>
 
 #include "player.hh"
 
@@ -14,17 +15,18 @@
 #include "map.hh"
 #include "worldtime.hh"
 
+namespace YAML
+{
+	class Emitter;
+}
+
 class Game
 {
   public:
 	Game();
 	virtual ~Game() {};
 
-	template<class Archive>
-	void serialize(Archive& ar, const unsigned int version)
-	{
-
-	};
+	virtual void Serialize(YAML::Emitter& out);
 
 	virtual void Start();
 	void Run();
@@ -39,15 +41,18 @@ class Game
 
 	DisplayObject* AddDisplayObject(const DisplayObject _displayobject);
 	TileType* AddTileType(const TileType _tiletype);
-	void AddMapobject(MapObject* _mapobject);
+	void AddMapObject(MapObject* _mapobject);
 	void AddControlObject(ControlObject* _controlobject);
 	Player* AddPlayerMapobject(uint8_t _color);
+
+	void RemoveMapObject(uint16_t _id);
+	void RemoveMapObject(MapObject* _mapobject);
+
+	std::string version_;
 
 	bool run_;
 	bool paused_;
 	bool realtime_;
-
-	uint32_t speed_;
 
 	std::vector<Player*> players_;
 
@@ -70,6 +75,6 @@ class Game
 	// std::vector<std::unique_ptr<ControlObject>> controlobjects_;
 };
 
-Game* game();
+Game& game();
 
 #endif // TRON_RLENGINEX_GAME_HH

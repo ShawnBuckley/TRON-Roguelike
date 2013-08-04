@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include <yaml-cpp/yaml.h>
+
 #include "linux.hh"
 
 #include "game.hh"
@@ -14,15 +16,37 @@
 
 Game* game_pointer;
 
+Game& game()
+{
+	return *game_pointer;
+}
+
 Game::Game()
 {
+	version_ = std::string("a");
 	io_ = std::unique_ptr<IO>(new SDL);
 	time_ = std::unique_ptr<GameTime>(new WorldTime);
-	speed_ = 1000;
 
 	run_ = 1;
 	paused_ = 0;
 	game_pointer = this;
+}
+
+// YAML::Emitter& operator<<(YAML::Emitter& out, const Game& game)
+void Game::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << YAML::Key << "Game";
+	out << YAML::Value << YAML::BeginMap;
+	out << YAML::Key << "version";
+	out << YAML::Value << version_;
+	out << YAML::Key << "run";
+	out << YAML::Value << run_;
+	out << YAML::Key << "paused";
+	out << YAML::Value << paused_;
+	out << YAML::Key << "realtime";
+	out << YAML::Value << realtime_;
+	out << YAML::EndMap;
 }
 
 void Game::Start()
@@ -51,7 +75,7 @@ void Game::Start()
 
 	Player* player = AddPlayerMapobject(blue);
 	player->mapobject_->Rez(
-		MapLocation<int16_t>(
+		MapLocation(
 			AxisAligned_Rectangle2<int16_t>(Vector2<int16_t>(8,8), 1, 1)
 		),
 		Vector2<int16_t>(+0,+0)
@@ -102,6 +126,46 @@ void Game::Pause()
 
 void Game::Save()
 {
+	printf("save\n");
+
+	std::ofstream save;
+	save.open("save");
+
+	YAML::Emitter out;
+	out << YAML::BeginMap;
+	Serialize(out);
+	// rng.Serialize(out);
+	out << YAML::Key << "Time";
+	time_->Serialize(out);
+
+	// serialize DisplayObjects
+	out << YAML::Key << "DisplayObjects";
+	out << YAML::BeginSeq;
+
+	for(auto it = displayobjects_.begin(); it != displayobjects_.end(); it++)
+	{
+		(*it)->Serialize(out);
+	}
+
+	out << YAML::EndSeq;
+
+	// serialize MapObjects
+	out << YAML::Key << "MapObjects";
+	out << YAML::BeginSeq;
+
+	for(auto it = mapobjects_.begin(); it != mapobjects_.end(); it++)
+	{
+		(*it)->Serialize(out);
+	}
+
+	out << YAML::EndSeq;
+
+	// map
+
+	out << YAML::EndMap;
+
+	save << "---\n" << out.c_str() << "\n...\n";
+
 //	serialize:
 //	game
 //		rng
@@ -115,7 +179,8 @@ void Game::Save()
 //				extras (lightwalls, etc)
 //				inventories
 //				
-
+	save.close();
+	printf("end save\n");
 }
 
 void Game::Load()
@@ -128,11 +193,6 @@ void Game::SetRealtime(bool _realtime)
 	realtime_ = _realtime;
 	
 	io_->SetRealtime(_realtime);
-}
-
-Game* game()
-{
-	return game_pointer;
 }
 
 DisplayObject* Game::AddDisplayObject(const DisplayObject _displayobject)
@@ -203,12 +263,12 @@ TileType* Game::AddTileType(const TileType _tiletype)
 	return tiletype;
 }
 
-void Game::AddMapobject(MapObject* _mapobject)
+void Game::AddMapObject(MapObject* _mapobject)
 {
 	if(mapobject_open_id_.empty())
 	{
-		_mapobject->id_ = entities_.size();
-		mapobjects_.push_back(std::unique_ptr<MapObject>(_mapobject));
+		_mapobject->id_ = mapobjects_.size();
+		mapobjects_.push_back(std::move(std::unique_ptr<MapObject>(_mapobject)));
 	}
 	else
 	{
@@ -252,7 +312,19 @@ Player* Game::AddPlayerMapobject(uint8_t _color)
 	mapobject->timeobject_.controlobject_ = controlobject;
 
 	AddControlObject(controlobject);
-	AddMapobject(mapobject);
+	AddMapObject(mapobject);
 
 	return (Player*)controlobject;
+}
+
+void Game::RemoveMapObject(uint16_t _id)
+{
+	mapobjects_[_id].reset();
+	mapobject_open_id_.push_back(_id);
+}
+
+void Game::RemoveMapObject(MapObject* _mapobject)
+{
+	if(_mapobject)
+		RemoveMapObject(_mapobject->id_);
 }

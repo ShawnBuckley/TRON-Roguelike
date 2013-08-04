@@ -14,6 +14,11 @@
 #include "displayobject.hh"
 #include "io.hh"
 
+namespace YAML
+{
+	class Emitter;
+}
+
 class DisplayObject;
 class Color;
 class MapTile;
@@ -22,6 +27,8 @@ struct MapObjectStats
 {
 	MapObjectStats() : mass_(81647), health_(100) {};
 	MapObjectStats(uint32_t _mass, uint16_t _health) : mass_(_mass), health_(_health) {};
+
+	void Serialize(YAML::Emitter& out);
 
 	uint32_t mass_;
 
@@ -33,6 +40,8 @@ struct MapObjectFlags
 	MapObjectFlags() : rez_(0), clipping_(0), visible_(0) {};
 	MapObjectFlags(bool _rez, bool _clipping, bool _solid, bool _visible)
 	: rez_(_rez), clipping_(_clipping), solid_(_solid), visible_(_visible) {};
+
+	void Serialize(YAML::Emitter& out);
 
 	bool rez_;
 	bool clipping_;
@@ -61,7 +70,9 @@ class MapObject
 	) : stats_(_stats), flags_(_flags), displayobject_(_displayobject) {};
 	virtual ~MapObject();
 
-	virtual bool Rez(MapLocation<int16_t> _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
+	virtual void Serialize(YAML::Emitter& out);
+
+	virtual bool Rez(MapLocation _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
 	virtual void Derez();
 
 	void MapLink();
@@ -69,7 +80,7 @@ class MapObject
 
 	virtual bool Move(MapObjectMove _move) {};
 	virtual bool Move(Vector2<int16_t> _vector);
-	bool SetLocation(MapLocation<int16_t> _location);
+	bool SetLocation(MapLocation _location);
 
 	virtual MapObjectMove NextTick() { return MapObjectMove(timeobject_.speed_, vector_); };
 	virtual uint16_t Tick();
@@ -77,7 +88,8 @@ class MapObject
 
 	uint16_t id_;
 	bool linked_;
-	MapLocation<int16_t> location_;
+
+	MapLocation location_;
 	Vector2<int16_t> vector_;
 	std::list<MapObjectMove> moves_;
 

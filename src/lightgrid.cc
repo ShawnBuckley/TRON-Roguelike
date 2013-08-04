@@ -11,12 +11,12 @@
 
 LightGrid::LightGrid()
 {
-	floor_[0] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('+', 197, dark_blue))));
-	floor_[1] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('-', 196, dark_blue))));
-	floor_[2] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('|', 179, dark_blue))));
-	floor_[3] = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject(' ', 255, black))));
+	floor_[0] = game().AddTileType(TileType(game().AddDisplayObject(DisplayObject('+', 197, dark_blue))));
+	floor_[1] = game().AddTileType(TileType(game().AddDisplayObject(DisplayObject('-', 196, dark_blue))));
+	floor_[2] = game().AddTileType(TileType(game().AddDisplayObject(DisplayObject('|', 179, dark_blue))));
+	floor_[3] = game().AddTileType(TileType(game().AddDisplayObject(DisplayObject(' ', 255, black))));
 
-	wall_ = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('#', 219, dark_blue)), TileTypeFlags(1, 1)));
+	wall_ = game().AddTileType(TileType(game().AddDisplayObject(DisplayObject('#', 219, dark_blue)), TileTypeFlags(1, 1)));
 }
 
 void LightGrid::Generate(AxisAligned_Rectangle2<int16_t> _rectangle)

@@ -5,11 +5,18 @@
 
 #include <inttypes.h>
 
+namespace YAML
+{
+	class Emitter;
+}
+
 class GameTime
 {
   public:
 	GameTime();
 	virtual ~GameTime() {};
+
+	virtual void Serialize(YAML::Emitter& out);
 
 	uint64_t TickCount() { return tick_; };
 
@@ -17,6 +24,5 @@ class GameTime
 
 	uint64_t tick_;
 };
-
 
 #endif // TRON_RLENGINEX_GAMETIME_HH

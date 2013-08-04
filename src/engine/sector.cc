@@ -6,7 +6,7 @@
 
 Sector::Sector()
 {
-	ground_ = game()->AddTileType(TileType(game()->AddDisplayObject(DisplayObject('.', 176, dark_blue))));
+	ground_ = game().AddTileType(TileType(game().AddDisplayObject(DisplayObject('.', 176, dark_blue))));
 }
 
 MapTile* Sector::Tile(Vector2<int16_t> _coord)
