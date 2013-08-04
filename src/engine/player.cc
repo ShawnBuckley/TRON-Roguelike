@@ -75,7 +75,7 @@ bool Player::Controls(char _ch)
 	}
 	catch(const std::out_of_range& e)
 	{
-		return 0;
+		return 1;
 	}
 
 	if(control.player_ == this)
