@@ -2,9 +2,26 @@
 
 #include <inttypes.h>
 
+#include <yaml-cpp/yaml.h>
+
 #include "map.hh"
 #include "maptile.hh"
 #include "sector.hh"
+
+void Map::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << "type" << "Map";
+	out << "rectangle" << YAML::Flow << YAML::BeginSeq;
+	out << (int)rectangle_.Vertex(0).x << (int)rectangle_.Vertex(0).y;
+	out << (int)rectangle_.Width() << (int)rectangle_.Height();
+	out << YAML::EndSeq;
+	out << "sectors" << YAML::BeginSeq;
+	for(auto it = sector_.begin(); it != sector_.end(); ++it)
+		it->get()->Serialize(out);
+	out << YAML::EndSeq;
+	out << YAML::EndMap;
+}
 
 void Map::GenerateSector(Sector* _sector, AxisAligned_Rectangle2<int16_t> _rectangle)
 {

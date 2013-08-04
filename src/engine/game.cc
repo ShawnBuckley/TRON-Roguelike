@@ -83,7 +83,7 @@ void Game::Start()
 
 	io_->camera_mapobject_ = player->mapobject_;
 
-	player->LoadControls("player.json");
+	player->LoadControls("player.yml");
 
 	players_.push_back(player);
 
@@ -104,6 +104,8 @@ void Game::Run()
 		{
 			if(player) player->Controls();
 		}
+
+		if(paused_) continue;
 
 		time_->Turn();
 
@@ -131,36 +133,60 @@ void Game::Save()
 	std::ofstream save;
 	save.open("save");
 
+	YAML::Emitter player;
+	player << YAML::Flow;
+	players_[0]->mapobject_->Serialize(player);
+	printf("%s\n", player.c_str());
+
+	printf("start\n");
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	Serialize(out);
-	// rng.Serialize(out);
-	out << YAML::Key << "Time";
-	time_->Serialize(out);
+	// out << "RNG"; rng.Serialize(out);
+	out << "Time"; time_->Serialize(out);
 
+	printf("displayobjects");
 	// serialize DisplayObjects
 	out << YAML::Key << "DisplayObjects";
 	out << YAML::BeginSeq;
-
 	for(auto it = displayobjects_.begin(); it != displayobjects_.end(); it++)
 	{
 		(*it)->Serialize(out);
 	}
-
 	out << YAML::EndSeq;
 
+	printf("tiletypes\n");
+	// serialize TileTypes
+	out << YAML::Key << "TileTypes";
+	out << YAML::BeginSeq;
+	for(auto it = tiletypes_.begin(); it != tiletypes_.end(); it++)
+	{
+		(*it)->Serialize(out);
+	}
+	out << YAML::EndSeq;
+
+	printf("mapobjects\n");
 	// serialize MapObjects
 	out << YAML::Key << "MapObjects";
 	out << YAML::BeginSeq;
-
 	for(auto it = mapobjects_.begin(); it != mapobjects_.end(); it++)
 	{
 		(*it)->Serialize(out);
 	}
-
 	out << YAML::EndSeq;
 
-	// map
+	printf("controlobjects\n");
+	// serialize ControlObjects
+	out << YAML::Key << "ControlObjects";
+	out << YAML::BeginSeq;
+	for(auto it = entities_.begin(); it != entities_.end(); it++)
+	{
+		(*it)->Serialize(out);
+	}
+	out << YAML::EndSeq;
+
+	out << "Map";
+	map_->Serialize(out);
 
 	out << YAML::EndMap;
 

@@ -13,6 +13,11 @@
 
 #include "tiletype.hh"
 
+namespace YAML
+{
+	class Emitter;
+}
+
 class DisplayObject;
 class MapObject;
 class Sector;
@@ -24,6 +29,8 @@ class MapTile
 	MapTile(Vector2<int16_t> _location, Sector* _sector, TileType* _tiletype)
 		: location_(_location), sector_(_sector), tiletype_(_tiletype) {};
 
+	void Serialize(YAML::Emitter& out);
+
 	bool Empty() { return mapobject_list_.empty(); }
 	
 	std::vector<MapObject*> SolidMapObject();
@@ -33,7 +40,6 @@ class MapTile
 
 	Vector2<int16_t> location_;
 	Sector* sector_;
-	// std::shared_ptr<TileType> tiletype_;
 	TileType* tiletype_;
 	std::list<MapObject*> mapobject_list_;
 };

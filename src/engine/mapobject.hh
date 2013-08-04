@@ -55,6 +55,8 @@ public:
   	MapObjectMove() : time_(0) {};
   	MapObjectMove(uint16_t _time, Vector2<int16_t> _vector) : time_(_time), vector_(_vector) {};
 
+  	void Serialize(YAML::Emitter& out);
+
 	uint16_t time_;
 	Vector2<int16_t> vector_;
 };

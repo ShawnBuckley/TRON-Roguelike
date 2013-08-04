@@ -1,5 +1,7 @@
 // TRON RLengineX Sector.cc
 
+#include <yaml-cpp/yaml.h>
+
 #include "game.hh"
 #include "sector.hh"
 #include "maptile.hh"
@@ -7,6 +9,31 @@
 Sector::Sector()
 {
 	ground_ = game().AddTileType(TileType(game().AddDisplayObject(DisplayObject('.', 176, dark_blue))));
+}
+
+void Sector::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << "type" << "Sector";
+	out << "rectangle" << YAML::Flow << YAML::BeginSeq;
+	out << (int)rectangle_.Vertex(0).x << (int)rectangle_.Vertex(0).y;
+	out << (int)rectangle_.Width() << (int)rectangle_.Height();
+	out << YAML::EndSeq;
+	out << "ground_type" << (int)ground_->id_;
+
+	out << "tiles" << YAML::BeginSeq;
+	std::size_t x_limit = tile_.size();
+	for(std::size_t x=0; x<x_limit; x++)
+	{
+		std::size_t y_limit = tile_[x].size();
+		for(std::size_t y=0; y<y_limit; y++)
+		{
+			tile_[x][y]->Serialize(out);
+		}
+	}
+	out << YAML::EndSeq;
+
+	out << YAML::EndMap;
 }
 
 MapTile* Sector::Tile(Vector2<int16_t> _coord)

@@ -5,10 +5,21 @@
 
 #include "displayobject.hh"
 
+#include <yaml-cpp/yaml.h>
+
 struct TileTypeFlags
 {
 	TileTypeFlags() : render_(1), solid_(0) {};
 	TileTypeFlags(bool _render, bool _solid) : render_(_render), solid_(_solid) {};
+
+	void Serialize(YAML::Emitter& out)
+	{
+		out << YAML::BeginMap;
+		out << "type" << "TileTypeFlags";
+		out << "render" << render_;
+		out << "solid" << solid_;
+		out << YAML::EndMap;
+	}
 
 	inline bool operator==(const TileTypeFlags& _other) const
 	{
@@ -31,6 +42,16 @@ class TileType
 
 	~TileType() {};
 
+	void Serialize(YAML::Emitter& out)
+	{
+		out << YAML::BeginMap;
+		out << "type" << "TileType";
+		out << "id" << id_;
+		out << "flags"; flags_.Serialize(out);
+		out << "displayobject"; displayobject_->Serialize(out);
+		out << YAML::EndMap;
+	}
+
 	bool operator==(const TileType &_other) const
 	{
 		return (flags_ == _other.flags_ &&
@@ -40,7 +61,6 @@ class TileType
 	uint16_t id_;
 	TileTypeFlags flags_;
 	DisplayObject* displayobject_;
-	// DisplayObject displayobject_;
 };
 
 #endif // TRON_RLENGINEX_TILETYPE_HH

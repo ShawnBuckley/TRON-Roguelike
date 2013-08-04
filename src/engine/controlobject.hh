@@ -7,6 +7,8 @@
 #include <memory>
 #include <list>
 
+#include <yaml-cpp/yaml.h>
+
 #include "math/vector2.hh"
 
 class MapObject;
@@ -28,6 +30,17 @@ class ControlObjectMove
   	ControlObjectMove(ControlObjectMoveType _type, uint16_t _time, Vector2<int16_t> _location)
 		: type_(_type), time_(_time), location_(_location) {};
 
+	void Serialize(YAML::Emitter& out)
+	{
+		out << YAML::BeginMap;
+		out << "type" << "ControlObjectMove";
+		out << "move_type" << (int)type_;
+		out << "time" << (int)time_;
+		out << YAML::Flow << YAML::BeginSeq;
+		out << location_.x << location_.y << YAML::EndSeq;
+		out << YAML::EndMap;
+	}
+
 	ControlObjectMoveType type_;
 	uint16_t time_;
 	Vector2<int16_t> location_;
@@ -40,6 +53,8 @@ class ControlObject
 	ControlObject(MapObject* _mapobject) : mapobject_(_mapobject) {};
 //	ControlObject(const ControlObject &_controlobject) : mapobject_(_controlobject.mapobject_) {};
 	virtual ~ControlObject() {};
+
+	virtual void Serialize(YAML::Emitter& out) {};
 
 	virtual void Think() {};
 	virtual ControlObjectMove Move() {};

@@ -39,31 +39,32 @@ Bike::~Bike() {}
 void Bike::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "type";
-	out << YAML::Value << "Bike";
-	out << YAML::Key << "id";
-	out << YAML::Value << id_;
-	out << YAML::Key << "linked";
-	out << YAML::Value << linked_;
-	out << YAML::Key << "moved";
-	out << YAML::Value << moved_;
-	out << YAML::Key << "drop_walls";
-	out << YAML::Value << drop_walls_;
-	out << YAML::Key << "change_direction";
-	out << YAML::Value << (int)change_direction_;
-	out << YAML::Key << "time_of_death";
-	out << YAML::Value << time_of_death_;
-	out << YAML::Key << "displayobject";
-	out << YAML::Value << (int)displayobject_->id_;
-	out << YAML::Key << "stats";
-	stats_.Serialize(out);
-	out << YAML::Key << "flags";
-	flags_.Serialize(out);
-	out << YAML::Key << "location";
-	location_.Serialize(out);
+	out << "type" << "Bike";
+	// out << YAML::Key << "type";
+	// out << YAML::Value << "Bike";
+	out << "id" << id_;
+	out << "linked" << linked_;
+	out << "moved" << moved_;
+	out << "drop_walls" << drop_walls_;
+	out << "change_direction" << (int)change_direction_;
+	out << "time_of_death" << time_of_death_;
+	out << "displayobject" << (int)displayobject_->id_;
+	out << "stats"; stats_.Serialize(out);
+	out << "flags"; flags_.Serialize(out);
+	out <<  "location"; location_.Serialize(out);
 	out << YAML::Key << "vector";
-	out << YAML::Flow;
-	out << YAML::Value << YAML::BeginSeq << vector_.x << vector_.y << YAML::EndSeq;
+	out << YAML::Flow << YAML::BeginSeq;
+	out << vector_.x << vector_.y << YAML::EndSeq;
+	out << "lightwalls";
+	out << YAML::Flow << YAML::BeginSeq;
+	for(LightWall* wall : wall_list_)
+		out << (int)wall->id_;
+	out << YAML::EndSeq;
+	out << YAML::Flow << YAML::BeginSeq;
+	out << "moves";
+	for(MapObjectMove move : moves_)
+		move.Serialize(out);
+	out << YAML::EndSeq;
 	out << YAML::EndMap;
 }
 

@@ -11,6 +11,11 @@
 #include <vector>
 #include <memory>
 
+namespace YAML
+{
+	class Emitter;
+}
+
 class MapTile;
 
 class Sector
@@ -18,6 +23,8 @@ class Sector
   public:
 	Sector();
 	virtual ~Sector() {};
+
+	virtual void Serialize(YAML::Emitter& out);
 
 	MapTile* Tile(Vector2<int16_t> _coord);
 	virtual void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);

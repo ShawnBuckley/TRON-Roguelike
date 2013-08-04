@@ -61,6 +61,17 @@ void MapObjectFlags::Serialize(YAML::Emitter& out)
 	out << YAML::EndMap;
 }
 
+void MapObjectMove::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << "type" << "MapObjectMove";
+	out << "time" << (int)time_;
+	out << YAML::Key << "vector";
+	out << YAML::Flow;
+	out << YAML::Value << YAML::BeginSeq << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
+	out << YAML::EndMap;
+}
+
 void MapObject::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
@@ -80,7 +91,12 @@ void MapObject::Serialize(YAML::Emitter& out)
 	location_.Serialize(out);
 	out << YAML::Key << "vector";
 	out << YAML::Flow;
-	out << YAML::Value << YAML::BeginSeq << vector_.x << vector_.y << YAML::EndSeq;
+	out << YAML::Value << YAML::BeginSeq << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
+	out << "moves";
+	out << YAML::BeginSeq;
+	for(MapObjectMove move : moves_)
+		move.Serialize(out);
+	out << YAML::EndSeq;
 	out << YAML::EndMap;
 }
 

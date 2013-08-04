@@ -16,6 +16,30 @@ AiBike::AiBike() : ai_state_(AI_DEFAULT), ai_skill_(100)
 
 }
 
+void AiBike::Serialize(YAML::Emitter& out)
+{
+	out << YAML::BeginMap;
+	out << "type" << "AiBike";
+	out << "id" << (int)id_;
+	if(mapobject_)
+		out << "mapobject" << (int)mapobject_->id_;
+	else
+		out << "mapobject" << "";
+	out << "think" << think_;
+	out << "ai_state" << (int)ai_state_;
+	out << "ai_skill" << (int)ai_skill_;
+	out << "tunnel_distance" << (int)tunnel_distance;
+	out << "nextmove";
+	out << YAML::Flow << YAML::BeginSeq;
+	out << next_move_.x << next_move_.y << YAML::EndSeq;
+	out << "moves";
+	out << YAML::BeginSeq;
+	for(ControlObjectMove move : moves_)
+		move.Serialize(out);
+	out << YAML::EndSeq;
+	out << YAML::EndMap;
+}
+
 void AiBike::Think()
 {
 	bool change_direction = 0;

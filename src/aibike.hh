@@ -10,6 +10,10 @@
 
 #include "bike.hh"
 
+namespace YAML
+{
+	class Emitter;
+}
 
 class MapObject;
 class MapTile;
@@ -29,6 +33,8 @@ class AiBike : public ControlObject
   public:
 	AiBike();
 	AiBike(Bike* _bike) : ai_state_(AI_DEFAULT), ai_skill_(100) { mapobject_ = _bike; };
+
+	virtual void Serialize(YAML::Emitter& out);
 
 	void Think();
 	ControlObjectMove Move();

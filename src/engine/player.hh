@@ -11,6 +11,11 @@
 #include "mapobject.hh"
 #include "timeobject.hh"
 
+namespace YAML
+{
+	class Emitter;
+}
+
 class Game;
 class Player;
 
@@ -36,6 +41,9 @@ class Player : public ControlObject
 	static std::unordered_map<char, PlayerControl> mapped_controls_;
 
   	Player(MapObject* _mapobject) { mapobject_ = _mapobject; };
+
+  	virtual void Serialize(YAML::Emitter& out);
+
   	void LoadControls(std::string _filename);
   	bool Controls(char _ch);
 
