@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <memory>
 
+#include <yaml-cpp/yaml.h>
+
 #include "io.hh"
 
 namespace YAML

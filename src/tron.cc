@@ -146,8 +146,8 @@ void TRON::Start()
 		Vector2<int16_t>(-1,+0)
 	);
 
-	player->LoadControls("player.yaml");
-	player2->LoadControls("player2.yaml");
+	player->LoadControls("player.yml");
+	player2->LoadControls("player2.yml");
 
 	// io_->camera_mapobject_ = player->mapobject_;
 	io_->camera_mapobject_ = NULL;

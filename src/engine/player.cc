@@ -42,13 +42,11 @@ void Player::Controls()
 		if(Controls(ch))
 		{
 			game().io_->keystrokes_.remove(ch);
-			break;
+			return;
 		}
-		// else
-		// {
-		// 	moves_.push_back(ControlObjectMove());
-		// }
 	}
+
+	// moves_.push_back(ControlObjectMove());
 }
 
 ControlObjectMove Player::Move()
@@ -58,7 +56,6 @@ ControlObjectMove Player::Move()
 		ControlObjectMove move = moves_.front();
 
 		mapobject_->Move(move.location_);
-		// mapobject_->vector_ = move.location_;
 		moves_.pop_front();
 
 		return move;
@@ -78,24 +75,22 @@ bool Player::Controls(char _ch)
 	}
 	catch(const std::out_of_range& e)
 	{
-		printf("oof\n");
-		return 1;
-	}
-
-	if(control.player_ != this)
-	{
 		return 0;
 	}
 
-	if(!control.game_control_ && !game().paused_)
+	if(control.player_ == this)
 	{
-		moves_.push_back(ControlObjectMove(control.move_type_, 0, control.vector_));
-	}
-	else
-	{
-		printf("game control\n");
-		(game().*control.callback_)();
+		if(control.game_control_)
+		{
+			(game().*control.callback_)();
+		}
+		else if(!game().paused_)
+		{
+			moves_.push_back(ControlObjectMove(control.move_type_, 0, control.vector_));
+		}
+
+		return 1;
 	}
 
-	return 1;
+	return 0;
 }
