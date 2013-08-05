@@ -14,7 +14,11 @@
 #include "sector.hh"
 #include "tiletype.hh"
 
-// #define NULL __null
+namespace YAML
+{
+	class Emitter;
+	class Node;
+};
 
 class Map
 {
@@ -22,6 +26,7 @@ class Map
 
   public:  
 	Map() {};
+	Map(const YAML::Node& in);
 
 	void Serialize(YAML::Emitter& out);
 

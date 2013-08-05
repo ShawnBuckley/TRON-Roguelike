@@ -6,13 +6,20 @@
 #include "engine/mapobject.hh"
 #include "engine/displayobject.hh"
 
+namespace YAML
+{
+	class Emitter;
+	class Node;
+}
+
 class Bike;
 
 class LightWall : public MapObject
 {
   public:
 	LightWall() : bike_(NULL) {};
-	LightWall(DisplayObject* _displayobject, MapLocation _location, uint64_t _time_dropped, Bike *_bike);
+	LightWall(DisplayObject* _displayobject, uint64_t _time_dropped, Bike *_bike);
+	LightWall(const YAML::Node& in);
 
 	void Serialize(YAML::Emitter& out);
 	

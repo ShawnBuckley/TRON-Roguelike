@@ -13,6 +13,7 @@
 namespace YAML
 {
 	class Emitter;
+	class Node;
 }
 
 class MapObject;
@@ -33,6 +34,7 @@ class AiBike : public ControlObject
   public:
 	AiBike();
 	AiBike(Bike* _bike) : ai_state_(AI_DEFAULT), ai_skill_(100) { mapobject_ = _bike; };
+	AiBike(const YAML::Node& in);
 
 	virtual void Serialize(YAML::Emitter& out);
 

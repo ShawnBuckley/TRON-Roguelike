@@ -27,8 +27,14 @@ class ControlObjectMove
 {
   public:
   	ControlObjectMove() : type_(COMT_NONE), time_(0) {};
-  	ControlObjectMove(ControlObjectMoveType _type, uint16_t _time, Vector2<int16_t> _location)
-		: type_(_type), time_(_time), location_(_location) {};
+  	ControlObjectMove(ControlObjectMoveType _type, uint16_t _time, Vector2<int16_t> _vector)
+		: type_(_type), time_(_time), vector_(_vector) {};
+	ControlObjectMove(const YAML::Node& in)
+	{
+		type_ = (ControlObjectMoveType)in["move_type"].as<int>();
+		time_ = in["move_type"].as<uint32_t>();
+		vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
+	}
 
 	void Serialize(YAML::Emitter& out)
 	{
@@ -36,14 +42,15 @@ class ControlObjectMove
 		out << "type" << "ControlObjectMove";
 		out << "move_type" << (int)type_;
 		out << "time" << (int)time_;
+		out << "vector";
 		out << YAML::Flow << YAML::BeginSeq;
-		out << location_.x << location_.y << YAML::EndSeq;
+		out << vector_.x << vector_.y << YAML::EndSeq;
 		out << YAML::EndMap;
 	}
 
 	ControlObjectMoveType type_;
 	uint16_t time_;
-	Vector2<int16_t> location_;
+	Vector2<int16_t> vector_;
 };
 
 class ControlObject

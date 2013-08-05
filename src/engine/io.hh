@@ -11,6 +11,12 @@
 
 #include "math/axisaligned_rectangle2.hh"
 
+namespace YAML
+{
+	class Emitter;
+	class Node;
+}
+
 class DisplayObject;
 class Color;
 class MapObject;
@@ -43,6 +49,8 @@ class IO
   private:	
 
   public:
+  	void Serialize(YAML::Emitter& out);
+
 	virtual void Init()=0;
 
 	virtual void Input()=0;
@@ -52,19 +60,21 @@ class IO
 	virtual void SetRealtime(bool _realtime)=0;
 
 
-	MapObject* camera_mapobject_;
-	Vector2<int16_t> camera_location_;
-
 	bool realtime_;
 	float fps_;
   
 	uint8_t x_;
 	uint8_t y_;
 
-	std::list<char> keystrokes_;
+	MapObject* camera_mapobject_;
+	Vector2<int16_t> camera_location_;
 
 	uint8_t old_color_;
 	AxisAligned_Rectangle2<int16_t> viewport_;
+
+	std::list<char> keystrokes_;
+
+
 
 	std::vector<Color> colors_;
 };

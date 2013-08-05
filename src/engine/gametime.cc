@@ -16,13 +16,16 @@ GameTime::GameTime()
 	tick_ = 0;
 }
 
+GameTime::GameTime(const YAML::Node& in)
+{
+	tick_ = in["tick"].as<uint64_t>();
+}
+
 void GameTime::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "type";
-	out << YAML::Value << "GameTime";
-	out << YAML::Key << "tick";
-	out << YAML::Value << tick_;
+	out << "type" << "GameTime";
+	out << "tick" << tick_;
 }
 
 // TODO TimeObjects schedule in timeactions, which then execute

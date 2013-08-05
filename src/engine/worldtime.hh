@@ -17,12 +17,14 @@
 namespace YAML
 {
 	class Emitter;
+	class Node;
 }
 
 class WorldTime : public GameTime
 {
   public:
 	WorldTime();
+	WorldTime(const YAML::Node& in);
 
 	void Serialize(YAML::Emitter& out);
 

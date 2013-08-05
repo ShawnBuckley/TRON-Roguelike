@@ -17,6 +17,7 @@
 namespace YAML
 {
 	class Emitter;
+	class Node;
 }
 
 class DisplayObject;
@@ -27,6 +28,7 @@ struct MapObjectStats
 {
 	MapObjectStats() : mass_(81647), health_(100) {};
 	MapObjectStats(uint32_t _mass, uint16_t _health) : mass_(_mass), health_(_health) {};
+	MapObjectStats(const YAML::Node& in);
 
 	void Serialize(YAML::Emitter& out);
 
@@ -40,6 +42,7 @@ struct MapObjectFlags
 	MapObjectFlags() : rez_(0), clipping_(0), visible_(0) {};
 	MapObjectFlags(bool _rez, bool _clipping, bool _solid, bool _visible)
 	: rez_(_rez), clipping_(_clipping), solid_(_solid), visible_(_visible) {};
+	MapObjectFlags(const YAML::Node& in);
 
 	void Serialize(YAML::Emitter& out);
 
@@ -54,6 +57,7 @@ class MapObjectMove
 public:
   	MapObjectMove() : time_(0) {};
   	MapObjectMove(uint16_t _time, Vector2<int16_t> _vector) : time_(_time), vector_(_vector) {};
+  	MapObjectMove(const YAML::Node& in);
 
   	void Serialize(YAML::Emitter& out);
 
@@ -70,6 +74,7 @@ class MapObject
 		MapObjectFlags _flags,
 		DisplayObject* _displayobject
 	) : stats_(_stats), flags_(_flags), displayobject_(_displayobject) {};
+	MapObject(const YAML::Node& in);
 	virtual ~MapObject();
 
 	virtual void Serialize(YAML::Emitter& out);

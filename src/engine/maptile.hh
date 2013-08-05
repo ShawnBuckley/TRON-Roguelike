@@ -16,7 +16,8 @@
 namespace YAML
 {
 	class Emitter;
-}
+	class Node;
+};
 
 class DisplayObject;
 class MapObject;
@@ -28,6 +29,7 @@ class MapTile
 	MapTile() {};
 	MapTile(Vector2<int16_t> _location, Sector* _sector, TileType* _tiletype)
 		: location_(_location), sector_(_sector), tiletype_(_tiletype) {};
+	MapTile(const YAML::Node& in);
 
 	void Serialize(YAML::Emitter& out);
 

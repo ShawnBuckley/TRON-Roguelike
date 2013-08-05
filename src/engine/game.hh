@@ -18,15 +18,25 @@
 namespace YAML
 {
 	class Emitter;
+	class Node;
 }
 
 class Game
 {
   public:
 	Game();
+	Game(const YAML::Node& in);
 	virtual ~Game() {};
 
 	virtual void Serialize(YAML::Emitter& out);
+	virtual void UnserializeGameTime(const YAML::Node& in);
+	virtual void UnserializeDisplayObjects(const YAML::Node& in);
+	virtual void UnserializeTileTypes(const YAML::Node& in);
+	virtual void UnserializeMapObjects(const YAML::Node& in);
+	virtual void UnserializeControlObjects(const YAML::Node& in);
+	virtual void UnserializeTimeObjects(const YAML::Node& in);
+	virtual void UnserializeMap(const YAML::Node& in);
+	virtual void UnserializeMapLoactions(const YAML::Node& in);
 
 	virtual void Start();
 	void Run();
@@ -35,14 +45,24 @@ class Game
 	void Pause();
 
 	void Save();
+	void SaveGame(std::string _save);
 	void Load();
 
 	void SetRealtime(bool _realtime);
 
 	DisplayObject* AddDisplayObject(const DisplayObject _displayobject);
+	DisplayObject* GetDisplayObject(const uint16_t _id);
+
 	TileType* AddTileType(const TileType _tiletype);
-	void AddMapObject(MapObject* _mapobject);
-	void AddControlObject(ControlObject* _controlobject);
+	TileType* GetTileType(uint16_t _id);
+	
+	uint16_t AddMapObject(MapObject* _mapobject);
+	MapObject* GetMapObject(uint16_t _id);
+
+	uint16_t AddControlObject(ControlObject* _controlobject);
+	ControlObject* GetControlObject(uint16_t _id);
+
+	uint16_t AddPlayer(Player* _player);
 	Player* AddPlayerMapobject(uint8_t _color);
 
 	void RemoveMapObject(uint16_t _id);

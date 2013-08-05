@@ -13,6 +13,27 @@
 
 std::unordered_map<char, PlayerControl> Player::mapped_controls_;
 
+///////////////////////////////////////////////////////////////////////////////
+// 
+// Player
+// 
+///////////////////////////////////////////////////////////////////////////////
+
+Player::Player(const YAML::Node& in)
+{
+	id_ = in["id"].as<int>();
+	std::size_t mapobject_id = in["id"].as<int>();
+	if(mapobject_id >= 0)
+		mapobject_ = game().GetMapObject(mapobject_id);
+	else
+		mapobject_ = NULL;
+	const YAML::Node& moves = in["moves"];
+	for(std::size_t i=0; i<moves.size(); i++)
+	{
+		moves_.push_back(ControlObjectMove(moves[i]));
+	}
+}
+
 void Player::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
@@ -21,7 +42,7 @@ void Player::Serialize(YAML::Emitter& out)
 	if(mapobject_)
 		out << "mapobject" << (int)mapobject_->id_;
 	else
-		out << "mapobject" << "";
+		out << "mapobject" << -1;
 
 	out << "moves";
 	out << YAML::BeginSeq;
@@ -41,7 +62,7 @@ void Player::LoadControls(std::string _filename)
 	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(node["quit"].as<char>(), PlayerControl(this, &Game::End)));
 	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(node["pause"].as<char>(), PlayerControl(this, &Game::Pause)));
 	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(node["save"].as<char>(), PlayerControl(this, &Game::Save)));
-	// Player::mapped_controls_.insert(std::pair<char, PlayerControl>(node["load"].as<char>(), PlayerControl()));
+	// Player::mapped_controls_.insert(std::pair<char, PlayerControl>(node["load"].as<char>(), PlayerControl(this, &Game::Load)));
 
 	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(node["move_north"].as<char>(), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(+0,-1))));
 	Player::mapped_controls_.insert(std::pair<char, PlayerControl>(node["move_west"].as<char>(), PlayerControl(this, COMT_MOVEMENT, Vector2<int16_t>(-1,+0))));
@@ -59,7 +80,6 @@ void Player::Controls()
 	{
 		if(Controls(ch))
 		{
-			game().io_->keystrokes_.remove(ch);
 			return;
 		}
 	}
@@ -73,7 +93,7 @@ ControlObjectMove Player::Move()
 	{
 		ControlObjectMove move = moves_.front();
 
-		mapobject_->Move(move.location_);
+		mapobject_->Move(move.vector_);
 		moves_.pop_front();
 
 		return move;
@@ -93,11 +113,14 @@ bool Player::Controls(char _ch)
 	}
 	catch(const std::out_of_range& e)
 	{
+		game().io_->keystrokes_.remove(_ch);
 		return 1;
 	}
 
 	if(control.player_ == this)
 	{
+		game().io_->keystrokes_.remove(_ch);
+
 		if(control.game_control_)
 		{
 			(game().*control.callback_)();

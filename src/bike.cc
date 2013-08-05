@@ -34,6 +34,40 @@ Bike::Bike(MapObjectFlags _mapobject_flags,	uint8_t _color, TimeObject _timeobje
 	}
 }
 
+Bike::Bike(const YAML::Node& in)
+{
+	id_ = in["id"].as<int>();
+	linked_ = in["linked"].as<bool>();
+	moved_ = in["moved"].as<bool>();
+	drop_walls_ = in["drop_walls"].as<bool>();
+	change_direction_ = in["change_direction"].as<int>();
+	time_of_death_ = in["time_of_death"].as<uint64_t>();
+	displayobject_ = game().GetDisplayObject(in["displayobject"].as<int>());
+	const YAML::Node& bike_displayobject = in["bike_displayobjects"];
+	for(std::size_t i=0; i<bike_displayobject.size(); i++)
+	{
+		bike_displayobject_[i] = game().GetDisplayObject(bike_displayobject[i].as<int>());
+		printf("%i", bike_displayobject_[i]->sprite_);
+	}
+	const YAML::Node& wall_displayobject = in["wall_displayobjects"];
+	for(std::size_t i=0; i<wall_displayobject.size(); i++)
+	{
+		wall_displayobject_[i] = game().GetDisplayObject(wall_displayobject[i].as<int>());
+	}
+
+	stats_ = MapObjectStats(in["stats"]);
+	flags_ = MapObjectFlags(in["flags"]);
+	location_ = MapLocation(in["location"]);
+	const YAML::Node& vector = in["vector"];
+	vector_ = Vector2<int16_t>(vector[0].as<int>(), vector[1].as<int>());
+
+	const YAML::Node& moves = in["moves"];
+	for(std::size_t i=0; i<moves.size(); i++)
+	{
+		moves_.push_back(MapObjectMove(moves[i]));
+	}
+}
+
 Bike::~Bike() {}
 
 void Bike::Serialize(YAML::Emitter& out)
@@ -49,8 +83,21 @@ void Bike::Serialize(YAML::Emitter& out)
 	out << "change_direction" << (int)change_direction_;
 	out << "time_of_death" << time_of_death_;
 	out << "displayobject" << (int)displayobject_->id_;
+	out << "bike_displayobjects" << YAML::Flow << YAML::BeginSeq;
+	for(int i=0; i<10; i++)
+	{
+		out << bike_displayobject_[i]->id_;
+	}
+	out << YAML::EndSeq;
+	out << "wall_displayobjects" << YAML::Flow << YAML::BeginSeq;
+	for(int i=0; i<10; i++)
+	{
+		out << wall_displayobject_[i]->id_;
+	}
+	out << YAML::EndSeq;
 	out << "stats"; stats_.Serialize(out);
 	out << "flags"; flags_.Serialize(out);
+	out << "timeobject"; timeobject_.Serialize(out);
 	out <<  "location"; location_.Serialize(out);
 	out << YAML::Key << "vector";
 	out << YAML::Flow << YAML::BeginSeq;
@@ -60,8 +107,8 @@ void Bike::Serialize(YAML::Emitter& out)
 	for(LightWall* wall : wall_list_)
 		out << (int)wall->id_;
 	out << YAML::EndSeq;
-	out << YAML::Flow << YAML::BeginSeq;
 	out << "moves";
+	out << YAML::Flow << YAML::BeginSeq;
 	for(MapObjectMove move : moves_)
 		move.Serialize(out);
 	out << YAML::EndSeq;
@@ -104,7 +151,9 @@ void Bike::RemoveWall()
 	
 		while(wall_list_.size() && time == wall_list_.front()->time_dropped_)
 		{
-			game().RemoveMapObject(wall_list_.front());
+			LightWall* wall = wall_list_.front();
+			wall->MapUnlink();
+			game().RemoveMapObject(wall);
 			wall_list_.erase(wall_list_.begin());
 
 			time = game().time_->TickCount() - time_of_death_;
@@ -139,6 +188,7 @@ bool Bike::Move(Vector2<int16_t> _vector)
 
 uint16_t Bike::Tick()
 {
+	printf("%i bike tick\n", id_);
 	if(!flags_.rez_)
 	{
 		RemoveWall();
@@ -202,12 +252,12 @@ uint16_t Bike::Tick()
 				{
 					LightWall* wall = new LightWall(
 							wall_displayobject_[change_direction_ ? change_direction_ :vector_.Direction()],
-							MapLocation(AxisAligned_Rectangle2<int16_t>(point, 1, 1)),
 							game().time_->TickCount(),
 							this);
 						
 					game().AddMapObject(wall);
 					wall_list_.push_back(wall);
+					wall->Rez(MapLocation(AxisAligned_Rectangle2<int16_t>(point, 1, 1)));
 				}
 			}
 			}

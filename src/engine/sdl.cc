@@ -18,8 +18,36 @@
 #include "displayobject.hh"
 #include "sector.hh"
 
+SDL::SDL(const YAML::Node& in)
+{
+	realtime_ = in["realtime"].as<bool>();
+	fps_ = in["fps"].as<float>();
+	x_ = in["x"].as<int>();
+	y_ = in["y"].as<int>();
+	int16_t camera_mapobject = in["camera_mapobject"].as<int>();
+	if(camera_mapobject > 0)
+		camera_mapobject_ = game().GetMapObject(camera_mapobject);
+	else
+		camera_mapobject_ = NULL;
+	camera_location_ = Vector2<int16_t>(in["camera_location"][0].as<int>(), in["camera_location"][1].as<int>());
+	old_color_ = in["old_color"].as<int>();
+	for(std::size_t i=0; i<in["keystrokes"].size(); i++)
+	{
+		keystrokes_.push_back(in["keystrokes"][i].as<char>());
+	}
+}
+
 void SDL::Init()
 {
+	colors_.push_back(Color(0,0,0));
+	colors_.push_back(Color(255,0,0));
+	colors_.push_back(Color(0,255,0));
+	colors_.push_back(Color(255,255,0));
+	colors_.push_back(Color(0,0,255));
+	colors_.push_back(Color(255,0,255));
+	colors_.push_back(Color(0,0,64));
+	colors_.push_back(Color(255,255,255));
+
 	SDL_Init(SDL_INIT_VIDEO);
 	screen_ = SDL_SetVideoMode(0, 0, 32, SDL_HWSURFACE);
 	SDL_WM_SetCaption("Roguelike EngineX SDL", NULL);
@@ -293,6 +321,7 @@ void SDL::Map()
 	for(coord.y = viewport_.Vertex(0).y; coord.y < viewport_.Height(); coord.y += 1)
 	{	for(coord.x = viewport_.Vertex(0).x; coord.x < viewport_.Width(); coord.x += 1)
 	{
+		// printf("#");
 		if(game().map_->CoordValid(coord))
 		{
 			MapTile* tile = game().map_->Tile(coord);
@@ -303,6 +332,7 @@ void SDL::Map()
 
 				if(!tile->Empty())
 				{
+					// printf("%i %i not empty!\n", coord.x, coord.y);
 					for(std::list<MapObject*>::reverse_iterator mapobject = tile->mapobject_list_.rbegin();
 						mapobject != tile-> mapobject_list_.rend(); ++mapobject)
 					{
@@ -315,7 +345,7 @@ void SDL::Map()
 			}
 		}
 		AddSpace();
-	} NewLine();
+	} NewLine(); //printf("\n");
 	}
 
 	Move(camera.x, camera.y);

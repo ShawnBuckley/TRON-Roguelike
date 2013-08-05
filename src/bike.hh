@@ -15,12 +15,19 @@
 
 #include "lightwall.hh"
 
+namespace YAML
+{
+	class Emitter;
+	class Node;
+}
+
 class Color;
 
 class Bike : public MapObject
 {
   public:
 	Bike(MapObjectFlags _mapobject_flags, uint8_t _color, TimeObject _timeobject);
+	Bike(const YAML::Node& in);
 	~Bike();
 
 	virtual void Serialize(YAML::Emitter& out);

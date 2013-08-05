@@ -8,6 +8,14 @@
 #include "maptile.hh"
 #include "sector.hh"
 
+Map::Map(const YAML::Node& in)
+{
+	const YAML::Node& rectangle = in["rectangle"];
+	rectangle_ = AxisAligned_Rectangle2<int16_t>(
+		Vector2<int16_t>(rectangle[0].as<int>(), rectangle[1].as<int>()),
+		rectangle[2].as<int>(), rectangle[3].as<int>());
+}
+
 void Map::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
@@ -15,10 +23,6 @@ void Map::Serialize(YAML::Emitter& out)
 	out << "rectangle" << YAML::Flow << YAML::BeginSeq;
 	out << (int)rectangle_.Vertex(0).x << (int)rectangle_.Vertex(0).y;
 	out << (int)rectangle_.Width() << (int)rectangle_.Height();
-	out << YAML::EndSeq;
-	out << "sectors" << YAML::BeginSeq;
-	for(auto it = sector_.begin(); it != sector_.end(); ++it)
-		it->get()->Serialize(out);
 	out << YAML::EndSeq;
 	out << YAML::EndMap;
 }

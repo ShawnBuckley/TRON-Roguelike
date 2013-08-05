@@ -1,4 +1,4 @@
-all: aibike.o bike.o game.o gametime.o gl.o lightgrid.o lightwall.o linux.o log.o main.o map.o mapobject.o maptile.o player.o sdl.o sector.o timeobject.o tron.o worldtime.o
+all: aibike.o bike.o game.o gametime.o gl.o io.o lightgrid.o lightwall.o linux.o log.o main.o map.o maplocation.o mapobject.o maptile.o player.o sdl.o sector.o timeobject.o tiletype.o tron.o worldtime.o
 	g++ -ggdb -O2 *.o -lSDL -lpng -lGL -lyaml-cpp -o engine -std=c++0x
 
 aibike.o: src/aibike.cc
@@ -15,6 +15,9 @@ gametime.o: src/engine/gametime.cc
 
 gl.o: src/engine/gl.cc
 	g++ -c src/engine/gl.cc -std=c++0x
+
+io.o: src/engine/io.cc
+	g++ -c src/engine/io.cc -std=c++0x
 
 lightgrid.o: src/lightgrid.cc
 	g++ -c src/lightgrid.cc -std=c++0x
@@ -34,6 +37,9 @@ main.o: src/main.cc
 map.o: src/engine/map.cc
 	g++ -c src/engine/map.cc -std=c++0x
 
+maplocation.o: src/engine/maplocation.cc
+	g++ -c src/engine/maplocation.cc -std=c++0x
+
 mapobject.o: src/engine/mapobject.cc
 	g++ -c src/engine/mapobject.cc -std=c++0x
 
@@ -51,6 +57,9 @@ sector.o: src/engine/sector.cc
 
 timeobject.o: src/engine/timeobject.cc
 	g++ -c src/engine/timeobject.cc -std=c++0x
+
+tiletype.o: src/engine/tiletype.cc
+	g++ -c src/engine/tiletype.cc -std=c++0x
 
 tron.o: src/tron.cc
 	g++ -c src/tron.cc -std=c++0x

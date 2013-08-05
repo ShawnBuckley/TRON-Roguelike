@@ -14,6 +14,7 @@
 namespace YAML
 {
 	class Emitter;
+	class Node;
 }
 
 class DisplayObject
@@ -21,21 +22,23 @@ class DisplayObject
   public:
 	DisplayObject() : print_(0), sprite_(0) {};
 	DisplayObject(char _print, uint8_t _sprite, uint8_t _color) : print_(_print), sprite_(_sprite), color_(_color) {};
+	DisplayObject(const YAML::Node& in)
+	{
+		id_ = in["id"].as<int>();
+		print_ = in["print"].as<int>();
+		sprite_ = in["sprite"].as<int>();
+		color_ = in["color"].as<int>();
+	};
+
 	~DisplayObject() {};
 
 	void Serialize(YAML::Emitter& out)
 	{
 		out << YAML::BeginMap;
-		out << YAML::Key << "type";
-		out << YAML::Value << "DisplayObject";
-		out << YAML::Key << "id";
-		out << YAML::Value << id_;
-		out << YAML::Key << "print";
-		out << YAML::Value << (char)print_;
-		out << YAML::Key << "sprite";
-		out << YAML::Value << (int)sprite_;
-		out << YAML::Key << "color";
-		out << YAML::Value << (int)color_;
+		out << "id" << id_;
+		out << "print" << (int)print_;
+		out << "sprite" << (int)sprite_;
+		out << "color" << (int)color_;
 		out << YAML::EndMap;
 	}
 

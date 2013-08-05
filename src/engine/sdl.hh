@@ -10,6 +10,12 @@
 #include <vector>
 #include "io.hh"
 
+namespace YAML
+{
+	class Emitter;
+	class Node;
+}
+
 class Color;
 class DisplayObject;
 
@@ -19,6 +25,7 @@ class SDL : public IO
 	
   public:
 	SDL() : screen_(NULL) {};
+	SDL(const YAML::Node& in);
 	virtual ~SDL();
 
 	virtual void Init();

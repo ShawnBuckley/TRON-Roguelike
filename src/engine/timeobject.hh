@@ -7,6 +7,12 @@
 #include <memory>
 #include <list>
 
+namespace YAML
+{
+	class Emitter;
+	class Node;
+};
+
 class MapObject;
 class ControlObject;
 
@@ -15,8 +21,10 @@ class TimeObject
   public:
   	TimeObject() : linked_(0), speed_(0), time_(0) {};
 	TimeObject(uint16_t _speed);
-	TimeObject(uint16_t _speed, std::shared_ptr<MapObject> _mapobject, std::shared_ptr<ControlObject> _controlobject);
+	TimeObject(const YAML::Node& in);
 	~TimeObject();
+
+	void Serialize(YAML::Emitter& out);
 
 	void TimeLink();
 	void TimeUnlink();

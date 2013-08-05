@@ -23,42 +23,154 @@ Game& game()
 
 Game::Game()
 {
-	version_ = std::string("a");
 	io_ = std::unique_ptr<IO>(new SDL);
 	time_ = std::unique_ptr<GameTime>(new WorldTime);
 
+	version_ = std::string("a");
 	run_ = 1;
 	paused_ = 0;
 	game_pointer = this;
 }
 
-// YAML::Emitter& operator<<(YAML::Emitter& out, const Game& game)
+Game::Game(const YAML::Node& in)
+{
+	const YAML::Node& game = in["Game"];
+	const YAML::Node& io = in["IO"];
+	const YAML::Node& gametime = in["Time"];
+	const YAML::Node& displayobjects = in["DisplayObjects"];
+	const YAML::Node& tiletypes = in["TileTypes"];
+	const YAML::Node& mapobjects = in["MapObjects"];
+	const YAML::Node& controlobjects = in["ControlObjects"];
+	const YAML::Node& map = in["Map"];
+
+	version_ = game["version"].as<std::string>();
+	run_ = game["run"].as<bool>();
+//	paused_ = game["paused"].as<bool>();
+	paused_ = 1;
+	realtime_ = game["realtime"].as<bool>();
+
+	io_ = std::unique_ptr<IO>(new SDL(io));
+	io_->Init();
+
+	UnserializeGameTime(gametime);
+	UnserializeDisplayObjects(displayobjects);
+	UnserializeTileTypes(tiletypes);
+	UnserializeMapObjects(mapobjects);
+	UnserializeControlObjects(controlobjects);
+	UnserializeTimeObjects(mapobjects);
+	UnserializeMap(map);
+	// sectors
+	UnserializeMapLoactions(mapobjects);
+
+	printf("end serialization\n");
+	printf("READY GO!\n");
+	Run();
+}
+
 void Game::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "Game";
-	out << YAML::Value << YAML::BeginMap;
-	out << YAML::Key << "version";
-	out << YAML::Value << version_;
-	out << YAML::Key << "run";
-	out << YAML::Value << run_;
-	out << YAML::Key << "paused";
-	out << YAML::Value << paused_;
-	out << YAML::Key << "realtime";
-	out << YAML::Value << realtime_;
+	out << "Game" << YAML::BeginMap;
+	out << "version" << version_;
+	out << "run" << run_;
+	out << "paused" << paused_;
+	out << "realtime" << realtime_;
 	out << YAML::EndMap;
+}
+
+void Game::UnserializeGameTime(const YAML::Node& in)
+{
+	printf("unserialize gametime\n");
+
+	if(in["type"].as<std::string>() == "WorldTime")
+		time_ = std::unique_ptr<GameTime>(new WorldTime(in));
+	else
+		time_ = std::unique_ptr<GameTime>(new GameTime(in));
+
+	// time_->Unserialize(in);
+}
+
+void Game::UnserializeDisplayObjects(const YAML::Node& in)
+{
+	printf("unserialize displayobjects\n");
+
+	for(std::size_t i=0; i<in.size(); i++)
+	{
+		const YAML::Node& displayobject = in[i];
+		AddDisplayObject(DisplayObject(displayobject));
+	}
+}
+
+void Game::UnserializeTileTypes(const YAML::Node& in)
+{
+	printf("unserialize tiletypes\n");
+
+	for(std::size_t i=0; i<in.size(); i++)
+	{
+		const YAML::Node& tiletype = in[i];
+		AddTileType(TileType(tiletype));
+	}
+}
+
+void Game::UnserializeMapObjects(const YAML::Node& in)
+{
+	printf("unserialize mapobjects\n");
+
+	for(std::size_t i=0; i<in.size(); i++)
+	{
+		const YAML::Node& mapobject = in[i];
+		AddMapObject(new MapObject(mapobject));
+	}
+}
+
+void Game::UnserializeControlObjects(const YAML::Node& in)
+{
+	printf("unserialize controlobjects\n");
+
+	for(std::size_t i=0; i<in.size(); i++)
+	{
+		const YAML::Node& controlobject = in[i];
+		if(controlobject["type"].as<std::string>() == "Player")
+		{
+			Player* player = new Player(controlobject);
+			AddControlObject(player);
+			game().AddPlayer(player);
+		}
+	}
+}
+
+void Game::UnserializeTimeObjects(const YAML::Node& in)
+{
+	// printf("unserialize timeobjects\n");
+
+	// for(std::size_t i=0; i<in.size(); i++)
+	// {
+	// 	const YAML::Node& mapobject = in[i];
+	// 	AddMapObject(new MapObject(mapobject));
+	// }
+}
+
+void Game::UnserializeMap(const YAML::Node& in)
+{
+	printf("unserialize map\n");
+
+	map_ = std::unique_ptr<Map>(new Map(in));
+}
+
+void Game::UnserializeMapLoactions(const YAML::Node& in)
+{
+	for(std::size_t i=0; i < mapobjects_.size(); ++i)
+	{
+		mapobjects_[i]->location_.Connect();
+		// (*it)->location_.Connect();
+	}
 }
 
 void Game::Start()
 {
-	io_->colors_.push_back(Color(0,0,0));
-	io_->colors_.push_back(Color(255,0,0));
-	io_->colors_.push_back(Color(0,255,0));
-	io_->colors_.push_back(Color(255,255,0));
-	io_->colors_.push_back(Color(0,0,255));
-	io_->colors_.push_back(Color(255,0,255));
-	io_->colors_.push_back(Color(0,0,64));
-	io_->colors_.push_back(Color(255,255,255));
+	version_ = std::string("a");
+	io_ = std::unique_ptr<IO>(new SDL);
+	time_ = std::unique_ptr<GameTime>(new WorldTime);
 
 	io_->Init();
 
@@ -94,10 +206,11 @@ void Game::Run()
 {
 	io_->Map();
 
-	realtime_ = 1;
+	run_ = 1;
 
 	while(run_)
 	{
+		printf("realtime: %i %i\n", realtime_, io_->realtime_);
 		io_->Input();
 
 		for(Player* player : players_)
@@ -128,22 +241,30 @@ void Game::Pause()
 
 void Game::Save()
 {
+	SaveGame("save");
+}
+
+void Game::SaveGame(std::string _save)
+{
 	printf("save\n");
 
 	std::ofstream save;
-	save.open("save");
+	save.open(_save.c_str());
 
-	YAML::Emitter player;
-	player << YAML::Flow;
-	players_[0]->mapobject_->Serialize(player);
-	printf("%s\n", player.c_str());
+	printf("player output\n");
+	// YAML::Emitter player;
+	// player << YAML::Flow;
+	// players_[0]->mapobject_->Serialize(player);
+	// printf("%s\n", player.c_str());
 
 	printf("start\n");
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 	Serialize(out);
+	out << "IO"; io_->Serialize(out);
 	// out << "RNG"; rng.Serialize(out);
 	out << "Time"; time_->Serialize(out);
+
 
 	printf("displayobjects");
 	// serialize DisplayObjects
@@ -188,6 +309,13 @@ void Game::Save()
 	out << "Map";
 	map_->Serialize(out);
 
+	out << "Sectors" << YAML::BeginSeq;
+	for(auto it=map_->sector_.begin(); it !=map_->sector_.end(); ++it)
+	{
+		it->get()->Serialize(out);
+	}
+	out << YAML::EndMap;
+
 	out << YAML::EndMap;
 
 	save << "---\n" << out.c_str() << "\n...\n";
@@ -209,11 +337,6 @@ void Game::Save()
 	printf("end save\n");
 }
 
-void Game::Load()
-{
-//	std::ifstream save_file("save", std::ios::begin);
-}
-
 void Game::SetRealtime(bool _realtime)
 {
 	realtime_ = _realtime;
@@ -233,7 +356,10 @@ DisplayObject* Game::AddDisplayObject(const DisplayObject _displayobject)
 			continue;
 
 		if((*displayobject == _displayobject))
+		{
+			printf("duplicate displayobject\n");
 			return displayobject;
+		}
 	}
 
 	displayobject = new DisplayObject(_displayobject);
@@ -253,6 +379,11 @@ DisplayObject* Game::AddDisplayObject(const DisplayObject _displayobject)
 	}
 
 	return displayobject;
+}
+
+DisplayObject* Game::GetDisplayObject(const uint16_t _id)
+{
+	return displayobjects_[_id].get();
 }
 
 TileType* Game::AddTileType(const TileType _tiletype)
@@ -289,11 +420,20 @@ TileType* Game::AddTileType(const TileType _tiletype)
 	return tiletype;
 }
 
-void Game::AddMapObject(MapObject* _mapobject)
+TileType* Game::GetTileType(uint16_t _id)
 {
+	return tiletypes_[_id].get();
+}
+
+uint16_t Game::AddMapObject(MapObject* _mapobject)
+{
+	uint16_t id;
+	uint16_t old_id = _mapobject->id_;
+
 	if(mapobject_open_id_.empty())
 	{
-		_mapobject->id_ = mapobjects_.size();
+		id = mapobjects_.size();
+		_mapobject->id_ = id;
 		mapobjects_.push_back(std::move(std::unique_ptr<MapObject>(_mapobject)));
 	}
 	else
@@ -303,24 +443,50 @@ void Game::AddMapObject(MapObject* _mapobject)
 		_mapobject->id_ = id;
 		mapobjects_[id] = std::move(std::unique_ptr<MapObject>(_mapobject));
 		mapobject_open_id_.pop_front();
-	}	
+	}
+
+	return id;
 }
 
-void Game::AddControlObject(ControlObject* _controlobject)
+MapObject* Game::GetMapObject(uint16_t _id)
 {
+	try
+	{
+		return mapobjects_[_id].get();
+	}
+	catch(std::out_of_range e)
+	{
+		printf("out of range!\n");
+	}
+
+	return NULL;
+}
+
+uint16_t Game::AddControlObject(ControlObject* _controlobject)
+{
+	uint16_t id = entity_open_id_.front();
+
 	if(entity_open_id_.empty())
 	{
-		_controlobject->id_ = entities_.size();
+		id = entities_.size();
+		_controlobject->id_ = id;
 		entities_.push_back(std::unique_ptr<ControlObject>(_controlobject));
 	}
 	else
 	{
-		uint16_t id = entity_open_id_.front();
+		id = entity_open_id_.front();
 
 		_controlobject->id_ = id;
 		entities_[id] = std::move(std::unique_ptr<ControlObject>(_controlobject));
 		entity_open_id_.pop_front();
 	}
+
+	return id;
+}
+
+ControlObject* Game::GetControlObject(uint16_t _id)
+{
+	return entities_[_id].get();
 }
 
 Player* Game::AddPlayerMapobject(uint8_t _color)
@@ -341,6 +507,11 @@ Player* Game::AddPlayerMapobject(uint8_t _color)
 	AddMapObject(mapobject);
 
 	return (Player*)controlobject;
+}
+
+uint16_t Game::AddPlayer(Player* _player)
+{
+	players_.push_back(_player);
 }
 
 void Game::RemoveMapObject(uint16_t _id)

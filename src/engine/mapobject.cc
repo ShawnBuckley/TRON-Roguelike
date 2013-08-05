@@ -13,52 +13,60 @@
 #include "maptile.hh"
 #include "tiletype.hh"
 
+///////////////////////////////////////////////////////////////////////////////
+// 
+// MapObjectStats
+//
+///////////////////////////////////////////////////////////////////////////////
 
-MapObject::~MapObject()
+MapObjectStats::MapObjectStats(const YAML::Node& in)
 {
-	// printf("Erase MapObject %p %i\n", this, id_);
-
-	MapUnlink();
+	mass_ = in["mass"].as<int>();
+	health_ = in["health"].as<int>();
 }
-
-/*	uint16_t id_;
-	bool linked_;
-	MapLocation location_;
-	Vector2<int16_t> vector_;
-	std::list<MapObjectMove> moves_;
-
-	MapObjectStats stats_;
-	MapObjectFlags flags_;
-
-	TimeObject timeobject_;
-	DisplayObject* displayobject_;*/
 
 void MapObjectStats::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "type";
-	out << YAML::Value << "MapObjectStats";
-	out << YAML::Key << "mass";
-	out << YAML::Value << mass_;
-	out << YAML::Key << "health";
-	out << YAML::Value << health_;
+	out << "mass" << mass_;
+	out << "health" << health_;
 	out << YAML::EndMap;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 
+// MapObjectFlags
+//
+///////////////////////////////////////////////////////////////////////////////
+
+MapObjectFlags::MapObjectFlags(const YAML::Node& in)
+{
+	rez_ = in["rez"].as<bool>();
+	clipping_ = in["clipping"].as<bool>();
+	solid_ = in["solid"].as<bool>();
+	visible_ = in["visible"].as<bool>();
 }
 
 void MapObjectFlags::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "type";
-	out << YAML::Value << "MapObjectFlags";
-	out << YAML::Key << "rez";
-	out << YAML::Value << rez_;
-	out << YAML::Key << "clipping";
-	out << YAML::Value << clipping_;
-	out << YAML::Key << "solid";
-	out << YAML::Value << solid_;
-	out << YAML::Key << "visible";
-	out << YAML::Value << visible_;
+	out << "rez" << rez_;
+	out << "clipping" << clipping_;
+	out << "solid" << solid_;
+	out << "visible" << visible_;
 	out << YAML::EndMap;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 
+// MapObjectMove
+//
+///////////////////////////////////////////////////////////////////////////////
+
+MapObjectMove::MapObjectMove(const YAML::Node& in)
+{
+	time_ = in["time"].as<int>();
+	vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
 }
 
 void MapObjectMove::Serialize(YAML::Emitter& out)
@@ -66,32 +74,55 @@ void MapObjectMove::Serialize(YAML::Emitter& out)
 	out << YAML::BeginMap;
 	out << "type" << "MapObjectMove";
 	out << "time" << (int)time_;
-	out << YAML::Key << "vector";
-	out << YAML::Flow;
-	out << YAML::Value << YAML::BeginSeq << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
+	out << "vector" << YAML::Flow << YAML::BeginSeq;
+	out << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
 	out << YAML::EndMap;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 
+// MapObject
+//
+///////////////////////////////////////////////////////////////////////////////
+
+MapObject::MapObject(const YAML::Node& in)
+{
+	id_ = in["id"].as<bool>();
+	linked_ = in["linked"].as<bool>();
+	displayobject_ = game().GetDisplayObject(in["displayobject"].as<int>());
+	stats_ = MapObjectStats(in["stats"]);
+	flags_ = MapObjectFlags(in["flags"]);
+	location_ = MapLocation(in["location"]);
+	vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
+
+	const YAML::Node& moves = in["moves"];
+	for(std::size_t i=0; i<moves.size(); i++)
+	{
+		moves_.push_back(MapObjectMove(moves[i]));
+	}
+}
+
+MapObject::~MapObject()
+{
+	printf("Erase MapObject %p %i\n", this, id_);
+
+	MapUnlink();
 }
 
 void MapObject::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "type";
-	out << YAML::Value << "MapObject";
-	out << YAML::Key << "id";
-	out << YAML::Value << id_;
-	out << YAML::Key << "linked";
-	out << YAML::Value << linked_;
-	out << YAML::Key << "displayobject";
-	out << YAML::Value << (int)displayobject_->id_;
-	out << YAML::Key << "stats";
-	stats_.Serialize(out);
-	out << YAML::Key << "flags";
-	flags_.Serialize(out);
-	out << YAML::Key << "location";
-	location_.Serialize(out);
-	out << YAML::Key << "vector";
-	out << YAML::Flow;
-	out << YAML::Value << YAML::BeginSeq << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
+	out << "type" << "MapObject";
+	out << "id" << id_;
+	out << "linked" << linked_;
+	out << "displayobject" << (int)displayobject_->id_;
+	out << "stats"; stats_.Serialize(out);
+	out << "flags"; flags_.Serialize(out);
+	out << "timeobject"; timeobject_.Serialize(out);
+	out << "location"; location_.Serialize(out);
+	out << "vector";
+	out << YAML::Flow; out << YAML::BeginSeq;
+	out << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
 	out << "moves";
 	out << YAML::BeginSeq;
 	for(MapObjectMove move : moves_)
@@ -127,6 +158,7 @@ void MapObject::Derez()
 
 void MapObject::MapLink()
 {
+	// printf("%i maplink!\n", id_);
 	linked_ = 1;
 	location_.maptile_.clear();
 	
@@ -149,7 +181,10 @@ void MapObject::MapLink()
 
 void MapObject::MapUnlink()
 {
-	if(!linked_) return;
+	if(!linked_) 
+		return;
+
+	// printf("%i mapunlink!\n", id_);
 
 	linked_ = 0;
 	for(int16_t x=0; x<location_.rectangle_.Width(); ++x)

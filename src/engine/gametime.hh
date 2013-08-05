@@ -8,12 +8,14 @@
 namespace YAML
 {
 	class Emitter;
+	class Node;
 }
 
 class GameTime
 {
   public:
 	GameTime();
+	GameTime(const YAML::Node& in);
 	virtual ~GameTime() {};
 
 	virtual void Serialize(YAML::Emitter& out);

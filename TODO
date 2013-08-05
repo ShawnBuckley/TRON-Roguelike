@@ -23,12 +23,16 @@ redo mapobject collision code
 integrate TimeObject into ControlObject - no
 	search COM requests for shortest move
 
+serialization of objects
+unserialization of objects
 
 TODO:
 
+tidy header files
 
-serialization of objects
-	network code
+clearn serialization code
+
+network code
 	prevent other clients from control non local player objects
 
 fix display code, test rect intersection code

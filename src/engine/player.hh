@@ -14,6 +14,7 @@
 namespace YAML
 {
 	class Emitter;
+	class Node;
 }
 
 class Game;
@@ -41,6 +42,7 @@ class Player : public ControlObject
 	static std::unordered_map<char, PlayerControl> mapped_controls_;
 
   	Player(MapObject* _mapobject) { mapobject_ = _mapobject; };
+  	Player(const YAML::Node& in);
 
   	virtual void Serialize(YAML::Emitter& out);
 

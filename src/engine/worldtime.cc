@@ -18,25 +18,26 @@ WorldTime::WorldTime()
 	second_ = 0;
 }
 
+WorldTime::WorldTime(const YAML::Node& in)
+{
+	tick_ = in["tick"].as<uint64_t>();
+	date_ = boost::gregorian::date(in["year"].as<int>(), in["month"].as<int>(), in["day"].as<int>());
+	hour_ = in["hour"].as<int>();
+	minute_ = in["minute"].as<int>();
+	second_ = in["second"].as<int>();
+}
+
 void WorldTime::Serialize(YAML::Emitter& out)
 {
 	out << YAML::BeginMap;
-	out << YAML::Key << "type";
-	out << YAML::Value << "WorldTime";
-	out << YAML::Key << "tick";
-	out << YAML::Value << tick_;
-	out << YAML::Key << "year";
-	out << YAML::Value << (int)date_.year();
-	out << YAML::Key << "month";
-	out << YAML::Value << (int)date_.month();
-	out << YAML::Key << "day";
-	out << YAML::Value << (int)date_.day();
-	out << YAML::Key << "hour";
-	out << YAML::Value << (int)hour_;
-	out << YAML::Key << "minute";
-	out << YAML::Value << (int)minute_;
-	out << YAML::Key << "second";
-	out << YAML::Value << (int)second_;
+	out << "type" << "WorldTime";
+	out << "tick" << tick_;
+	out << "year" << (int)date_.year();
+	out << "month" << (int)date_.month();
+	out << "day"<< (int)date_.day();
+	out << "hour" << (int)hour_;
+	out << "minute" << (int)minute_;
+	out << "second" << (int)second_;
 	out << YAML::EndMap;
 }
 

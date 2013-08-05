@@ -8,17 +8,23 @@
 #include "engine/tiletype.hh"
 #include "engine/sector.hh"
 
+namespace YAML
+{
+	class Emitter;
+	class Node;
+}
+
 class LightGrid : public Sector
 {
   public:
-	LightGrid();
+  	LightGrid() {};
+	LightGrid(const YAML::Node& in);
 	~LightGrid() {};
+
+	void Serialize(YAML::Emitter& out);
 
 	void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
 //	bool Fill(uint8_t Size);
-
-	TileType* floor_[4];
-	TileType* wall_;
 };
 
 #endif // TRON_RLENGINEX_LIGHTGRID_HH
