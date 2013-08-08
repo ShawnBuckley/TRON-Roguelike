@@ -14,6 +14,7 @@ namespace YAML
 }
 
 class MapTile;
+class Serializer;
 
 class MapLocation
 {
@@ -22,12 +23,12 @@ class MapLocation
 	MapLocation(AxisAligned_Rectangle2<int16_t> _rectangle);
 	MapLocation(const YAML::Node& in);
 
-	void Serialize(YAML::Emitter& out);
-
 	std::vector<std::vector<MapTile*>> maptile_;
 	AxisAligned_Rectangle2<int16_t> rectangle_;
 
   	void Connect();
+
+  	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_MAPLOCATION_HH

@@ -13,6 +13,7 @@
 #include "engine/map.hh"
 
 #include "bike.hh"
+#include "tronserializer.hh"
 
 const uint8_t kWallSprite[10] = {' ', 192, 179, 217, 196, '.', 196, 218, 179, 191};
 const char kWallPrint[10] = {' ', '\\', '|', '/', '-', '.', '-', '/', '|', '\\'};
@@ -70,49 +71,9 @@ Bike::Bike(const YAML::Node& in)
 
 Bike::~Bike() {}
 
-void Bike::Serialize(YAML::Emitter& out)
+void Bike::Serialize(TronSerializer& out)
 {
-	out << YAML::BeginMap;
-	out << "type" << "Bike";
-	// out << YAML::Key << "type";
-	// out << YAML::Value << "Bike";
-	out << "id" << id_;
-	out << "linked" << linked_;
-	out << "moved" << moved_;
-	out << "drop_walls" << drop_walls_;
-	out << "change_direction" << (int)change_direction_;
-	out << "time_of_death" << time_of_death_;
-	out << "displayobject" << (int)displayobject_->id_;
-	out << "bike_displayobjects" << YAML::Flow << YAML::BeginSeq;
-	for(int i=0; i<10; i++)
-	{
-		out << bike_displayobject_[i]->id_;
-	}
-	out << YAML::EndSeq;
-	out << "wall_displayobjects" << YAML::Flow << YAML::BeginSeq;
-	for(int i=0; i<10; i++)
-	{
-		out << wall_displayobject_[i]->id_;
-	}
-	out << YAML::EndSeq;
-	out << "stats"; stats_.Serialize(out);
-	out << "flags"; flags_.Serialize(out);
-	out << "timeobject"; timeobject_.Serialize(out);
-	out <<  "location"; location_.Serialize(out);
-	out << YAML::Key << "vector";
-	out << YAML::Flow << YAML::BeginSeq;
-	out << vector_.x << vector_.y << YAML::EndSeq;
-	out << "lightwalls";
-	out << YAML::Flow << YAML::BeginSeq;
-	for(LightWall* wall : wall_list_)
-		out << (int)wall->id_;
-	out << YAML::EndSeq;
-	out << "moves";
-	out << YAML::Flow << YAML::BeginSeq;
-	for(MapObjectMove move : moves_)
-		move.Serialize(out);
-	out << YAML::EndSeq;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 bool Bike::Rez(MapLocation _location, Vector2<int16_t> _vector)

@@ -20,6 +20,7 @@ namespace YAML
 class DisplayObject;
 class Color;
 class MapObject;
+class Serializer;
 
 #define CURSES_MULTIPLIER 3.9215686274509803921
 
@@ -49,7 +50,7 @@ class IO
   private:	
 
   public:
-  	void Serialize(YAML::Emitter& out);
+  	virtual void Serialize(Serializer& out) {};
 
 	virtual void Init()=0;
 
@@ -77,6 +78,8 @@ class IO
 
 
 	std::vector<Color> colors_;
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_IO_HH

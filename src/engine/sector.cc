@@ -5,6 +5,7 @@
 #include "game.hh"
 #include "sector.hh"
 #include "maptile.hh"
+#include "serializer.hh"
 
 Sector::Sector(const YAML::Node& in)
 {
@@ -27,28 +28,9 @@ Sector::Sector(const YAML::Node& in)
 	}
 }
 
-void Sector::Serialize(YAML::Emitter& out)
+void Sector::Serialize(Serializer& out)
 {
-	out << YAML::BeginMap;
-	out << "type" << "Sector";
-	out << "rectangle" << YAML::Flow << YAML::BeginSeq;
-	out << (int)rectangle_.Vertex(0).x << (int)rectangle_.Vertex(0).y;
-	out << (int)rectangle_.Width() << (int)rectangle_.Height();
-	out << YAML::EndSeq;
-	out << "tiles" << YAML::BeginSeq;
-	std::size_t x_limit = tile_.size();
-	for(std::size_t x=0; x<x_limit; x++)
-	{
-		out << YAML::BeginSeq;
-		std::size_t y_limit = tile_[x].size();
-		for(std::size_t y=0; y<y_limit; y++)
-		{
-			tile_[x][y]->Serialize(out);
-		}
-		out << YAML::EndSeq;
-	}
-	out << YAML::EndSeq;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 MapTile* Sector::Tile(Vector2<int16_t> _coord)

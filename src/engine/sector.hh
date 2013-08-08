@@ -15,9 +15,10 @@ namespace YAML
 {
 	class Emitter;
 	class Node;
-}
+};
 
 class MapTile;
+class Serializer;
 
 class Sector
 {
@@ -26,13 +27,15 @@ class Sector
 	Sector(const YAML::Node& in);
 	virtual ~Sector() {};
 
-	virtual void Serialize(YAML::Emitter& out);
+	void Serialize(Serializer& out);
 
 	MapTile* Tile(Vector2<int16_t> _coord);
 	virtual void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
 
 	AxisAligned_Rectangle2<int16_t> rectangle_;
 	std::vector<std::vector<std::unique_ptr<MapTile>>> tile_;
+
+	friend class Serializer;
 };
 
 class SectorGenerator : public TimeObject

@@ -18,6 +18,7 @@ namespace YAML
 
 class Color;
 class DisplayObject;
+class Serializer;
 
 class SDL : public IO
 {
@@ -27,6 +28,8 @@ class SDL : public IO
 	SDL() : screen_(NULL) {};
 	SDL(const YAML::Node& in);
 	virtual ~SDL();
+
+	void Serialize(Serializer& out);
 
 	virtual void Init();
 
@@ -58,6 +61,8 @@ class SDL : public IO
 	std::vector<SDL_Rect> character_; 
 	SDL_Surface *screen_;
 	std::vector<SDL_Surface*> texture_;
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_SDL_HH

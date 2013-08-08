@@ -23,6 +23,8 @@ namespace YAML
 
 class Color;
 
+class TronSerializer;
+
 class Bike : public MapObject
 {
   public:
@@ -30,7 +32,7 @@ class Bike : public MapObject
 	Bike(const YAML::Node& in);
 	~Bike();
 
-	virtual void Serialize(YAML::Emitter& out);
+	virtual void Serialize(TronSerializer& out);
 
  	void Save(std::stringstream &_save);
   	void Load() {};

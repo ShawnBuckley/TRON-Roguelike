@@ -12,6 +12,7 @@
 #include "map.hh"
 #include "maptile.hh"
 #include "tiletype.hh"
+#include "serializer.hh"
 
 ///////////////////////////////////////////////////////////////////////////////
 // 
@@ -25,12 +26,9 @@ MapObjectStats::MapObjectStats(const YAML::Node& in)
 	health_ = in["health"].as<int>();
 }
 
-void MapObjectStats::Serialize(YAML::Emitter& out)
+void MapObjectStats::Serialize(Serializer& out)
 {
-	out << YAML::BeginMap;
-	out << "mass" << mass_;
-	out << "health" << health_;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,14 +45,9 @@ MapObjectFlags::MapObjectFlags(const YAML::Node& in)
 	visible_ = in["visible"].as<bool>();
 }
 
-void MapObjectFlags::Serialize(YAML::Emitter& out)
+void MapObjectFlags::Serialize(Serializer& out)
 {
-	out << YAML::BeginMap;
-	out << "rez" << rez_;
-	out << "clipping" << clipping_;
-	out << "solid" << solid_;
-	out << "visible" << visible_;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -69,14 +62,9 @@ MapObjectMove::MapObjectMove(const YAML::Node& in)
 	vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
 }
 
-void MapObjectMove::Serialize(YAML::Emitter& out)
+void MapObjectMove::Serialize(Serializer& out)
 {
-	out << YAML::BeginMap;
-	out << "type" << "MapObjectMove";
-	out << "time" << (int)time_;
-	out << "vector" << YAML::Flow << YAML::BeginSeq;
-	out << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -109,26 +97,9 @@ MapObject::~MapObject()
 	MapUnlink();
 }
 
-void MapObject::Serialize(YAML::Emitter& out)
+void MapObject::Serialize(Serializer& out)
 {
-	out << YAML::BeginMap;
-	out << "type" << "MapObject";
-	out << "id" << id_;
-	out << "linked" << linked_;
-	out << "displayobject" << (int)displayobject_->id_;
-	out << "stats"; stats_.Serialize(out);
-	out << "flags"; flags_.Serialize(out);
-	out << "timeobject"; timeobject_.Serialize(out);
-	out << "location"; location_.Serialize(out);
-	out << "vector";
-	out << YAML::Flow; out << YAML::BeginSeq;
-	out << (int)vector_.x << (int)vector_.y << YAML::EndSeq;
-	out << "moves";
-	out << YAML::BeginSeq;
-	for(MapObjectMove move : moves_)
-		move.Serialize(out);
-	out << YAML::EndSeq;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 bool MapObject::Rez(MapLocation _location, Vector2<int16_t> _vector)

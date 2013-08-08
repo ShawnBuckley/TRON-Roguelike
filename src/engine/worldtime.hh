@@ -20,13 +20,15 @@ namespace YAML
 	class Node;
 }
 
+class Serializer;
+
 class WorldTime : public GameTime
 {
   public:
 	WorldTime();
 	WorldTime(const YAML::Node& in);
 
-	void Serialize(YAML::Emitter& out);
+	void Serialize(Serializer& out);
 
 	uint16_t Turn();
 
@@ -41,6 +43,8 @@ class WorldTime : public GameTime
 	uint8_t hour_;
 	uint8_t minute_;
 	uint8_t second_;
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_WORLDTIME_HH

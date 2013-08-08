@@ -6,6 +6,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include "serializer.hh"
 #include "gametime.hh"
 #include "mapobject.hh"
 #include "timeobject.hh"
@@ -21,11 +22,9 @@ GameTime::GameTime(const YAML::Node& in)
 	tick_ = in["tick"].as<uint64_t>();
 }
 
-void GameTime::Serialize(YAML::Emitter& out)
+void GameTime::Serialize(Serializer& out) const
 {
-	out << YAML::BeginMap;
-	out << "type" << "GameTime";
-	out << "tick" << tick_;
+	out.Serialize(*this);
 }
 
 // TODO TimeObjects schedule in timeactions, which then execute

@@ -17,6 +17,8 @@ namespace YAML
 	class Node;
 }
 
+class Serializer;
+
 class DisplayObject
 {
   public:
@@ -32,16 +34,6 @@ class DisplayObject
 
 	~DisplayObject() {};
 
-	void Serialize(YAML::Emitter& out)
-	{
-		out << YAML::BeginMap;
-		out << "id" << id_;
-		out << "print" << (int)print_;
-		out << "sprite" << (int)sprite_;
-		out << "color" << (int)color_;
-		out << YAML::EndMap;
-	}
-
 	inline bool operator==(const DisplayObject& _other) const
 	{
 		return(print_ == _other.print_ &&
@@ -54,7 +46,7 @@ class DisplayObject
 	uint8_t sprite_;
 	uint8_t color_;
 	
-//	GLuint display_list_;
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_DISPLAYOBJECT_HH

@@ -9,7 +9,9 @@ namespace YAML
 {
 	class Emitter;
 	class Node;
-}
+};
+
+class Serializer;
 
 class GameTime
 {
@@ -18,13 +20,15 @@ class GameTime
 	GameTime(const YAML::Node& in);
 	virtual ~GameTime() {};
 
-	virtual void Serialize(YAML::Emitter& out);
+	virtual void Serialize(Serializer& out) const; 
 
 	uint64_t TickCount() { return tick_; };
 
 	virtual uint16_t Turn();
 
 	uint64_t tick_;
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_GAMETIME_HH

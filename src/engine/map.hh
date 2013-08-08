@@ -20,6 +20,8 @@ namespace YAML
 	class Node;
 };
 
+class Serializer;
+
 class Map
 {
   private:
@@ -27,8 +29,6 @@ class Map
   public:  
 	Map() {};
 	Map(const YAML::Node& in);
-
-	void Serialize(YAML::Emitter& out);
 
 	inline bool CoordValid(Vector2<int16_t>  _point) { return rectangle_.Intersect(_point); };
 	MapTile* Tile(Vector2<int16_t>  _point);

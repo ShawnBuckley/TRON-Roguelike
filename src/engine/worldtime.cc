@@ -7,6 +7,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include "serializer.hh"
 #include "worldtime.hh"
 
 WorldTime::WorldTime()
@@ -27,18 +28,9 @@ WorldTime::WorldTime(const YAML::Node& in)
 	second_ = in["second"].as<int>();
 }
 
-void WorldTime::Serialize(YAML::Emitter& out)
+void WorldTime::Serialize(Serializer& out)
 {
-	out << YAML::BeginMap;
-	out << "type" << "WorldTime";
-	out << "tick" << tick_;
-	out << "year" << (int)date_.year();
-	out << "month" << (int)date_.month();
-	out << "day"<< (int)date_.day();
-	out << "hour" << (int)hour_;
-	out << "minute" << (int)minute_;
-	out << "second" << (int)second_;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 uint16_t WorldTime::Turn()

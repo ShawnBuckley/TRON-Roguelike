@@ -4,6 +4,7 @@
 #define TRON_RLENGINEX_TILETYPE_HH
 
 class DisplayObject;
+class Serializer;
 
 struct TileTypeFlags
 {
@@ -11,12 +12,12 @@ struct TileTypeFlags
 	TileTypeFlags(bool _render, bool _solid) : render_(_render), solid_(_solid) {};
 	TileTypeFlags(const YAML::Node& in);
 
-	void Serialize(YAML::Emitter& out);
-
 	inline bool operator==(const TileTypeFlags& _other) const;
 
 	bool render_;
 	bool solid_;
+
+	friend class Serializer;
 };
 
 class TileType
@@ -31,13 +32,13 @@ class TileType
 
 	~TileType() {};
 
-	void Serialize(YAML::Emitter& out);
-
 	bool operator==(const TileType &_other) const;
 
 	uint16_t id_;
 	TileTypeFlags flags_;
 	DisplayObject* displayobject_;
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_TILETYPE_HH

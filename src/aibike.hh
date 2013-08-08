@@ -36,7 +36,7 @@ class AiBike : public ControlObject
 	AiBike(Bike* _bike) : ai_state_(AI_DEFAULT), ai_skill_(100) { mapobject_ = _bike; };
 	AiBike(const YAML::Node& in);
 
-	virtual void Serialize(YAML::Emitter& out);
+	void Serialize(TronSerializer& out);
 
 	void Think();
 	ControlObjectMove Move();
@@ -63,6 +63,8 @@ class AiBike : public ControlObject
 	// Vector2<int8_t> wall_hug_;
 
 	Vector2<int16_t> next_move_;
+
+	friend class TronSerializer;
 };
 
 #endif // TRON_RLENGINEX_AIBIKE_HH

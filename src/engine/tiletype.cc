@@ -5,6 +5,7 @@
 #include "displayobject.hh"
 #include "game.hh"
 #include "tiletype.hh"
+#include "serializer.hh"
 
 // TileTypeFlags
 
@@ -13,14 +14,6 @@ TileTypeFlags::TileTypeFlags(const YAML::Node& in)
 	render_ = in["render"].as<bool>();
 	solid_ = in["solid"].as<bool>();
 };
-
-void TileTypeFlags::Serialize(YAML::Emitter& out)
-{
-	out << YAML::BeginMap;
-	out << "render" << render_;
-	out << "solid" << solid_;
-	out << YAML::EndMap;
-}
 
 inline bool TileTypeFlags::operator==(const TileTypeFlags& _other) const
 {
@@ -36,15 +29,6 @@ TileType::TileType(const YAML::Node& in)
 	flags_ = TileTypeFlags(in["flags"]);
 	displayobject_ = game().GetDisplayObject(in["displayobject"].as<int>());
 };
-
-void TileType::Serialize(YAML::Emitter& out)
-{
-	out << YAML::BeginMap;
-	out << "id" << id_;
-	out << "flags"; flags_.Serialize(out);
-	out << "displayobject" << displayobject_->id_;
-	out << YAML::EndMap;
-}
 
 bool TileType::operator==(const TileType &_other) const
 {

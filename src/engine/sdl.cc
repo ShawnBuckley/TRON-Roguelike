@@ -17,6 +17,7 @@
 #include "player.hh"
 #include "displayobject.hh"
 #include "sector.hh"
+#include "serializer.hh"
 
 SDL::SDL(const YAML::Node& in)
 {
@@ -35,6 +36,11 @@ SDL::SDL(const YAML::Node& in)
 	{
 		keystrokes_.push_back(in["keystrokes"][i].as<char>());
 	}
+}
+
+void SDL::Serialize(Serializer& out)
+{
+	out.Serialize(*this);
 }
 
 void SDL::Init()

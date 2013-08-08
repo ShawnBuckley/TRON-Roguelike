@@ -15,16 +15,15 @@ namespace YAML
 
 class MapObject;
 class ControlObject;
+class Serializer;
 
 class TimeObject
 {
   public:
-  	TimeObject() : linked_(0), speed_(0), time_(0) {};
+  	TimeObject() : linked_(0), speed_(0), time_(0), mapobject_(NULL), controlobject_(NULL) {};
 	TimeObject(uint16_t _speed);
 	TimeObject(const YAML::Node& in);
 	~TimeObject();
-
-	void Serialize(YAML::Emitter& out);
 
 	void TimeLink();
 	void TimeUnlink();
@@ -39,6 +38,8 @@ class TimeObject
 
 	MapObject* mapobject_;
 	ControlObject* controlobject_;
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_TIMEOBJECT_HH

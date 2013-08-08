@@ -4,13 +4,13 @@
 #include "controlobject.hh"
 #include "mapobject.hh"
 #include "game.hh"
-
+#include "serializer.hh"
 
 std::list<TimeObject*> TimeObject::timeobjects_;
 
 
 TimeObject::TimeObject(uint16_t _speed)
-	: speed_(_speed), time_(0) {}
+	: speed_(_speed), time_(0), mapobject_(NULL), controlobject_(NULL) {}
 
 TimeObject::TimeObject(const YAML::Node& in)
 {
@@ -31,25 +31,6 @@ TimeObject::TimeObject(const YAML::Node& in)
 		controlobject_ = NULL;
 
 	TimeLink();
-}
-
-void TimeObject::Serialize(YAML::Emitter& out)
-{
-	out << YAML::BeginMap;
-	out << "linked" << linked_;
-	out << "speed" << (int)speed_;
-	out << "time" << (int)time_;
-	out << "mapobject";
-	if(mapobject_)
-		out << mapobject_->id_;
-	else
-		out << -1;
-	out << "controlobject";
-	if(controlobject_)
-		out << controlobject_->id_;
-	else
-		out << -1;
-	out << YAML::EndMap;
 }
 
 TimeObject::~TimeObject()

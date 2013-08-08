@@ -12,6 +12,7 @@
 #include "math/vector2.hh"
 
 class MapObject;
+class Serializer;
 
 enum ControlObjectMoveType
 {
@@ -36,18 +37,6 @@ class ControlObjectMove
 		vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
 	}
 
-	void Serialize(YAML::Emitter& out)
-	{
-		out << YAML::BeginMap;
-		out << "type" << "ControlObjectMove";
-		out << "move_type" << (int)type_;
-		out << "time" << (int)time_;
-		out << "vector";
-		out << YAML::Flow << YAML::BeginSeq;
-		out << vector_.x << vector_.y << YAML::EndSeq;
-		out << YAML::EndMap;
-	}
-
 	ControlObjectMoveType type_;
 	uint16_t time_;
 	Vector2<int16_t> vector_;
@@ -61,7 +50,7 @@ class ControlObject
 //	ControlObject(const ControlObject &_controlobject) : mapobject_(_controlobject.mapobject_) {};
 	virtual ~ControlObject() {};
 
-	virtual void Serialize(YAML::Emitter& out) {};
+	virtual void Serialize(Serializer& out) {};
 
 	virtual void Think() {};
 	virtual ControlObjectMove Move() {};

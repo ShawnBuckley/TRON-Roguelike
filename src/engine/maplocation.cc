@@ -5,6 +5,7 @@
 #include "maplocation.hh"
 #include "maptile.hh"
 #include "game.hh"
+#include "serializer.hh"
 
 MapLocation::MapLocation(AxisAligned_Rectangle2<int16_t> _rectangle) : rectangle_(_rectangle)
 {
@@ -25,19 +26,6 @@ MapLocation::MapLocation(const YAML::Node& in)
 		Vector2<int16_t>(rectangle[0].as<int>(), rectangle[1].as<int>()),
 		rectangle[2].as<int>(), rectangle[3].as<int>());
 }
-
-void MapLocation::Serialize(YAML::Emitter& out)
-{
-	out << YAML::BeginMap;
-	out << "rectangle";
-	out << YAML::Flow << YAML::BeginSeq;
-	out << rectangle_.Vertex(0).x;
-	out << rectangle_.Vertex(0).y;
-	out << rectangle_.Width();
-	out << rectangle_.Height();
-	out << YAML::EndSeq;
-	out << YAML::EndMap;
-};
 
 void MapLocation::Connect()
 {

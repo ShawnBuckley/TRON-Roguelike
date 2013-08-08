@@ -1,5 +1,6 @@
 // TRON-Roguelike LightWall.cc
 
+#include "tronserializer.hh"
 #include "lightwall.hh"
 #include "bike.hh"
 
@@ -28,17 +29,7 @@ LightWall::LightWall(const YAML::Node& in)
 	time_dropped_ = in["time_dropped"].as<int>();
 }
 
-void LightWall::Serialize(YAML::Emitter& out)
+void LightWall::Serialize(TronSerializer& out)
 {
-	out << YAML::BeginMap;
-	out << "type" << "LightWall";
-	out << "id" << id_;
-	out << "linked" << linked_;
-	out << "displayobject" << (int)displayobject_->id_;
-	out << "stats"; stats_.Serialize(out);
-	out << "flags"; flags_.Serialize(out);
-	out << "location"; location_.Serialize(out);
-	out << "bike" << bike_->id_;
-	out << "time_dropped" << time_dropped_;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }

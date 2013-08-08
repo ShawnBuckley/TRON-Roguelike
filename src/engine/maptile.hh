@@ -22,6 +22,7 @@ namespace YAML
 class DisplayObject;
 class MapObject;
 class Sector;
+class Serializer;
 
 class MapTile
 {
@@ -30,8 +31,6 @@ class MapTile
 	MapTile(Vector2<int16_t> _location, Sector* _sector, TileType* _tiletype)
 		: location_(_location), sector_(_sector), tiletype_(_tiletype) {};
 	MapTile(const YAML::Node& in);
-
-	void Serialize(YAML::Emitter& out);
 
 	bool Empty() { return mapobject_list_.empty(); }
 	
@@ -44,6 +43,8 @@ class MapTile
 	Sector* sector_;
 	TileType* tiletype_;
 	std::list<MapObject*> mapobject_list_;
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_MAPTILE_HH

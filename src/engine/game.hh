@@ -5,11 +5,13 @@
 
 #include <unordered_map>
 #include <iostream>
+#include <typeinfo>
 #include <memory>
 #include <vector>
 #include <list>
 
 #include "player.hh"
+
 
 #include "io.hh"
 #include "map.hh"
@@ -21,6 +23,8 @@ namespace YAML
 	class Node;
 }
 
+class Serializer;
+
 class Game
 {
   public:
@@ -28,7 +32,9 @@ class Game
 	Game(const YAML::Node& in);
 	virtual ~Game() {};
 
-	virtual void Serialize(YAML::Emitter& out);
+	void Serialize(Serializer& in) const;
+
+	// virtual void Serialize(YAML::Emitter& out);
 	virtual void UnserializeGameTime(const YAML::Node& in);
 	virtual void UnserializeDisplayObjects(const YAML::Node& in);
 	virtual void UnserializeTileTypes(const YAML::Node& in);
@@ -68,6 +74,9 @@ class Game
 	void RemoveMapObject(uint16_t _id);
 	void RemoveMapObject(MapObject* _mapobject);
 
+	void RemoveControlObject(uint16_t _id);
+	void RemoveControlObject(ControlObject* _controlobject);
+
 	std::string version_;
 
 	bool run_;
@@ -89,10 +98,10 @@ class Game
 	std::vector<std::unique_ptr<MapObject>> mapobjects_;
 	std::list<uint16_t> mapobject_open_id_;
 
-	std::vector<std::unique_ptr<ControlObject>> entities_;
-	std::list<uint16_t> entity_open_id_;
+	std::vector<std::unique_ptr<ControlObject>> controlobjects_;
+	std::list<uint16_t> controlobject_open_id_;
 
-	// std::vector<std::unique_ptr<ControlObject>> controlobjects_;
+	friend class Serializer;
 };
 
 Game& game();

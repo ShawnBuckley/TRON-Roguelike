@@ -10,6 +10,7 @@
 #include "player.hh"
 #include "mapobject.hh"
 #include "worldtime.hh"
+#include "serializer.hh"
 
 std::unordered_map<char, PlayerControl> Player::mapped_controls_;
 
@@ -34,22 +35,9 @@ Player::Player(const YAML::Node& in)
 	}
 }
 
-void Player::Serialize(YAML::Emitter& out)
+void Player::Serialize(Serializer& out)
 {
-	out << YAML::BeginMap;
-	out << "type" << "Player";
-	out << "id" << (int)id_;
-	if(mapobject_)
-		out << "mapobject" << (int)mapobject_->id_;
-	else
-		out << "mapobject" << -1;
-
-	out << "moves";
-	out << YAML::BeginSeq;
-	for(ControlObjectMove move : moves_)
-		move.Serialize(out);
-	out << YAML::EndSeq;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
 
 void Player::LoadControls(std::string _filename)

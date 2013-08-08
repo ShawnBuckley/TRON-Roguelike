@@ -13,6 +13,7 @@ namespace YAML
 }
 
 class Bike;
+class TronSerializer;
 
 class LightWall : public MapObject
 {
@@ -21,10 +22,12 @@ class LightWall : public MapObject
 	LightWall(DisplayObject* _displayobject, uint64_t _time_dropped, Bike *_bike);
 	LightWall(const YAML::Node& in);
 
-	void Serialize(YAML::Emitter& out);
+	void Serialize(TronSerializer& out);
 	
 	Bike *bike_;
 	uint64_t time_dropped_;
+
+	friend class TronSerializer;
 };
 
 #endif // TRON_RLENGINEX_LIGHTWALL_HH

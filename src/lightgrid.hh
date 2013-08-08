@@ -14,6 +14,8 @@ namespace YAML
 	class Node;
 }
 
+class TronSerializer;
+
 class LightGrid : public Sector
 {
   public:
@@ -21,10 +23,12 @@ class LightGrid : public Sector
 	LightGrid(const YAML::Node& in);
 	~LightGrid() {};
 
-	void Serialize(YAML::Emitter& out);
+	void Serialize(TronSerializer& out);
 
 	void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
 //	bool Fill(uint8_t Size);
+
+	friend class TronSerializer;
 };
 
 #endif // TRON_RLENGINEX_LIGHTGRID_HH

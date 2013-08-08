@@ -8,6 +8,7 @@
 #include "engine/tiletype.hh"
 
 #include "lightgrid.hh"
+#include "tronserializer.hh"
 
 LightGrid::LightGrid(const YAML::Node& in)
 {
@@ -30,30 +31,10 @@ LightGrid::LightGrid(const YAML::Node& in)
 	}
 }
 
-void LightGrid::Serialize(YAML::Emitter& out)
+void LightGrid::Serialize(TronSerializer& out)
 {
-out << YAML::BeginMap;
-	out << "type" << "LightGrid";
-	out << "rectangle" << YAML::Flow << YAML::BeginSeq;
-	out << (int)rectangle_.Vertex(0).x << (int)rectangle_.Vertex(0).y;
-	out << (int)rectangle_.Width() << (int)rectangle_.Height();
-	out << YAML::EndSeq;
-	out << "tiles" << YAML::BeginSeq;
-	std::size_t x_limit = tile_.size();
-	for(std::size_t x=0; x<x_limit; x++)
-	{
-		out << YAML::BeginSeq;
-		std::size_t y_limit = tile_[x].size();
-		for(std::size_t y=0; y<y_limit; y++)
-		{
-			tile_[x][y]->Serialize(out);
-		}
-		out << YAML::EndSeq;
-	}
-	out << YAML::EndSeq;
-	out << YAML::EndMap;
+	out.Serialize(*this);
 }
-
 void LightGrid::Generate(AxisAligned_Rectangle2<int16_t> _rectangle)
 {
 	TileType *grid_floor[4];

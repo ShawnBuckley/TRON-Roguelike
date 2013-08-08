@@ -21,8 +21,8 @@ class AxisAligned_Rectangle2
 	AxisAligned_Rectangle2(Vector2<t> _origin, t _width, t _height) :
 		origin_(_origin), width_(_width), height_(_height) {};
 
-	t Width() { return width_; };
-	t Height() { return height_; };
+	t Width() const { return width_; };
+	t Height() const { return height_; };
 
 	void Origin(Vector2<t> _origin) { origin_ = _origin; };
 	void Height(t _height) { height_ = _height; };

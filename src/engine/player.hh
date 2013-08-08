@@ -19,6 +19,7 @@ namespace YAML
 
 class Game;
 class Player;
+class Serializer;
 
 typedef void(Game::*GameMethod)(void);
 
@@ -44,7 +45,7 @@ class Player : public ControlObject
   	Player(MapObject* _mapobject) { mapobject_ = _mapobject; };
   	Player(const YAML::Node& in);
 
-  	virtual void Serialize(YAML::Emitter& out);
+	void Serialize(Serializer& out);
 
   	void LoadControls(std::string _filename);
   	bool Controls(char _ch);
@@ -52,6 +53,8 @@ class Player : public ControlObject
 	void Think() {};
 	void Controls();
 	ControlObjectMove Move();
+
+	friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_PLAYER_HH
