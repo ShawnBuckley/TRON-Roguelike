@@ -1,7 +1,7 @@
 // TRON-Roguelike Serializerk.hh
 
-#ifndef TRON_RLENGINEX_TRON_HH
-#define TRON_RLENGINEX_TRON_HH
+#ifndef TRON_RLENGINEX_SERIALIZER_HH
+#define TRON_RLENGINEX_SERIALIZER_HH
 
 #include <yaml-cpp/yaml.h>
 
@@ -51,14 +51,15 @@ class Serializer
 
   public:
 	Serializer();
+	virtual ~Serializer() {};
 	YAML::Emitter& YAML() { return out; };
+
+	void Serialize(const Game& in);
 
 	void Serialize(const ControlObjectMove& in);
 
 	void Serialize(const DisplayObject& in);
 	void Serialize(const TimeObject& in);
-
-	void Serialize(const Game& in);
 
 	void Serialize(const GameTime& in);
 

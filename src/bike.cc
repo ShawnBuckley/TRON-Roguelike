@@ -71,9 +71,10 @@ Bike::Bike(const YAML::Node& in)
 
 Bike::~Bike() {}
 
-void Bike::Serialize(TronSerializer& out)
+void Bike::Serialize(Serializer& out)
 {
-	out.Serialize(*this);
+	TronSerializer& tron_out = (TronSerializer&)out;
+	tron_out.Serialize(*this);
 }
 
 bool Bike::Rez(MapLocation _location, Vector2<int16_t> _vector)
@@ -149,7 +150,6 @@ bool Bike::Move(Vector2<int16_t> _vector)
 
 uint16_t Bike::Tick()
 {
-	printf("%i bike tick\n", id_);
 	if(!flags_.rez_)
 	{
 		RemoveWall();

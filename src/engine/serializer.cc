@@ -21,6 +21,74 @@ Serializer::Serializer()
 	out << YAML::BeginMap;
 }
 
+void Serializer::Serialize(const Game& in)
+{
+//	serialize:
+//	game
+//		rng
+//		game/worldtime
+//		map
+//			sectors
+//				mapobjects
+//				items
+//		control objects
+//			mapobjects
+//				extras (lightwalls, etc)
+//				inventories
+//		
+
+	out << in.name_ << YAML::BeginMap;
+	out << "version" << in.version_;
+	out << "run" << in.run_;
+	out << "paused" << in.paused_;
+	out << "realtime" << in.realtime_;
+	out << YAML::EndMap;
+
+	Serialize(*in.io_);
+	// rng_->Serialize(out);
+	in.time_->Serialize(*this);
+
+	out << "DisplayObjects" << YAML::BeginSeq;
+	for(auto it = in.displayobjects_.begin(); it != in.displayobjects_.end(); it++)
+	{
+		Serialize(*(*it));
+	}
+	out << YAML::EndSeq;
+
+	out << "TileTypes" << YAML::BeginSeq;
+	for(auto it = in.tiletypes_.begin(); it != in.tiletypes_.end(); it++)
+	{
+		Serialize(*(*it));
+	}
+	out << YAML::EndSeq;
+
+	out << "MapObjects" << YAML::BeginSeq;
+	for(auto it = in.mapobjects_.begin(); it != in.mapobjects_.end(); it++)
+	{
+		(*it)->Serialize(*this);
+	}
+	out << YAML::EndSeq;
+
+	out << "ControlObjects" << YAML::BeginSeq;
+	for(auto it = in.controlobjects_.begin(); it != in.controlobjects_.end(); it++)
+	{
+		(*it)->Serialize(*this);
+	}
+	out << YAML::EndSeq;
+
+	out << "Map";
+	Serialize(*in.map_);
+
+	out << "Sectors" << YAML::BeginSeq;
+	for(auto it = in.map_->sector_.begin(); it != in.map_->sector_.end(); ++it)
+	{
+		(*it)->Serialize(*this);
+	}
+	out << YAML::EndSeq;
+	
+	out << YAML::EndMap;
+}
+
 void Serializer::Serialize(const ControlObjectMove& in)
 {
 	out << YAML::BeginMap;
@@ -43,23 +111,13 @@ void Serializer::Serialize(const DisplayObject& in)
 	out << YAML::EndMap;
 }
 
-void Serializer::Serialize(const Game& in)
-{
-	out << YAML::BeginMap;
-	out << "Game" << YAML::BeginMap;
-	out << "version" << in.version_;
-	out << "run" << in.run_;
-	out << "paused" << in.paused_;
-	out << "realtime" << in.realtime_;
-	out << YAML::EndMap;
-}
-
 void Serializer::Serialize(const GameTime& in)
 {
 	out << "Time";
 	out << YAML::BeginMap;
 	out << "type" << "GameTime";
 	out << "tick" << in.tick_;
+	out << YAML::EndMap;
 }
 
 void Serializer::Serialize(const IO& in)
@@ -98,12 +156,10 @@ void Serializer::Serialize(const TimeObject& in)
 	out << "speed" << (int)in.speed_;
 	out << "time" << (int)in.time_;
 	out << "mapobject";
-	printf("mapobject\n");
 	if(in.mapobject_ != NULL)
 		out << in.mapobject_->id_;
 	else
 		out << -1;
-	printf("controlobject\n");
 	out << "controlobject";
 	if(in.controlobject_ != NULL)
 		out << in.controlobject_->id_;
@@ -262,8 +318,7 @@ void Serializer::Serialize(const Sector& in)
 
 void Serializer::Serialize(const WorldTime& in)
 {
-	out << "Time";
-	out << YAML::BeginMap;
+	out << "Time" << YAML::BeginMap;
 	out << "type" << "WorldTime";
 	out << "tick" << in.tick_;
 	out << "year" << (int)in.date_.year();

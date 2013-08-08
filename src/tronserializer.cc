@@ -1,5 +1,7 @@
 // TRON-Roguelike TronSerializerk.hh
 
+#include "tron.hh"
+
 #include <yaml-cpp/yaml.h>
 
 #include "engine/maptile.hh"
@@ -10,7 +12,7 @@
 #include "bike.hh"
 #include "lightgrid.hh"
 #include "lightwall.hh"
-
+#include "tron.hh"
 
 void TronSerializer::Serialize(const AiBike& in)
 {

@@ -27,6 +27,7 @@ Game::Game()
 	io_ = std::unique_ptr<IO>(new SDL);
 	time_ = std::unique_ptr<GameTime>(new WorldTime);
 
+	name_ = std::string("Game"); 
 	version_ = std::string("a");
 	run_ = 1;
 	paused_ = 0;
@@ -66,11 +67,6 @@ Game::Game(const YAML::Node& in)
 // 	printf("end serialization\n");
 // 	printf("READY GO!\n");
 // 	Run();
-}
-
-void Game::Serialize(Serializer& out) const
-{
-	out.Serialize(*this);
 }
 
 void Game::UnserializeGameTime(const YAML::Node& in)
@@ -205,7 +201,6 @@ void Game::Run()
 
 	while(run_)
 	{
-		printf("realtime: %i %i\n", realtime_, io_->realtime_);
 		io_->Input();
 
 		for(Player* player : players_)
@@ -239,85 +234,22 @@ void Game::Save()
 	SaveGame("save");
 }
 
-void Game::SaveGame(std::string _save)
+void Game::SaveGame(std::string _name)
 {
 	std::ofstream save;
-	save.open(_save.c_str());
+	save.open("save");
 	printf("save\n");
 
 	Serializer out;
 	out.Serialize(*this);
-	out.Serialize(*io_);
-	// rng_->Serialize(out);
-	time_->Serialize(out);
 
+	save 
+//	<< "---\n" 
+	<< out.YAML().c_str();
+//	<< "\n...\n";
 
-	printf("displayobjects");
-	// serialize DisplayObjects
-	out.YAML() << "DisplayObjects" << YAML::BeginSeq;
-	for(auto it = displayobjects_.begin(); it != displayobjects_.end(); it++)
-	{
-		out.Serialize(*(*it));
-	}
-	out.YAML() << YAML::EndSeq;
-
-	printf("tiletypes\n");
-	// serialize TileTypes
-	out.YAML() << "TileTypes" << YAML::BeginSeq;
-	for(auto it = tiletypes_.begin(); it != tiletypes_.end(); it++)
-	{
-		out.Serialize(*(*it));
-	}
-	out.YAML() << YAML::EndSeq;
-
-	printf("mapobjects\n");
-	// serialize MapObjects
-	out.YAML() << "MapObjects" << YAML::BeginSeq;
-	for(auto it = mapobjects_.begin(); it != mapobjects_.end(); it++)
-	{
-		(*it)->Serialize(out);
-	}
-	out.YAML() << YAML::EndSeq;
-
-	printf("controlobjects\n");
-	// serialize ControlObjects
-	out.YAML() << "ControlObjects" << YAML::BeginSeq;
-	for(auto it = controlobjects_.begin(); it != controlobjects_.end(); it++)
-	{
-		(*it)->Serialize(out);
-	}
-	out.YAML() << YAML::EndSeq;
-
-	out.YAML() << "Map";
-	// map_->Serialize(out);
-	out.Serialize(*map_);
-
-	out.YAML() << "Sectors" << YAML::BeginSeq;
-	for(auto it=map_->sector_.begin(); it !=map_->sector_.end(); ++it)
-	{
-		(*it)->Serialize(out);
-	}
-	out.YAML() << YAML::EndMap;
-
-	out.YAML() << YAML::EndMap;
-
-	save << "---\n" << out.YAML().c_str() << "\n...\n";
-
-//	serialize:
-//	game
-//		rng
-//		game/worldtime
-//		map
-//			sectors
-//				mapobjects
-//				items
-//		control objects
-//			mapobjects
-//				extras (lightwalls, etc)
-//				inventories
-//				
-	save.close();
 	printf("end save\n");
+	save.close();
 }
 
 void Game::SetRealtime(bool _realtime)

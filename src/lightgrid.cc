@@ -31,9 +31,11 @@ LightGrid::LightGrid(const YAML::Node& in)
 	}
 }
 
-void LightGrid::Serialize(TronSerializer& out)
+void LightGrid::Serialize(Serializer& out)
 {
-	out.Serialize(*this);
+	printf("sector out\n");
+	TronSerializer& tron_out = (TronSerializer&)out;
+	tron_out.Serialize(*this);
 }
 void LightGrid::Generate(AxisAligned_Rectangle2<int16_t> _rectangle)
 {

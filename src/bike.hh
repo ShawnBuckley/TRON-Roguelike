@@ -32,7 +32,8 @@ class Bike : public MapObject
 	Bike(const YAML::Node& in);
 	~Bike();
 
-	virtual void Serialize(TronSerializer& out);
+	void PRINT() { printf("Bike\n"); };
+	virtual void Serialize(Serializer& out);
 
  	void Save(std::stringstream &_save);
   	void Load() {};

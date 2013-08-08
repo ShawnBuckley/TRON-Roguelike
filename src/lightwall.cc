@@ -29,7 +29,8 @@ LightWall::LightWall(const YAML::Node& in)
 	time_dropped_ = in["time_dropped"].as<int>();
 }
 
-void LightWall::Serialize(TronSerializer& out)
+void LightWall::Serialize(Serializer& out)
 {
-	out.Serialize(*this);
+	TronSerializer& tron_out = (TronSerializer&)out;
+	tron_out.Serialize(*this);
 }

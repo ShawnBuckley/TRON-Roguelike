@@ -27,7 +27,7 @@ class Sector
 	Sector(const YAML::Node& in);
 	virtual ~Sector() {};
 
-	void Serialize(Serializer& out);
+	virtual void Serialize(Serializer& out);
 
 	MapTile* Tile(Vector2<int16_t> _coord);
 	virtual void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);

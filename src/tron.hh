@@ -12,12 +12,16 @@ namespace YAML
 	class Node;
 }
 
+class TronSerializer;
+
 class TRON : public Game
 {
   public:
-  	TRON() {};
+  	TRON() { name_ = std::string("TRON"); };
   	TRON(const YAML::Node& in);
   	~TRON() {};
+
+  	virtual std::string GameName() { return std::string("TRON"); };
 
   	void Serialize(YAML::Emitter& out);
 	void UnserializeMapObjects(const YAML::Node& in);
@@ -29,6 +33,10 @@ class TRON : public Game
 	void Start();
 	Player* AddPlayerBike(uint8_t _color);
 	AiBike* AddAiBike(uint8_t _color);
+
+	void SaveGame(std::string _name);
+
+	friend class TronSerializer;
 };
 
 #endif // TRON_RLENGINEX_TRON_HH

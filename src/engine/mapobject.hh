@@ -86,6 +86,7 @@ class MapObject
 	MapObject(const YAML::Node& in);
 	virtual ~MapObject();
 
+	virtual void PRINT() { printf("MapObject\n"); };
 	virtual void Serialize(Serializer& out);
 
 	virtual bool Rez(MapLocation _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));

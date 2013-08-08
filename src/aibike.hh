@@ -36,7 +36,7 @@ class AiBike : public ControlObject
 	AiBike(Bike* _bike) : ai_state_(AI_DEFAULT), ai_skill_(100) { mapobject_ = _bike; };
 	AiBike(const YAML::Node& in);
 
-	void Serialize(TronSerializer& out);
+	void Serialize(Serializer& out);
 
 	void Think();
 	ControlObjectMove Move();

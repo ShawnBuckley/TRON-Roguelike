@@ -23,7 +23,7 @@ class LightGrid : public Sector
 	LightGrid(const YAML::Node& in);
 	~LightGrid() {};
 
-	void Serialize(TronSerializer& out);
+	void Serialize(Serializer& out);
 
 	void Generate(AxisAligned_Rectangle2<int16_t> _rectangle);
 //	bool Fill(uint8_t Size);

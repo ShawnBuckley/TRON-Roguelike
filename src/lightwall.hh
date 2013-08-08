@@ -22,7 +22,8 @@ class LightWall : public MapObject
 	LightWall(DisplayObject* _displayobject, uint64_t _time_dropped, Bike *_bike);
 	LightWall(const YAML::Node& in);
 
-	void Serialize(TronSerializer& out);
+	void PRINT() { printf("LightWall\n"); };
+	void Serialize(Serializer& out);
 	
 	Bike *bike_;
 	uint64_t time_dropped_;

@@ -32,9 +32,8 @@ class Game
 	Game(const YAML::Node& in);
 	virtual ~Game() {};
 
-	void Serialize(Serializer& in) const;
+	virtual std::string GameName() { return std::string("Game"); };
 
-	// virtual void Serialize(YAML::Emitter& out);
 	virtual void UnserializeGameTime(const YAML::Node& in);
 	virtual void UnserializeDisplayObjects(const YAML::Node& in);
 	virtual void UnserializeTileTypes(const YAML::Node& in);
@@ -51,7 +50,7 @@ class Game
 	void Pause();
 
 	void Save();
-	void SaveGame(std::string _save);
+	virtual void SaveGame(std::string);
 	void Load();
 
 	void SetRealtime(bool _realtime);
@@ -77,6 +76,7 @@ class Game
 	void RemoveControlObject(uint16_t _id);
 	void RemoveControlObject(ControlObject* _controlobject);
 
+	std::string name_;
 	std::string version_;
 
 	bool run_;

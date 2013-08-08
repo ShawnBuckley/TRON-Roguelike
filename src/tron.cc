@@ -16,6 +16,7 @@
 #include "bike.hh"
 #include "lightgrid.hh"
 #include "tron.hh"
+#include "tronserializer.hh"
 
 TRON::TRON(const YAML::Node& in)
 {
@@ -274,6 +275,24 @@ void TRON::Start()
 
 	printf("run\n");
 	Run();
+}
+
+void TRON::SaveGame(std::string _save)
+{
+	std::ofstream save;
+	save.open(_save.c_str());
+	printf("TRON save\n");
+
+	TronSerializer out;
+	out.Serialize(*this);
+
+	save 
+//	<< "---\n" 
+	<< out.YAML().c_str();
+//	<< "\n...\n";
+
+	printf("end save\n");
+	save.close();
 }
 
 Player* TRON::AddPlayerBike(uint8_t _color)

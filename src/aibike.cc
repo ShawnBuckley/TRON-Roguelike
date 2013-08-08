@@ -38,9 +38,10 @@ AiBike::AiBike(const YAML::Node& in)
 	}
 }
 
-void AiBike::Serialize(TronSerializer& out)
+void AiBike::Serialize(Serializer& out)
 {
-	out.Serialize(*this);
+	TronSerializer& tron_out = (TronSerializer&)out;
+	tron_out.Serialize(*this);
 }
 
 void AiBike::Think()
