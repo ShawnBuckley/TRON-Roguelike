@@ -16,8 +16,7 @@ class Serializer;
 class GameTime
 {
   public:
-	GameTime();
-	GameTime(const YAML::Node& in);
+	GameTime() : tick_(0) {};
 	virtual ~GameTime() {};
 
 	virtual void Serialize(Serializer& out) const; 
@@ -26,7 +25,11 @@ class GameTime
 
 	virtual uint16_t Turn();
 
-	uint64_t tick_;
+  protected:
+	uint64_t tick_;	
+
+  private:
+	GameTime(uint64_t _tick) : tick_(_tick) {};
 
 	friend class Serializer;
 };

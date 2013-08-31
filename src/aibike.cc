@@ -17,27 +17,6 @@ AiBike::AiBike() : ai_state_(AI_DEFAULT), ai_skill_(100)
 
 }
 
-AiBike::AiBike(const YAML::Node& in)
-{
-	id_ = in["id"].as<int>();
-	int mapobject_id = in["id"].as<int>();
-	if(mapobject_id > 0)
-		mapobject_ = game().GetMapObject(mapobject_id);
-	else
-		mapobject_ = NULL;
-	think_ = in["think"].as<bool>();
-	ai_state_ = (AiState)in["ai_state"].as<int>();
-	ai_skill_ = in["ai_skill"].as<int>();
-	tunnel_distance = in["tunnel_distance"].as<int>();
-	const YAML::Node& next_move = in["next_move"];
-	next_move_ = Vector2<int16_t>(next_move[0].as<int>(), next_move[1].as<int>());
-	const YAML::Node& moves = in["moves"];
-	for(std::size_t i=0; i<moves.size(); i++)
-	{
-		moves_.push_back(ControlObjectMove(moves[i]));
-	}
-}
-
 void AiBike::Serialize(Serializer& out)
 {
 	TronSerializer& tron_out = (TronSerializer&)out;

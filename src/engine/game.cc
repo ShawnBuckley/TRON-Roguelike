@@ -29,8 +29,7 @@ Game::Game()
 
 	name_ = std::string("Game"); 
 	version_ = std::string("a");
-	run_ = 1;
-	paused_ = 0;
+	SetPaused(1);
 	game_pointer = this;
 }
 
@@ -69,94 +68,6 @@ Game::Game(const YAML::Node& in)
 // 	Run();
 }
 
-void Game::UnserializeGameTime(const YAML::Node& in)
-{
-	printf("unserialize gametime\n");
-
-	if(in["type"].as<std::string>() == "WorldTime")
-		time_ = std::unique_ptr<GameTime>(new WorldTime(in));
-	else
-		time_ = std::unique_ptr<GameTime>(new GameTime(in));
-
-	// time_->Unserialize(in);
-}
-
-void Game::UnserializeDisplayObjects(const YAML::Node& in)
-{
-	printf("unserialize displayobjects\n");
-
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		const YAML::Node& displayobject = in[i];
-		AddDisplayObject(DisplayObject(displayobject));
-	}
-}
-
-void Game::UnserializeTileTypes(const YAML::Node& in)
-{
-	printf("unserialize tiletypes\n");
-
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		const YAML::Node& tiletype = in[i];
-		AddTileType(TileType(tiletype));
-	}
-}
-
-void Game::UnserializeMapObjects(const YAML::Node& in)
-{
-	printf("unserialize mapobjects\n");
-
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		const YAML::Node& mapobject = in[i];
-		AddMapObject(new MapObject(mapobject));
-	}
-}
-
-void Game::UnserializeControlObjects(const YAML::Node& in)
-{
-	printf("unserialize controlobjects\n");
-
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		const YAML::Node& controlobject = in[i];
-		if(controlobject["type"].as<std::string>() == "Player")
-		{
-			Player* player = new Player(controlobject);
-			AddControlObject(player);
-			game().AddPlayer(player);
-		}
-	}
-}
-
-void Game::UnserializeTimeObjects(const YAML::Node& in)
-{
-	// printf("unserialize timeobjects\n");
-
-	// for(std::size_t i=0; i<in.size(); i++)
-	// {
-	// 	const YAML::Node& mapobject = in[i];
-	// 	AddMapObject(new MapObject(mapobject));
-	// }
-}
-
-void Game::UnserializeMap(const YAML::Node& in)
-{
-	printf("unserialize map\n");
-
-	map_ = std::unique_ptr<Map>(new Map(in));
-}
-
-void Game::UnserializeMapLoactions(const YAML::Node& in)
-{
-	for(std::size_t i=0; i < mapobjects_.size(); ++i)
-	{
-		mapobjects_[i]->location_.Connect();
-		// (*it)->location_.Connect();
-	}
-}
-
 void Game::Start()
 {
 	version_ = std::string("a");
@@ -165,8 +76,7 @@ void Game::Start()
 
 	io_->Init();
 
-	io_->SetFPS(20.0f);
-	SetRealtime(1);
+	io_->SetFPS(1.0f);
 
 	map_ = std::unique_ptr<Map>(new Map);
 
@@ -201,6 +111,7 @@ void Game::Run()
 
 	while(run_)
 	{
+		printf("run! - realtime_ = %i\n", realtime_);
 		io_->Input();
 
 		for(Player* player : players_)
@@ -220,6 +131,12 @@ void Game::End()
 {
 	printf("game end!\n");
 	run_ = 0;
+}
+
+void Game::SetPaused(bool _paused)
+{
+	paused_ = _paused;
+	SetRealtime(!_paused);
 }
 
 void Game::Pause()
@@ -255,8 +172,6 @@ void Game::SaveGame(std::string _name)
 void Game::SetRealtime(bool _realtime)
 {
 	realtime_ = _realtime;
-	
-	io_->SetRealtime(_realtime);
 }
 
 DisplayObject* Game::AddDisplayObject(const DisplayObject _displayobject)
@@ -377,6 +292,47 @@ MapObject* Game::GetMapObject(uint16_t _id)
 	return NULL;
 }
 
+
+uint16_t Game::AddTimeObject(TimeObject* _timeobject)
+{
+	uint16_t id;
+	uint16_t old_id = _timeobject->id_;
+
+	if(timeobject_open_id_.empty())
+	{
+		id = timeobjects_.size();
+		_timeobject->id_ = id;
+		timeobjects_.push_back(std::move(std::unique_ptr<TimeObject>(_timeobject)));
+	}
+	else
+	{
+		uint16_t id = timeobject_open_id_.front();
+
+		_timeobject->id_ = id;
+		timeobjects_[id] = std::move(std::unique_ptr<TimeObject>(_timeobject));
+		timeobject_open_id_.pop_front();
+	}
+
+	_timeobject->linked_ = 1;
+
+	return id;
+}
+
+TimeObject* Game::GetTimeObject(uint16_t _id)
+{
+	try
+	{
+		return timeobjects_[_id].get();
+	}
+	catch(std::out_of_range e)
+	{
+		printf("out of range!\n");
+	}
+
+	return NULL;
+}
+
+
 uint16_t Game::AddControlObject(ControlObject* _controlobject)
 {
 	uint16_t id = controlobject_open_id_.front();
@@ -415,8 +371,8 @@ Player* Game::AddPlayerMapobject(uint8_t _color)
 
 	ControlObject* controlobject = new Player(mapobject);
 
-	mapobject->timeobject_.mapobject_ = mapobject;
-	mapobject->timeobject_.controlobject_ = controlobject;
+	mapobject->timeobject_->mapobject_ = mapobject;
+	mapobject->timeobject_->controlobject_ = controlobject;
 
 	AddControlObject(controlobject);
 	AddMapObject(mapobject);
@@ -433,6 +389,19 @@ void Game::RemoveMapObject(uint16_t _id)
 {
 	mapobjects_[_id].reset();
 	mapobject_open_id_.push_back(_id);
+}
+
+void Game::RemoveTimeObject(TimeObject* _timeobject)
+{
+	if(_timeobject)
+		RemoveTimeObject(_timeobject->id_);
+}
+
+void Game::RemoveTimeObject(uint16_t _id)
+{
+	printf("remove timeobject\n");
+	timeobjects_[_id].reset();
+	timeobject_open_id_.push_back(_id);
 }
 
 void Game::RemoveMapObject(MapObject* _mapobject)

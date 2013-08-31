@@ -30,12 +30,6 @@ class ControlObjectMove
   	ControlObjectMove() : type_(COMT_NONE), time_(0) {};
   	ControlObjectMove(ControlObjectMoveType _type, uint16_t _time, Vector2<int16_t> _vector)
 		: type_(_type), time_(_time), vector_(_vector) {};
-	ControlObjectMove(const YAML::Node& in)
-	{
-		type_ = (ControlObjectMoveType)in["move_type"].as<int>();
-		time_ = in["move_type"].as<uint32_t>();
-		vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
-	}
 
 	ControlObjectMoveType type_;
 	uint16_t time_;
@@ -71,7 +65,6 @@ class ControlObject
 	// std::shared_ptr<MapObject> mapobject_;
 
 	uint16_t id_;
-	uint16_t remaining_time_;
 };
 
 #endif // TRON_RLENGINEX_CONTROLOBJECT_HH

@@ -20,7 +20,7 @@ const char kWallPrint[10] = {' ', '\\', '|', '/', '-', '.', '-', '/', '|', '\\'}
 const uint8_t kBikeSprite[10] = {' ', ' ', 30, ' ', 17, 254, 16, ' ', 31, ' '};
 const char kBikePrint[10] = {' ', ' ', 'v', ' ', '<', 'B', '>', ' ', '^', ' '};
 
-Bike::Bike(MapObjectFlags _mapobject_flags,	uint8_t _color, TimeObject _timeobject)
+Bike::Bike(MapObjectFlags _mapobject_flags,	uint8_t _color, TimeObject* _timeobject)
 {
 	flags_ = _mapobject_flags;
 	timeobject_ = _timeobject;
@@ -35,39 +35,7 @@ Bike::Bike(MapObjectFlags _mapobject_flags,	uint8_t _color, TimeObject _timeobje
 	}
 }
 
-Bike::Bike(const YAML::Node& in)
-{
-	id_ = in["id"].as<int>();
-	linked_ = in["linked"].as<bool>();
-	moved_ = in["moved"].as<bool>();
-	drop_walls_ = in["drop_walls"].as<bool>();
-	change_direction_ = in["change_direction"].as<int>();
-	time_of_death_ = in["time_of_death"].as<uint64_t>();
-	displayobject_ = game().GetDisplayObject(in["displayobject"].as<int>());
-	const YAML::Node& bike_displayobject = in["bike_displayobjects"];
-	for(std::size_t i=0; i<bike_displayobject.size(); i++)
-	{
-		bike_displayobject_[i] = game().GetDisplayObject(bike_displayobject[i].as<int>());
-		printf("%i", bike_displayobject_[i]->sprite_);
-	}
-	const YAML::Node& wall_displayobject = in["wall_displayobjects"];
-	for(std::size_t i=0; i<wall_displayobject.size(); i++)
-	{
-		wall_displayobject_[i] = game().GetDisplayObject(wall_displayobject[i].as<int>());
-	}
 
-	stats_ = MapObjectStats(in["stats"]);
-	flags_ = MapObjectFlags(in["flags"]);
-	location_ = MapLocation(in["location"]);
-	const YAML::Node& vector = in["vector"];
-	vector_ = Vector2<int16_t>(vector[0].as<int>(), vector[1].as<int>());
-
-	const YAML::Node& moves = in["moves"];
-	for(std::size_t i=0; i<moves.size(); i++)
-	{
-		moves_.push_back(MapObjectMove(moves[i]));
-	}
-}
 
 Bike::~Bike() {}
 
@@ -122,7 +90,7 @@ void Bike::RemoveWall()
 		}
 	}
 	else
-		timeobject_.TimeUnlink();
+		if(timeobject_) game().RemoveTimeObject(timeobject_);
 }
 
 bool Bike::Move(Vector2<int16_t> _vector)
@@ -154,7 +122,7 @@ uint16_t Bike::Tick()
 	{
 		RemoveWall();
 
-		return timeobject_.speed_;
+		return timeobject_->speed_;
 	}
 
 	// if(vector_ > Vector2<int16_t>(0,0))
@@ -231,5 +199,5 @@ uint16_t Bike::Tick()
 
 	moved_ = 0;
 
-	return timeobject_.speed_;
+	return timeobject_->speed_;
 }

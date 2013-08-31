@@ -32,16 +32,7 @@ class Game
 	Game(const YAML::Node& in);
 	virtual ~Game() {};
 
-	virtual std::string GameName() { return std::string("Game"); };
-
-	virtual void UnserializeGameTime(const YAML::Node& in);
-	virtual void UnserializeDisplayObjects(const YAML::Node& in);
-	virtual void UnserializeTileTypes(const YAML::Node& in);
-	virtual void UnserializeMapObjects(const YAML::Node& in);
-	virtual void UnserializeControlObjects(const YAML::Node& in);
-	virtual void UnserializeTimeObjects(const YAML::Node& in);
-	virtual void UnserializeMap(const YAML::Node& in);
-	virtual void UnserializeMapLoactions(const YAML::Node& in);
+	const std::string& GameName() const { return name_; };
 
 	virtual void Start();
 	void Run();
@@ -53,6 +44,7 @@ class Game
 	virtual void SaveGame(std::string);
 	void Load();
 
+	void SetPaused(bool _paused);
 	void SetRealtime(bool _realtime);
 
 	DisplayObject* AddDisplayObject(const DisplayObject _displayobject);
@@ -64,6 +56,9 @@ class Game
 	uint16_t AddMapObject(MapObject* _mapobject);
 	MapObject* GetMapObject(uint16_t _id);
 
+	uint16_t AddTimeObject(TimeObject* _timeobject);
+	TimeObject* GetTimeObject(uint16_t _id);
+
 	uint16_t AddControlObject(ControlObject* _controlobject);
 	ControlObject* GetControlObject(uint16_t _id);
 
@@ -72,6 +67,9 @@ class Game
 
 	void RemoveMapObject(uint16_t _id);
 	void RemoveMapObject(MapObject* _mapobject);
+
+	void RemoveTimeObject(uint16_t _id);
+	void RemoveTimeObject(TimeObject* _timeobject);
 
 	void RemoveControlObject(uint16_t _id);
 	void RemoveControlObject(ControlObject* _controlobject);
@@ -97,6 +95,9 @@ class Game
 
 	std::vector<std::unique_ptr<MapObject>> mapobjects_;
 	std::list<uint16_t> mapobject_open_id_;
+
+	std::vector<std::unique_ptr<TimeObject>> timeobjects_;
+	std::list<uint16_t> timeobject_open_id_;
 
 	std::vector<std::unique_ptr<ControlObject>> controlobjects_;
 	std::list<uint16_t> controlobject_open_id_;

@@ -23,7 +23,10 @@ class LightWall;
 class TronSerializer : public Serializer
 {
   public:
-  	// void Serialize(const TRON& in);
+  	TronSerializer() {};
+  	TronSerializer(const YAML::Node& in);
+
+  	void Serialize(const TRON& in);
 
 	void Serialize(const AiBike& in);
 	void Serialize(const Bike& in);
@@ -32,35 +35,18 @@ class TronSerializer : public Serializer
 	void Serialize(const LightWall& out);
 
 
-	void Serialize(const ControlObjectMove& in) { Serializer::Serialize(in); };
+	TRON* UnserializeTRON(const YAML::Node& in);
 
-	void Serialize(const DisplayObject& in) { Serializer::Serialize(in); };
-	void Serialize(const TimeObject& in) { Serializer::Serialize(in); };
+	AiBike* UnserializeAiBike(const YAML::Node& in);
+	Bike* UnserializeBike(const YAML::Node& in);
 
-	void Serialize(const Game& in) { Serializer::Serialize(in); };
+	LightWall* UnserializeLightWall(const YAML::Node& in);
 
-	void Serialize(const GameTime& in) { Serializer::Serialize(in); };
-
-	void Serialize(const IO& in) { Serializer::Serialize(in); };
-
-	void Serialize(const Map& in) { Serializer::Serialize(in); };
-
-	void Serialize(const MapLocation& in) { Serializer::Serialize(in); };
-	void Serialize(const MapObjectStats& in) { Serializer::Serialize(in); };
-	void Serialize(const MapObjectFlags& in) { Serializer::Serialize(in); };
-	void Serialize(const MapObjectMove& in) { Serializer::Serialize(in); };
-	void Serialize(const MapObject& in) { Serializer::Serialize(in); };
-
-	void Serialize(const MapTile& in) { Serializer::Serialize(in); };
-
-	void Serialize(const Player& in) { Serializer::Serialize(in); };
-
-	void Serialize(const TileTypeFlags& in) { Serializer::Serialize(in); };
-	void Serialize(const TileType& in) { Serializer::Serialize(in); };
-
-	void Serialize(const Sector& in) { Serializer::Serialize(in); };
-
-	void Serialize(const WorldTime& in) { Serializer::Serialize(in); };
+	void LoadMapObjects(const YAML::Node& in);
+	void LoadControlObjects(const YAML::Node& in);
+	void LoadTimeObjects(const YAML::Node& in);
+	void LoadMap(const YAML::Node& in);
+	void LoadSectors(const YAML::Node& in);
 
 	friend class TRON;
 };

@@ -14,12 +14,6 @@
 #include "sector.hh"
 #include "tiletype.hh"
 
-namespace YAML
-{
-	class Emitter;
-	class Node;
-};
-
 class Serializer;
 
 class Map
@@ -28,7 +22,7 @@ class Map
 
   public:  
 	Map() {};
-	Map(const YAML::Node& in);
+	Map(AxisAligned_Rectangle2<int16_t> _rectangle) : rectangle_(_rectangle) {};
 
 	inline bool CoordValid(Vector2<int16_t>  _point) { return rectangle_.Intersect(_point); };
 	MapTile* Tile(Vector2<int16_t>  _point);

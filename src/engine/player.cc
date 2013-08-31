@@ -20,21 +20,6 @@ std::unordered_map<char, PlayerControl> Player::mapped_controls_;
 // 
 ///////////////////////////////////////////////////////////////////////////////
 
-Player::Player(const YAML::Node& in)
-{
-	id_ = in["id"].as<int>();
-	std::size_t mapobject_id = in["id"].as<int>();
-	if(mapobject_id >= 0)
-		mapobject_ = game().GetMapObject(mapobject_id);
-	else
-		mapobject_ = NULL;
-	const YAML::Node& moves = in["moves"];
-	for(std::size_t i=0; i<moves.size(); i++)
-	{
-		moves_.push_back(ControlObjectMove(moves[i]));
-	}
-}
-
 void Player::Serialize(Serializer& out)
 {
 	out.Serialize(*this);
@@ -64,6 +49,7 @@ void Player::LoadControls(std::string _filename)
 
 void Player::Controls()
 {
+	printf("player controls\n");
 	for(char ch : game().io_->keystrokes_)
 	{
 		if(Controls(ch))
@@ -107,14 +93,17 @@ bool Player::Controls(char _ch)
 
 	if(control.player_ == this)
 	{
+		printf("player == this\n");
 		game().io_->keystrokes_.remove(_ch);
 
 		if(control.game_control_)
 		{
+			printf("game control\n");
 			(game().*control.callback_)();
 		}
 		else if(!game().paused_)
 		{
+			printf("else not\n");
 			moves_.push_back(ControlObjectMove(control.move_type_, 0, control.vector_));
 		}
 

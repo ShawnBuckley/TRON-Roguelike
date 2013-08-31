@@ -43,7 +43,6 @@ class Player : public ControlObject
 	static std::unordered_map<char, PlayerControl> mapped_controls_;
 
   	Player(MapObject* _mapobject) { mapobject_ = _mapobject; };
-  	Player(const YAML::Node& in);
 
 	void Serialize(Serializer& out);
 
@@ -54,7 +53,15 @@ class Player : public ControlObject
 	void Controls();
 	ControlObjectMove Move();
 
-	friend class Serializer;
+  private:
+	Player(uint16_t _id, MapObject* _mapobject, std::list<ControlObjectMove> _moves)
+	{
+		id_ = _id;
+		mapobject_ = _mapobject;
+		moves_ = _moves;
+	}
+
+  friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_PLAYER_HH

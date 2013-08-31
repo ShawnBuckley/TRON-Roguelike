@@ -5,8 +5,6 @@
 
 #include <string>
 
-#include <yaml-cpp/yaml.h>
-
 #include "serializer.hh"
 #include "worldtime.hh"
 
@@ -19,13 +17,12 @@ WorldTime::WorldTime()
 	second_ = 0;
 }
 
-WorldTime::WorldTime(const YAML::Node& in)
+WorldTime::WorldTime(uint64_t _tick, int _year, int _month, int _day,
+	uint8_t _hour, uint8_t _minute, uint8_t _second) : hour_(_hour),
+	minute_(_minute), second_(_second)
 {
-	tick_ = in["tick"].as<uint64_t>();
-	date_ = boost::gregorian::date(in["year"].as<int>(), in["month"].as<int>(), in["day"].as<int>());
-	hour_ = in["hour"].as<int>();
-	minute_ = in["minute"].as<int>();
-	second_ = in["second"].as<int>();
+	tick_ = _tick;
+	date_ = boost::gregorian::date(_year, _month, _day);
 }
 
 void WorldTime::Serialize(Serializer& out)

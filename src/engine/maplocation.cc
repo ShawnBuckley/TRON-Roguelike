@@ -1,7 +1,5 @@
 // TRON-Roguelike MapLocation.cc
 
-#include <yaml-cpp/yaml.h>
-
 #include "maplocation.hh"
 #include "maptile.hh"
 #include "game.hh"
@@ -18,14 +16,6 @@ MapLocation::MapLocation(AxisAligned_Rectangle2<int16_t> _rectangle) : rectangle
 		maptile_.push_back(row);
 	}
 };
-
-MapLocation::MapLocation(const YAML::Node& in)
-{
-	const YAML::Node& rectangle = in["rectangle"];
-	rectangle_ = AxisAligned_Rectangle2<int16_t>(
-		Vector2<int16_t>(rectangle[0].as<int>(), rectangle[1].as<int>()),
-		rectangle[2].as<int>(), rectangle[3].as<int>());
-}
 
 void MapLocation::Connect()
 {

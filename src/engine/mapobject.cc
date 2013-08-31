@@ -20,12 +20,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-MapObjectStats::MapObjectStats(const YAML::Node& in)
-{
-	mass_ = in["mass"].as<int>();
-	health_ = in["health"].as<int>();
-}
-
 void MapObjectStats::Serialize(Serializer& out)
 {
 	out.Serialize(*this);
@@ -36,14 +30,6 @@ void MapObjectStats::Serialize(Serializer& out)
 // MapObjectFlags
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-MapObjectFlags::MapObjectFlags(const YAML::Node& in)
-{
-	rez_ = in["rez"].as<bool>();
-	clipping_ = in["clipping"].as<bool>();
-	solid_ = in["solid"].as<bool>();
-	visible_ = in["visible"].as<bool>();
-}
 
 void MapObjectFlags::Serialize(Serializer& out)
 {
@@ -56,12 +42,6 @@ void MapObjectFlags::Serialize(Serializer& out)
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-MapObjectMove::MapObjectMove(const YAML::Node& in)
-{
-	time_ = in["time"].as<int>();
-	vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
-}
-
 void MapObjectMove::Serialize(Serializer& out)
 {
 	out.Serialize(*this);
@@ -72,23 +52,6 @@ void MapObjectMove::Serialize(Serializer& out)
 // MapObject
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-MapObject::MapObject(const YAML::Node& in)
-{
-	id_ = in["id"].as<bool>();
-	linked_ = in["linked"].as<bool>();
-	displayobject_ = game().GetDisplayObject(in["displayobject"].as<int>());
-	stats_ = MapObjectStats(in["stats"]);
-	flags_ = MapObjectFlags(in["flags"]);
-	location_ = MapLocation(in["location"]);
-	vector_ = Vector2<int16_t>(in["vector"][0].as<int>(), in["vector"][1].as<int>());
-
-	const YAML::Node& moves = in["moves"];
-	for(std::size_t i=0; i<moves.size(); i++)
-	{
-		moves_.push_back(MapObjectMove(moves[i]));
-	}
-}
 
 MapObject::~MapObject()
 {
@@ -109,9 +72,6 @@ bool MapObject::Rez(MapLocation _location, Vector2<int16_t> _vector)
 		flags_.rez_ = 1;
 		vector_ = _vector;
 
-		if(timeobject_.speed_ > 0)
-			timeobject_.TimeLink();
-		
 		return 1;
 	}
 
@@ -124,7 +84,7 @@ void MapObject::Derez()
 
 	displayobject_ = game().AddDisplayObject(DisplayObject('X', 'X', color));
 	flags_ = MapObjectFlags(0, 0, 0, 1);
-	timeobject_.TimeUnlink();
+	if(timeobject_) game().RemoveTimeObject(timeobject_);
 }
 
 void MapObject::MapLink()

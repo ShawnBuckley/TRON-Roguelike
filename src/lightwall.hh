@@ -6,12 +6,6 @@
 #include "engine/mapobject.hh"
 #include "engine/displayobject.hh"
 
-namespace YAML
-{
-	class Emitter;
-	class Node;
-}
-
 class Bike;
 class TronSerializer;
 
@@ -20,15 +14,25 @@ class LightWall : public MapObject
   public:
 	LightWall() : bike_(NULL) {};
 	LightWall(DisplayObject* _displayobject, uint64_t _time_dropped, Bike *_bike);
-	LightWall(const YAML::Node& in);
 
-	void PRINT() { printf("LightWall\n"); };
 	void Serialize(Serializer& out);
 	
 	Bike *bike_;
 	uint64_t time_dropped_;
 
-	friend class TronSerializer;
+  private:
+	LightWall(uint16_t _id, DisplayObject* _displayobject,
+		MapObjectStats _stats, MapLocation _location, Bike* _bike,
+		uint64_t _time_dropped) : bike_(_bike), time_dropped_(_time_dropped)
+	{
+		id_ = _id;
+		linked_ = 1;
+		displayobject_ = _displayobject;
+		stats_ = _stats;
+		flags_ = MapObjectFlags(1, 1, 1, 1);
+	};
+
+  friend class TronSerializer;
 };
 
 #endif // TRON_RLENGINEX_LIGHTWALL_HH

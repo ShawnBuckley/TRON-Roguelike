@@ -19,23 +19,14 @@
 #include "sector.hh"
 #include "serializer.hh"
 
-SDL::SDL(const YAML::Node& in)
+SDL::SDL(float _fps, uint8_t _x, uint8_t _y,
+	uint16_t _camera_mapobject_id, Vector2<int16_t> _camera_location,
+	std::list<char> _keystrokes)
 {
-	realtime_ = in["realtime"].as<bool>();
-	fps_ = in["fps"].as<float>();
-	x_ = in["x"].as<int>();
-	y_ = in["y"].as<int>();
-	int16_t camera_mapobject = in["camera_mapobject"].as<int>();
-	if(camera_mapobject > 0)
-		camera_mapobject_ = game().GetMapObject(camera_mapobject);
-	else
-		camera_mapobject_ = NULL;
-	camera_location_ = Vector2<int16_t>(in["camera_location"][0].as<int>(), in["camera_location"][1].as<int>());
-	old_color_ = in["old_color"].as<int>();
-	for(std::size_t i=0; i<in["keystrokes"].size(); i++)
-	{
-		keystrokes_.push_back(in["keystrokes"][i].as<char>());
-	}
+	fps_ = _fps;
+	keystrokes_ = _keystrokes;
+	camera_mapobject_id_ = _camera_mapobject_id;
+	camera_location_ = _camera_location;
 }
 
 void SDL::Serialize(Serializer& out)
@@ -143,7 +134,8 @@ void SDL::Input()
 {
 	SDL_Event event;
 
-	while(realtime_ ? SDL_PollEvent(&event) : SDL_WaitEvent(&event))
+	while(game().realtime_ ? SDL_PollEvent(&event) : SDL_WaitEvent(&event))
+	// while(SDL_PollEvent(&event))
 	{
 		switch(event.type)
 		{
@@ -358,7 +350,7 @@ void SDL::Map()
 
 	Refresh();
 
-	if(realtime_)
+	if(game().realtime_)
 	{
 		now = boost::posix_time::microsec_clock::universal_time();
 

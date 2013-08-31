@@ -18,146 +18,6 @@
 #include "tron.hh"
 #include "tronserializer.hh"
 
-TRON::TRON(const YAML::Node& in)
-{
-	const YAML::Node& game = in["TRON"];
-	const YAML::Node& io = in["IO"];
-	const YAML::Node& gametime = in["Time"];
-	const YAML::Node& displayobjects = in["DisplayObjects"];
-	const YAML::Node& tiletypes = in["TileTypes"];
-	const YAML::Node& mapobjects = in["MapObjects"];
-	const YAML::Node& controlobjects = in["ControlObjects"];
-	const YAML::Node& map = in["Map"];
-	const YAML::Node& sectors = in["Sectors"];
-
-	version_ = game["version"].as<std::string>();
-	run_ = game["run"].as<bool>();
-//	paused_ = game["paused"].as<bool>();
-	paused_ = 1;
-	realtime_ = game["realtime"].as<bool>();
-
-	io_ = std::unique_ptr<IO>(new SDL(io));
-	io_->Init();
-
-	UnserializeGameTime(gametime);
-	UnserializeDisplayObjects(displayobjects);
-	UnserializeTileTypes(tiletypes);
-	UnserializeMapObjects(mapobjects);
-	UnserializeControlObjects(controlobjects);
-	UnserializeTimeObjects(mapobjects);
-	UnserializeMap(map);
-	UnserializeSectors(sectors);
-	UnserializeMapLoactions(mapobjects);
-
-	players_[0]->LoadControls("player.yml");
-	players_[1]->LoadControls("player2.yml");
-
-	printf("READY GO!\n");
-	// SaveGame("save2");
-	SetRealtime(0);
-	Run();
-}
-
-void TRON::UnserializeMapObjects(const YAML::Node& in)
-{
-	printf("TRON unserialize mapobjects\n");
-
-	std::vector<Bike*> bikes;
-
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		const YAML::Node& mapobject = in[i];
-
-		if(mapobject["type"].as<std::string>() == "Bike")
-		{
-			Bike* bike = new Bike(mapobject);
-			AddMapObject(bike);
-			bikes.push_back(bike);
-		}
-		else if(mapobject["type"].as<std::string>() == "LightWall")
-			AddMapObject(new LightWall(mapobject));
-	}
-
-	for(Bike* bike : bikes)
-	{
-		const YAML::Node& mapobject = in[bike->id_];
-		for(std::size_t i=0; i<mapobject["lightwalls"].size(); i++)
-		{
-			bike->wall_list_.push_back((LightWall*)GetMapObject(mapobject["lightwalls"][i].as<int>()));
-		}
-	}
-}
-
-void TRON::UnserializeControlObjects(const YAML::Node& in)
-{
-	printf("TRON unserialize controlobjects\n");
-
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		const YAML::Node& controlobject = in[i];
-
-		if(controlobject["type"].as<std::string>() == "Player")
-		{
-			Player* player = new Player(controlobject);
-			AddControlObject(player);
-			game().AddPlayer(player);
-		}
-		else if(controlobject["type"].as<std::string>() == "AiBike")
-			AddControlObject(new AiBike(controlobject));
-	}
-}
-
-void TRON::UnserializeTimeObjects(const YAML::Node& in)
-{
-	printf("TRON unserialize timeobjects\n");
-
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		const YAML::Node& mapobject = in[i];
-
-		if(mapobject["type"].as<std::string>() == "Bike")
-		{
-			MapObject* bike = GetMapObject(mapobject["id"].as<int>());
-			bike->timeobject_ = TimeObject(mapobject["timeobject"]);
-			bike->timeobject_.TimeLink();
-		}
-	}
-}
-
-void TRON::UnserializeMap(const YAML::Node& in)
-{
-	map_ = std::unique_ptr<Map>(new Map(in));
-}
-
-void TRON::UnserializeSectors(const YAML::Node& in)
-{
-	for(std::size_t i=0; i<in.size(); i++)
-	{
-		std::unique_ptr<Sector> sector;
-
-		if(in[i]["type"].as<std::string>() == "Sector")
-		{
-			sector = std::unique_ptr<Sector>(new Sector(in[i]));
-		}
-		else if(in[i]["type"].as<std::string>() == "LightGrid")
-		{
-			sector = std::unique_ptr<Sector>(new LightGrid(in[i]));
-		}
-
-		map_->sector_.push_back(std::move(sector));
-	}
-}
-
-void TRON::Serialize(YAML::Emitter& out)
-{
-	out << "TRON" << YAML::BeginMap;
-	out << "version" << version_;
-	out << "run" << run_;
-	out << "paused" << paused_;
-	out << "realtime" << realtime_;
-	out << YAML::EndMap;
-}
-
 void TRON::Start()
 {
 	printf("TRON start\n");
@@ -165,7 +25,6 @@ void TRON::Start()
 	io_->Init();
 
 	io_->SetFPS(20.0f);
-	SetRealtime(1);
 
 	map_ = std::unique_ptr<Map>(new Map);
 
@@ -284,7 +143,7 @@ void TRON::SaveGame(std::string _save)
 	printf("TRON save\n");
 
 	TronSerializer out;
-	out.Serialize(*this);
+	out.Serializer::Serialize((Game&)*this);
 
 	save 
 //	<< "---\n" 
@@ -297,36 +156,44 @@ void TRON::SaveGame(std::string _save)
 
 Player* TRON::AddPlayerBike(uint8_t _color)
 {
+	printf("add Player bike\n");
+	TimeObject* timeobject = new TimeObject(1000);
+
 	MapObject* mapobject = new Bike(
 		MapObjectFlags(1,1,1,1),
 		_color,
-		TimeObject(1000));
+		timeobject);
 
 	Player* player = new Player(mapobject);
 
-	mapobject->timeobject_.mapobject_ = mapobject;
-	mapobject->timeobject_.controlobject_ = player;
+	timeobject->mapobject_ = mapobject;
+	timeobject->controlobject_ = player;
 
 	AddControlObject(player);
 	AddMapObject(mapobject);
+	AddTimeObject(timeobject);
 
 	return player;
 }
 
 AiBike* TRON::AddAiBike(uint8_t _color)
 {
+	printf("add Ai bike\n");
+	TimeObject* timeobject = new TimeObject(1000);
+
 	Bike* bike = new Bike(
 		MapObjectFlags(1,1,1,1),
 		_color,
-		TimeObject(1000));
+		timeobject);
 
 	AiBike* aibike = new AiBike(bike);
 
-	bike->timeobject_.mapobject_ = bike;
-	bike->timeobject_.controlobject_ = aibike;
+	timeobject->mapobject_ = bike;
+	timeobject->controlobject_ = aibike;
 
 	AddControlObject(aibike);
 	AddMapObject(bike);
+	AddTimeObject(timeobject);
 
 	return aibike;
 }

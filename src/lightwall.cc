@@ -16,19 +16,6 @@ LightWall::LightWall(DisplayObject* _displayobject, uint64_t _time_dropped, Bike
 	bike_ = _bike;
 };
 
-LightWall::LightWall(const YAML::Node& in)
-{
-	id_ = in["id"].as<int>();
-	// linked_ = in["linked"].as<bool>();
-	linked_ = 1;
-	displayobject_ = game().GetDisplayObject(in["displayobject"].as<int>());
-	stats_ = MapObjectStats(in["stats"]);
-	flags_ = MapObjectFlags(in["flags"]);
-	location_ = MapLocation(in["location"]);
-	bike_ = (Bike*)game().GetMapObject(in["bike"].as<int>());
-	time_dropped_ = in["time_dropped"].as<int>();
-}
-
 void LightWall::Serialize(Serializer& out)
 {
 	TronSerializer& tron_out = (TronSerializer&)out;

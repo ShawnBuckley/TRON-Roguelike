@@ -26,14 +26,12 @@ class SDL : public IO
 	
   public:
 	SDL() : screen_(NULL) {};
-	SDL(const YAML::Node& in);
 	virtual ~SDL();
 
 	void Serialize(Serializer& out);
 
 	virtual void Init();
 
-	void SetRealtime(bool _realtime) { realtime_ = _realtime; };
 	bool LoadTexture(std::string _file);
 	void LoadFont(int _x, int _y, int _xwdith, int _yhieght);
 	
@@ -62,7 +60,12 @@ class SDL : public IO
 	SDL_Surface *screen_;
 	std::vector<SDL_Surface*> texture_;
 
-	friend class Serializer;
+  private:
+	SDL(float _fps, uint8_t _x, uint8_t _y,
+		uint16_t camera_mapobject_, Vector2<int16_t> _camera_location,
+		std::list<char> _keystrokes);
+
+  friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_SDL_HH

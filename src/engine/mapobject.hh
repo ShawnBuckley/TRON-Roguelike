@@ -29,15 +29,12 @@ struct MapObjectStats
 {
 	MapObjectStats() : mass_(81647), health_(100) {};
 	MapObjectStats(uint32_t _mass, uint16_t _health) : mass_(_mass), health_(_health) {};
-	MapObjectStats(const YAML::Node& in);
 
 	void Serialize(Serializer& out);
 
 	uint32_t mass_;
 
 	uint16_t health_;
-
-	friend class Serializer;
 };
 
 struct MapObjectFlags
@@ -45,7 +42,6 @@ struct MapObjectFlags
 	MapObjectFlags() : rez_(0), clipping_(0), visible_(0) {};
 	MapObjectFlags(bool _rez, bool _clipping, bool _solid, bool _visible)
 	: rez_(_rez), clipping_(_clipping), solid_(_solid), visible_(_visible) {};
-	MapObjectFlags(const YAML::Node& in);
 
 	void Serialize(Serializer& out);
 
@@ -53,8 +49,6 @@ struct MapObjectFlags
 	bool clipping_;
 	bool solid_;
 	bool visible_;
-
-	friend class Serializer;
 };
 
 class MapObjectMove
@@ -62,14 +56,11 @@ class MapObjectMove
 public:
   	MapObjectMove() : time_(0) {};
   	MapObjectMove(uint16_t _time, Vector2<int16_t> _vector) : time_(_time), vector_(_vector) {};
-  	MapObjectMove(const YAML::Node& in);
 
   	void Serialize(Serializer& out);
 
 	uint16_t time_;
 	Vector2<int16_t> vector_;
-
-	friend class Serializer;
 };
 
 class MapObject
@@ -83,10 +74,9 @@ class MapObject
 		MapObjectFlags _flags,
 		DisplayObject* _displayobject
 	) : stats_(_stats), flags_(_flags), displayobject_(_displayobject) {};
-	MapObject(const YAML::Node& in);
+
 	virtual ~MapObject();
 
-	virtual void PRINT() { printf("MapObject\n"); };
 	virtual void Serialize(Serializer& out);
 
 	virtual bool Rez(MapLocation _location, Vector2<int16_t> _velocity = Vector2<int16_t>(+0,+0));
@@ -99,7 +89,11 @@ class MapObject
 	virtual bool Move(Vector2<int16_t> _vector);
 	bool SetLocation(MapLocation _location);
 
-	virtual MapObjectMove NextTick() { return MapObjectMove(timeobject_.speed_, vector_); };
+	virtual MapObjectMove NextTick()
+	{
+		return timeobject_ ? MapObjectMove(timeobject_->speed_, vector_) : MapObjectMove();
+	};
+	
 	virtual uint16_t Tick();
 
 
@@ -113,8 +107,15 @@ class MapObject
 	MapObjectStats stats_;
 	MapObjectFlags flags_;
 
-	TimeObject timeobject_;
+	TimeObject* timeobject_;
 	DisplayObject* displayobject_;
+
+  private:
+ 	MapObject(uint16_t _id, bool _linked, DisplayObject* _displayobject,
+		MapObjectStats _stats, MapObjectFlags _flags, MapLocation _location,
+		Vector2<int16_t> _vector, std::list<MapObjectMove> _moves) :
+		id_(_id), linked_(_linked), displayobject_(_displayobject), stats_(_stats),
+		flags_(_flags), location_(_location), moves_(_moves) {};
 
 	friend class Serializer;
 };

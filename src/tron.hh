@@ -18,17 +18,8 @@ class TRON : public Game
 {
   public:
   	TRON() { name_ = std::string("TRON"); };
-  	TRON(const YAML::Node& in);
+  	TRON(TronSerializer& in);
   	~TRON() {};
-
-  	virtual std::string GameName() { return std::string("TRON"); };
-
-  	void Serialize(YAML::Emitter& out);
-	void UnserializeMapObjects(const YAML::Node& in);
-	void UnserializeControlObjects(const YAML::Node& in);
-	void UnserializeTimeObjects(const YAML::Node& in);
-	void UnserializeMap(const YAML::Node& in);
-	void UnserializeSectors(const YAML::Node& in);
 
 	void Start();
 	Player* AddPlayerBike(uint8_t _color);

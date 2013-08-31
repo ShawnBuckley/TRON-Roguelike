@@ -26,7 +26,6 @@ class WorldTime : public GameTime
 {
   public:
 	WorldTime();
-	WorldTime(const YAML::Node& in);
 
 	void Serialize(Serializer& out);
 
@@ -44,7 +43,11 @@ class WorldTime : public GameTime
 	uint8_t minute_;
 	uint8_t second_;
 
-	friend class Serializer;
+  private:
+	WorldTime(uint64_t _tick, int _year, int _month, int _day,
+		uint8_t _hour, uint8_t _minute, uint8_t _second);
+
+  friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_WORLDTIME_HH

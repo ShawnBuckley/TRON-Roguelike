@@ -28,11 +28,10 @@ class TronSerializer;
 class Bike : public MapObject
 {
   public:
-	Bike(MapObjectFlags _mapobject_flags, uint8_t _color, TimeObject _timeobject);
+	Bike(MapObjectFlags _mapobject_flags, uint8_t _color, TimeObject* _timeobject);
 	Bike(const YAML::Node& in);
 	~Bike();
 
-	void PRINT() { printf("Bike\n"); };
 	virtual void Serialize(Serializer& out);
 
  	void Save(std::stringstream &_save);
@@ -54,10 +53,29 @@ class Bike : public MapObject
 
 	std::array<DisplayObject*, 10> bike_displayobject_;
 	std::array<DisplayObject*, 10> wall_displayobject_;
-	// DisplayObject* bike_displayobject_[10];
-	// DisplayObject* wall_displayobject_[10];
 
 	std::list<LightWall*> wall_list_;
+
+	Bike(uint16_t _id, bool _linked, bool _moved, bool _drop_walls_, uint8_t _change_direction,
+		uint64_t _time_of_death, DisplayObject* _displayobject,
+		MapObjectStats _stats, MapObjectFlags _flags, MapLocation _location,
+		Vector2<short int> _vector,
+		std::array<DisplayObject*, 10> _bike_displayobject,
+		std::array<DisplayObject*, 10> _wall_displayobject,
+		std::list<MapObjectMove> _moves) : moved_(_moved), drop_walls_(_drop_walls_),
+			change_direction_(_change_direction), time_of_death_(_time_of_death),
+			bike_displayobject_(_bike_displayobject),
+			wall_displayobject_(_wall_displayobject)
+	{
+		id_ = _id;
+		linked_ = _linked;
+		displayobject_ = _displayobject;
+		stats_ = _stats;
+		flags_ = _flags;
+		location_ = _location;
+		vector_ = _vector;
+		moves_ = _moves;
+	}
 };
 
 #endif // TRON_RLENGINEX_BIKE_HH

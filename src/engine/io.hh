@@ -11,11 +11,6 @@
 
 #include "math/axisaligned_rectangle2.hh"
 
-namespace YAML
-{
-	class Emitter;
-	class Node;
-}
 
 class DisplayObject;
 class Color;
@@ -47,8 +42,6 @@ struct Color
 
 class IO
 {
-  private:	
-
   public:
   	virtual void Serialize(Serializer& out) {};
 
@@ -58,15 +51,14 @@ class IO
 	virtual void Map()=0;
 
 	void SetFPS(float _fps) { fps_ = _fps; };
-	virtual void SetRealtime(bool _realtime)=0;
 
 
-	bool realtime_;
 	float fps_;
   
 	uint8_t x_;
 	uint8_t y_;
 
+	uint16_t camera_mapobject_id_;
 	MapObject* camera_mapobject_;
 	Vector2<int16_t> camera_location_;
 
@@ -79,7 +71,7 @@ class IO
 
 	std::vector<Color> colors_;
 
-	friend class Serializer;
+  friend class Serializer;
 };
 
 #endif // TRON_RLENGINEX_IO_HH

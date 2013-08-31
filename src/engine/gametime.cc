@@ -4,23 +4,12 @@
 
 #include <algorithm>
 
-#include <yaml-cpp/yaml.h>
-
 #include "serializer.hh"
+#include "game.hh"
 #include "gametime.hh"
 #include "mapobject.hh"
 #include "timeobject.hh"
 #include "controlobject.hh"
-
-GameTime::GameTime()
-{
-	tick_ = 0;
-}
-
-GameTime::GameTime(const YAML::Node& in)
-{
-	tick_ = in["tick"].as<uint64_t>();
-}
 
 void GameTime::Serialize(Serializer& out) const
 {
@@ -30,15 +19,23 @@ void GameTime::Serialize(Serializer& out) const
 // TODO TimeObjects schedule in timeactions, which then execute
 uint16_t GameTime::Turn()
 {
-	if(TimeObject::timeobjects_.empty())
+	printf("gametime turn\n");
+
+	if(game().timeobjects_.empty())
 		return 0;
 
 	uint16_t fastest_speed = 65535;
 
+	auto start = game().timeobjects_.begin();
+	auto end = game().timeobjects_.end();
+	printf("think loop\n");
 	// think loop
-	for(TimeObject* timeobject : TimeObject::timeobjects_)
+	for(auto it = start; it != end; it++)
 	{
-		if(timeobject)
+		printf("start cyc %p\n", (*it).get());
+		TimeObject* timeobject = (*it).get();
+
+		if(timeobject != NULL)
 		{
 			if(timeobject->mapobject_)
 			{
@@ -60,21 +57,26 @@ uint16_t GameTime::Turn()
 				}
 			}
 		}
+		printf("end cyc\n");
 	}
-
+	printf("end\n");
 	tick_ += fastest_speed;
-
+	printf("tick loop\n");
 	// Tick loop
-	for(auto it = TimeObject::timeobjects_.begin(); it != TimeObject::timeobjects_.end();)
+	for(auto it = start; it != end; it++)
 	{
-		TimeObject* timeobject = *it;
-		++it;
+		printf("tick cyc %p\n", (*it).get());
+		TimeObject* timeobject = (*it).get();
+		// ++it;
 
-		if(timeobject == NULL || !timeobject->linked_ || !timeobject->speed_) continue;
+		if(timeobject == NULL || !timeobject->linked_ || !timeobject->speed_) { continue; }
 
 		timeobject->time_ += fastest_speed;
 		timeobject->Tick();
+
+		printf("tick cyc\n");
 	}
+	printf("end\n");
 
 	return fastest_speed;
 }
