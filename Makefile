@@ -1,71 +1,74 @@
+CC = g++
+STD = c++11
+
 all: aibike.o bike.o game.o gametime.o gl.o lightgrid.o lightwall.o linux.o log.o main.o map.o maplocation.o mapobject.o maptile.o player.o sdl.o sector.o serializer.o timeobject.o tron.o tronserializer.o worldtime.o
-	g++ -ggdb -O2 *.o -lSDL -lpng -lGL -lyaml-cpp -o engine -std=c++0x
+	$(CC) -ggdb -O2 *.o -lSDL -lpng -lGL -lyaml-cpp -o engine -std=$(STD)
 
 aibike.o: src/aibike.cc
-	g++ -c src/aibike.cc -std=c++0x
+	$(CC) -c src/aibike.cc -std=$(STD)
 
 bike.o: src/bike.cc
-	g++ -c src/bike.cc -std=c++0x
+	$(CC) -c src/bike.cc -std=$(STD)
 
 game.o: src/engine/game.cc
-	g++ -c src/engine/game.cc -std=c++0x
+	$(CC) -c src/engine/game.cc -std=$(STD)
 
 gametime.o: src/engine/gametime.cc
-	g++ -c src/engine/gametime.cc -std=c++0x
+	$(CC) -c src/engine/gametime.cc -std=$(STD)
 
 gl.o: src/engine/gl.cc
-	g++ -c src/engine/gl.cc -std=c++0x
+	$(CC) -c src/engine/gl.cc -std=$(STD)
 
 lightgrid.o: src/lightgrid.cc
-	g++ -c src/lightgrid.cc -std=c++0x
+	$(CC) -c src/lightgrid.cc -std=$(STD)
 
 lightwall.o: src/lightwall.cc
-	g++ -c src/lightwall.cc -std=c++0x
+	$(CC) -c src/lightwall.cc -std=$(STD)
 
 linux.o: src/engine/linux.cc
-	g++ -c src/engine/linux.cc -std=c++0x
+	$(CC) -c src/engine/linux.cc -std=$(STD)
 
 log.o: src/engine/log.cc
-	g++ -c src/engine/log.cc -std=c++0x
+	$(CC) -c src/engine/log.cc -std=$(STD)
 
 main.o: src/main.cc
-	g++ -c src/main.cc -std=c++0x
+	$(CC) -c src/main.cc -std=$(STD)
 
 map.o: src/engine/map.cc
-	g++ -c src/engine/map.cc -std=c++0x
+	$(CC) -c src/engine/map.cc -std=$(STD)
 
 maplocation.o: src/engine/maplocation.cc
-	g++ -c src/engine/maplocation.cc -std=c++0x
+	$(CC) -c src/engine/maplocation.cc -std=$(STD)
 
 mapobject.o: src/engine/mapobject.cc
-	g++ -c src/engine/mapobject.cc -std=c++0x
+	$(CC) -c src/engine/mapobject.cc -std=$(STD)
 
 maptile.o: src/engine/maptile.cc
-	g++ -c src/engine/maptile.cc -std=c++0x
+	$(CC) -c src/engine/maptile.cc -std=$(STD)
 
 player.o: src/engine/player.cc
-	g++ -c src/engine/player.cc -std=c++0x
+	$(CC) -c src/engine/player.cc -std=$(STD)
 
 sdl.o: src/engine/sdl.cc
-	g++ -c src/engine/sdl.cc -std=c++0x
+	$(CC) -c src/engine/sdl.cc -std=$(STD)
 
 sector.o: src/engine/sector.cc
-	g++ -c src/engine/sector.cc -std=c++0x
+	$(CC) -c src/engine/sector.cc -std=$(STD)
 
 serializer.o: src/engine/serializer.cc
-	g++ -c src/engine/serializer.cc -std=c++0x
+	$(CC) -c src/engine/serializer.cc -std=$(STD)
 
 timeobject.o: src/engine/timeobject.cc
-	g++ -c src/engine/timeobject.cc -std=c++0x
+	$(CC) -c src/engine/timeobject.cc -std=$(STD)
 
 tron.o: src/tron.cc
-	g++ -c src/tron.cc -std=c++0x
+	$(CC) -c src/tron.cc -std=$(STD)
 
 tronserializer.o: src/tronserializer.cc
-	g++ -c src/tronserializer.cc -std=c++0x
+	$(CC) -c src/tronserializer.cc -std=$(STD)
 
 worldtime.o: src/engine/worldtime.cc
-	g++ -c src/engine/worldtime.cc -std=c++0x
+	$(CC) -c src/engine/worldtime.cc -std=$(STD)
 
 clean:
 	rm -f *.o
